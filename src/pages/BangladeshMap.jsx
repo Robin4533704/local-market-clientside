@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { FaSearch } from 'react-icons/fa';
 import 'leaflet/dist/leaflet.css';
 
-// Component to change map view dynamically
+// Map view changer component
 const MapViewChanger = ({ center, zoom }) => {
   const map = useMap();
   useEffect(() => {
@@ -15,33 +15,33 @@ const MapViewChanger = ({ center, zoom }) => {
 };
 
 const BangladeshMap = ({ servicesData }) => {
-  const dhakaCoordinates = [23.8103, 90.4125];
+  const defaultCenter = [23.685, 90.356]; // Bangladesh central point
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [filteredDistricts, setFilteredDistricts] = useState([]);
 
-  // Filter districts by search term (partial, case-insensitive)
-  const filteredDistricts = servicesData.filter(({ district }) =>
-    district.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Update filtered districts based on search term
+  useEffect(() => {
+    const results = servicesData.filter(({ district }) =>
+      district.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredDistricts(results);
+  }, [searchTerm, servicesData]);
 
-  // When user selects a district from filtered list or presses Enter
   const handleSelectDistrict = (district) => {
     setSelectedDistrict(district);
-    setSearchTerm(district.district); // fill input with selected district name
+    setSearchTerm(district.district);
   };
 
-  // Handle Enter key press in input
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      if (filteredDistricts.length === 1) {
-        handleSelectDistrict(filteredDistricts[0]);
-      }
+    if (e.key === 'Enter' && filteredDistricts.length === 1) {
+      handleSelectDistrict(filteredDistricts[0]);
     }
   };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
-      {/* Search Box with dropdown suggestions */}
+      {/* Search Box */}
       <div className="relative max-w-md mx-auto mb-4">
         <div className="flex items-center border rounded-lg overflow-hidden shadow-sm">
           <input
@@ -51,7 +51,7 @@ const BangladeshMap = ({ servicesData }) => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setSelectedDistrict(null); // reset selection on typing
+              setSelectedDistrict(null);
             }}
             onKeyDown={handleKeyDown}
           />
@@ -59,8 +59,7 @@ const BangladeshMap = ({ servicesData }) => {
             <FaSearch size={18} />
           </button>
         </div>
-
-        {/* Suggestions dropdown */}
+        {/* Suggestions Dropdown */}
         {searchTerm && filteredDistricts.length > 0 && !selectedDistrict && (
           <ul className="absolute z-20 w-full bg-white border border-t-0 rounded-b-md max-h-48 overflow-y-auto shadow-lg">
             {filteredDistricts.slice(0, 5).map((dist) => (
@@ -78,13 +77,17 @@ const BangladeshMap = ({ servicesData }) => {
 
       {/* Map */}
       <MapContainer
-        center={selectedDistrict ? [selectedDistrict.latitude, selectedDistrict.longitude] : dhakaCoordinates}
+        center={
+          selectedDistrict
+            ? [selectedDistrict.latitude, selectedDistrict.longitude]
+            : defaultCenter
+        }
         zoom={selectedDistrict ? 12 : 7}
         className="w-full h-[500px] rounded-xl shadow-lg"
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+          attribution='© <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
@@ -100,7 +103,7 @@ const BangladeshMap = ({ servicesData }) => {
           </Marker>
         ))}
 
-        {/* Change map view when selectedDistrict changes */}
+        {/* Map view update on district selection */}
         {selectedDistrict && (
           <MapViewChanger
             center={[selectedDistrict.latitude, selectedDistrict.longitude]}
