@@ -22,7 +22,7 @@ const OrganicFarmSection = () => {
       {/* ডান অংশ - ছবি */}
       <div className="md:w-1/2 flex justify-center p-4">
         <img 
-          src="/public/zpj/farmer.jpg" 
+          src="/zpj/farmer.jpg" 
           alt="Farm produce"
           className="rounded-lg shadow-lg object-cover max-w-full h-[350px] md:h-auto"
         />

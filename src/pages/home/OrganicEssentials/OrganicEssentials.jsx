@@ -6,7 +6,7 @@ const OrganicEssentials = () => {
       {/* ছবি section */}
       <div className="md:w-1/2 p-4">
         <img 
-          src="/public/zpj/organize.jpg" 
+          src="/zpj/organize.jpg" 
           alt="Fresh Vegetables" 
           className="w-full h-auto rounded-lg shadow-lg"
         />

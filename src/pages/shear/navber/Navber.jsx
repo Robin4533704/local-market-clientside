@@ -1,10 +1,23 @@
 import React from 'react';
-import { NavLink } from 'react-router';
+import { Link, NavLink } from 'react-router';
 import Profileslogo from '../../home/banner/Profileslogo';
+import UseAuth from '../../../hooks/UseAuth';
 
 const Navber = () => {
+  const {user, logOut} =UseAuth()
+
+   const handleLogout = () =>{
+    logOut()
+    .then(() =>{
+      console.log('logged out succesfully')
+    })
+    .catch((error) =>{
+      console.log("logged error", error);
+    })
+   }
   const links = <>
     <li><NavLink to='/'>Home</NavLink></li>
+    <li><NavLink to='/coverage'>Coverage</NavLink></li>
   
     <li><NavLink to='/about'>About Us</NavLink></li>
   
@@ -53,10 +66,29 @@ const Navber = () => {
         </ul>
       </div>
 
-      {/* শেষের অংশ: বোতাম বা অ্যাকশন আইটেম */}
-      <div className="navbar-end">
-        <a className="btn">SignIn</a>
-      </div>
+      {
+  user ? (
+    <div className="flex items-center gap-4 navbar-end">
+      <span className="text-sm font-medium text-gray-700">{user.email}</span>
+      <button
+        onClick={handleLogout}
+        className="btn btn-sm bg-red-500 hover:bg-red-600 text-white"
+      >
+        Logout
+      </button>
+    </div>
+  ) : (
+    <div className="navbar-end">
+      <Link to="/login" className="btn btn-sm px-6 font-semibold py-4  bg-lime-500 hover:bg-lime-600 text-white">
+        Sign In
+      </Link>
+    </div>
+  )
+}
+
+
+     
+     
     </div>
   );
 } 

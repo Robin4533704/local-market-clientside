@@ -61,7 +61,7 @@ const Works = () => {
           {/* ছবি */}
           <div className="flex justify-center mb-4">
             <img 
-              src="/public/zpj/works3.jpg" 
+              src="/zpj/works3.jpg" 
               alt="Enjoy Food"
               className="w-36 h-36 object-cover rounded-full mx-auto"
             />
