@@ -9,6 +9,8 @@ import AuthLayout from "../layout/AuthLayout";
 import ForgotPassword from "../pages/Authntication.jsx/ForgetPassword";
 import Register from "../pages/register/Register"
 import Coverage from "../pages/coverage/Coverage";
+import PrivetRoute from "../route/PrivetRoute";
+import SentParsel from "../pages/sentparsel/SentParsel";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -22,6 +24,11 @@ export const router = createBrowserRouter([
       path: '/coverage',
       Component: Coverage,
       loader: () => fetch('/Services.json')
+        },
+        {
+          path: '/sentparsel',
+          element: <PrivetRoute> <SentParsel></SentParsel> </PrivetRoute>,
+         loader: () => fetch('/Services.json')
         },
         {
           path: '/',
