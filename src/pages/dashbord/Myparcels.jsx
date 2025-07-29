@@ -49,7 +49,7 @@ const MyParcels = () => {
               </td>
               <td>
                 <button className="btn btn-sm btn-info mr-2">View</button>
-                <button className="btn btn-sm btn-error">Delete</button>
+                <button className="btn btn-sm text-white bg-lime-400">Delete</button>
               </td>
             </tr>
           ))}
