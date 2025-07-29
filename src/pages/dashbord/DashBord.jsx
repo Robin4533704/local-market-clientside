@@ -28,7 +28,7 @@ const DashBord = () => {
       </div>
       <div className="mx-2 flex-1 px-2 lg:hidden">Dashboard</div>
       </div>
-     <Outlet/>git
+     <Outlet/>
   </div>
   <div className="drawer-side">
     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
