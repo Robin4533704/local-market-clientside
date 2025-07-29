@@ -11,6 +11,8 @@ import Register from "../pages/register/Register"
 import Coverage from "../pages/coverage/Coverage";
 import PrivetRoute from "../route/PrivetRoute";
 import SentParsel from "../pages/sentparsel/SentParsel";
+import DashBord from "../pages/dashbord/DashBord"
+import Myparcels from "../pages/dashbord/Myparcels"
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -50,6 +52,17 @@ export const router = createBrowserRouter([
         }
        
     ]
+  },
+
+   {
+    path: "/dashboard",
+    element: <DashBord />,
+    children: [
+      {
+        path: "myparcels",
+        element: <Myparcels />,
+      },
+    ],
   },
 
 ]);

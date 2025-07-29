@@ -128,10 +128,7 @@ const onSubmit = (data) => {
       creation_date: new Date().toISOString(),
       tracking_id: trackingId, // ✅ এখানে ব্যবহার করো
     };
-
-    axios.post("http://localhost:5000/parcels", parcelData);
-      console.log("Confirmed Parcel Data:", parcelData);
-    axiosSecure.post('/parcels', parcelData).then((res) => {
+axiosSecure.post('/parcels', parcelData).then((res) => {
       if(res.data.insertedId){
          Swal.fire({
         icon: "success",
@@ -148,7 +145,11 @@ const onSubmit = (data) => {
       })
       .catch((err) => {
         console.error(err);
-        Swal.error("🚨 Failed to submit parcel.");
+        Swal.fire({
+      icon: 'error',
+      title: 'Failed to submit parcel',
+      text: '🚨 Parcel save করার সময় সমস্যা হয়েছে।'
+    });
       });
   }
 });

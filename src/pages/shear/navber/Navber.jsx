@@ -21,6 +21,11 @@ const Navber = () => {
     <li><NavLink to='/sentparsel'>Sent A Parsel</NavLink></li>
   
     <li><NavLink to='/about'>About Us</NavLink></li>
+    {
+      user && <>
+       <li><NavLink to='/deshboard'>Dashboard</NavLink></li>
+      </>
+    }
   
    </>
    return (
