@@ -5,7 +5,7 @@ import { Carousel } from 'react-responsive-carousel';
 import banner1 from '../../../assets/images/beautiful-street-market-sunset.jpg';
 import banner2 from '../../../assets/images/medium-shot-women-holding-shopping-bags.jpg';
 import banner3 from '../../../assets/images/side-view-women-shopping-groceries.jpg';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const slides = [
   { img: banner1, title: 'Welcome to Farmer Market', subtitle: 'Taste the freshness direct from local farms' },
