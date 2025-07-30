@@ -26,21 +26,22 @@ const services = [
 ];
 
 const Services = () => (
-  <section className="py-12 bg-[#fef2e7]">
-    <div className="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      {services.map((s, idx) => (
-        <div key={idx} className="flex items-start space-x-4">
-          <div className="bg-yellow-300 rounded-full p-4 flex items-center justify-center">
-            {s.icon}
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-1 text-gray-800">{s.title}</h3>
-            <p className="text-gray-600 text-sm">{s.desc}</p>
-          </div>
+ <section className="py-10 bg-[#fef2e7]">
+  <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {services.map((s, idx) => (
+      <div key={idx} className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4">
+        <div className="bg-yellow-300 rounded-full p-4 flex items-center justify-center">
+          {s.icon}
         </div>
-      ))}
-    </div>
-  </section>
+        <div>
+          <h3 className="text-lg font-semibold mb-1 text-gray-800">{s.title}</h3>
+          <p className="text-gray-600 text-sm">{s.desc}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
 );
 
 export default Services;

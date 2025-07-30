@@ -2,27 +2,27 @@ import React from 'react';
 
 const categories = [
   {
-    image: "/zpj/tomato.jpg",
+    image: "https://i.ibb.co/NdTtZLY3/fruits-1761031-640.jpg",
     title: 'Fresh Vegetables',
     description: 'Tomatoes, lettuce, carrots, and more.',
   },
   {
-    image:"/zpj/griens.jpg",
+    image:"https://i.ibb.co/XxPzYrJq/peanuts-8314955-640.jpg",
     title: 'Grains & Legumes',
     description: 'Wheat, corn, soybeans, and lentils.',
   },
   {
-    image: "/zpj/apple.jpg",
+    image: "https://i.ibb.co/NdCwMf7R/apples-6604178-640.jpg",
     title: 'Seasonal Fruits',
     description: 'Apples, strawberries, blueberries, and peaches.',
   },
   {
-    image: "/zpj/liyapi.jpg",
+    image: "https://i.ibb.co/bjkVgr5q/savoy-cabbage-7102903-640.jpg",
     title: 'Leafy Greens',
     description: 'Organic kale, lettuce, baby spinach, and more.',
   },
   {
-    image: "/zpj/egg.jpg",
+    image: "https://i.ibb.co/zT4Z5NDX/chicken-2789493-640.jpg",
     title: 'Free-Range Poultry',
     description: 'Eggs and poultry raised with care.',
   },

@@ -2,11 +2,11 @@ import React from 'react';
 
 const OrganicEssentials = () => {
   return (
-    <div className="flex flex-col md:flex-row items-center md:items-start p-8 bg-red-100">
+    <div className="flex flex-col md:flex-row items-center md:items-start  lg:p-8 bg-red-100">
       {/* ছবি section */}
       <div className="md:w-1/2 p-4">
         <img 
-          src="/zpj/organize.jpg" 
+          src="https://i.ibb.co/NdTtZLY3/fruits-1761031-640.jpg" 
           alt="Fresh Vegetables" 
           className="w-full h-auto rounded-lg shadow-lg"
         />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaLock } from 'react-icons/fa';
-import { Link } from 'react-router-dom'; // react-router এর সঠিক import
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'; // react-router এর সঠিক import
 import UseAuth from '../../hooks/UseAuth';
 import SocialLogin from '../SocialLogin';
 import Swal from 'sweetalert2';
@@ -12,20 +12,26 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+    const location = useLocation()
+    const navigate = useNavigate()
+   const from = location.state?.from?.pathname || '/';
+
+
+
 
   const { singInUser } = UseAuth();
 
   const onSubmit = (data) => {
     singInUser(data.email, data.password)
       .then((result) => {
-        // সফল লগইন হলে
-        Swal.fire({
+      Swal.fire({
           icon: 'success',
           title: 'Login Successful',
           text: `Welcome back, ${result.user.email}!`,
           timer: 2000,
           showConfirmButton: false,
         });
+        navigate(from);
       })
       .catch((error) => {
         // কোনো এরর হলে
