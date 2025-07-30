@@ -13,6 +13,7 @@ import PrivetRoute from "../route/PrivetRoute";
 import SentParsel from "../pages/sentparsel/SentParsel";
 import DashBord from "../pages/dashbord/DashBord"
 import Myparcels from "../pages/dashbord/Myparcels"
+import CheckoutPage from "../pages/paymentmethod/CheckoutPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
         path: "myparcels",
         element: <Myparcels />,
       },
+      {
+        path: '/payment',
+        Component: CheckoutPage
+      }
     ],
   },
 
