@@ -23,7 +23,7 @@ const Navber = () => {
     <li><NavLink to='/about'>About Us</NavLink></li>
     {
       user && <>
-       <li><NavLink to='/deshboard'>Dashboard</NavLink></li>
+       <li><NavLink to='/dashboard'>Dashboard</NavLink></li>
       </>
     }
   
