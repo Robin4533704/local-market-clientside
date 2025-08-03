@@ -8,9 +8,9 @@ const Profileslogo = () => {
   <img
     src={logo}
     alt="Logo"
-    className="w-12 h-12 lg:w-16 lg:h-16 rounded-full"
+    className="w-12 hidden md:block h-12 lg:w-16 lg:h-16 rounded-full"
   />
-  <p className="text-blue-400 text-xl lg:text-3xl font-bold hidden md:block">
+  <p className="text-blue-400 text-xl lg:text-3xl font-bold ">
     Farmer
     <span className="text-amber-300 font-bold">Market</span>
   </p>

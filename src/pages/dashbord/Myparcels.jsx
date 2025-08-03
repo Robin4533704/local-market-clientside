@@ -1,26 +1,31 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/Loading";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../constex/AuthContext";
 import useAxiosSecure from "../../hooks/UseAxiosSecure";
 import UseAuth from "../../hooks/UseAuth";
+import { useNavigate } from "react-router-dom"; // 🛠️ useRouter → useNavigate should be from 'react-router-dom'
 
 const MyParcelsTable = () => {
   const { user } = UseAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: parcels = [], isLoading } = useQuery({
     queryKey: ['parcels', user?.email],
+    enabled: !!user?.email, // 🛠️ Wait for user.email to exist before running query
     queryFn: async () => {
-      if (!user?.email) return [];
       const res = await axiosSecure.get(`/parcels?email=${user.email}`);
       return res.data;
     }
   });
-     const handlePay = (id) =>{
-      console.log("proceed to payment for", id);
-     };
+
+  const handlePay = (_id) => {
+    if (!_id) return;
+    console.log("Proceed to payment for", _id);
+    navigate(`/dashboard/payment/${_id}`);
+  };
+
   const handleDelete = (parcelId) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -35,9 +40,8 @@ const MyParcelsTable = () => {
         axiosSecure.delete(`/parcels/${parcelId}`)
           .then(res => {
             if (res.data.deletedCount > 0) {
-              Swal.fire('Deleted!',
-                 'Your parcel has been deleted.', 'success');
-              queryClient.invalidateQueries(['parcels']);
+              Swal.fire('Deleted!', 'Your parcel has been deleted.', 'success');
+              queryClient.invalidateQueries(['parcels', user?.email]);
             }
           })
           .catch(() => {
@@ -47,50 +51,69 @@ const MyParcelsTable = () => {
     });
   };
 
-  if (isLoading) return <p className="text-center mt-10"> <Loading></Loading> </p>;
+  if (isLoading) {
+    return (
+      <div className="text-center mt-10">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
- <div className="overflow-x-auto p-4">
-  <table className="table table-zebra w-full min-w-[700px] text-sm border-collapse border border-gray-300">
-    <thead>
-      <tr className="bg-gray-100">
-        <th className="border border-gray-300 px-4 py-2 text-left">Title</th>
-        <th className="border border-gray-300 px-4 py-2 text-left">Type</th>
-        <th className="border border-gray-300 px-4 py-2 text-left">Created At</th>
-        <th className="border border-gray-300 px-4 py-2 text-left">Cost</th>
-        <th className="border border-gray-300 px-4 py-2 text-left">Payment</th>
-        <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {parcels.map((parcel) => (
-        <tr key={parcel._id} className="text-left">
-          <td className="border border-gray-300 px-4 py-2 break-words">{parcel.title}</td>
-          <td className="border border-gray-300 px-4 py-2">{parcel.type}</td>
-          <td className="border border-gray-300 px-4 py-2">{new Date(parcel.creation_date).toLocaleString()}</td>
-          <td className="border border-gray-300 px-4 py-2">{parcel.cost}</td>
-          <td className="border border-gray-300 px-4 py-2">
-            <span
-              className={`px-2 py-1 rounded text-white text-xs font-semibold ${
-                parcel.payment_status === "paid" ? "bg-green-500" : "bg-pink-500"
-              }`}
-            >
-              {parcel.payment_status}
-            </span>
-          </td>
-          <td className="border border-gray-300 px-4 py-2 space-y-1">
-            <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
-              <button className="btn btn-xs btn-info text-white">View</button>
-              <button onClick={handlePay} className="btn btn-xs btn-success text-white">Pay</button>
-              <button onClick={() => handleDelete(parcel._id)} className="btn btn-xs btn-error text-white">Delete</button>
-            </div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
+    <div className="overflow-x-auto p-4">
+      <table className="table table-zebra w-full min-w-[700px] text-sm border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 px-4 py-2 text-left">Title</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Type</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Created At</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Cost</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Payment</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {parcels.map((parcel) => (
+            <tr key={parcel._id} className="text-left">
+              <td className="border border-gray-300 px-4 py-2 break-words">{parcel.title}</td>
+              <td className="border border-gray-300 px-4 py-2">{parcel.type}</td>
+              <td className="border border-gray-300 px-4 py-2">
+                {new Date(parcel.creation_date).toLocaleString()}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">${parcel.cost}</td>
+              <td className="border border-gray-300 px-4 py-2">
+                <span
+                  className={`px-2 py-1 rounded text-white text-xs font-semibold ${
+                    parcel.payment_status === "paid" ? "bg-green-500" : "bg-pink-500"
+                  }`}
+                >
+                  {parcel.payment_status}
+                </span>
+              </td>
+              <td className="border border-gray-300 px-4 py-2 space-y-1">
+                <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
+                  <button className="btn btn-xs btn-info text-white">View</button>
+                  {parcel.payment_status !== 'paid' && (
+                    <button
+                      onClick={() => handlePay(parcel._id)}
+                      className="btn btn-xs btn-success text-white"
+                    >
+                      Pay Now
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleDelete(parcel._id)}
+                    className="btn btn-xs btn-error text-white"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
