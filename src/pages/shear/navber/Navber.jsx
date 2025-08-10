@@ -22,6 +22,7 @@ const Navber = () => {
       <li><NavLink to='/coverage'>Coverage</NavLink></li>
       <li><NavLink to='/sentparsel'>Sent A Parcel</NavLink></li>
       <li><NavLink to='/dashboard'>Dashboard</NavLink></li>
+        <li><NavLink to='/beaider'>BeARider</NavLink></li>
         <li><NavLink to='/about'>About Us</NavLink></li>
       {user ? (
         <li><NavLink to='/login' className="btn btn-sm bg-red-500 hover:bg-red-600 text-white hidden lg:black">Logout</NavLink></li>
@@ -50,10 +51,10 @@ const Navber = () => {
       <div className="navbar-end hidden lg:flex items-center gap-2">
         {user ? (
           <>
-            <span className="text-sm font-medium text-white">{user.email}</span>
+            <span className="text-sm block lg:hidden font-medium text-white">{user.email}</span>
             <button
               onClick={handleLogout}
-              className="btn btn-sm bg-red-500 hover:bg-red-600 text-white hidden lg:black"
+              className="btn btn-sm bg-red-500 hover:bg-red-600 text-white hidden lg:block"
             >
               Logout
             </button>
@@ -69,7 +70,7 @@ const Navber = () => {
       </div>
 
       {/* Mobile Menu Dropdown */}
-      <div className="dropdown dropdown-end lg:hidden ml-auto">
+      <div className="dropdown dropdown-end block lg:hidden ml-auto">
         <div tabIndex={0} role="button" className="btn btn-ghost">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -87,15 +88,13 @@ const Navber = () => {
           className="menu menu-sm dropdown-content mt-3 z-[999] p-2 shadow bg-base-100 text-black rounded-box w-52"
         >
           {links}
-          {user && (
+           {/* Logout button */}
+          {user?.uid ? (  // Check if user is logged in
             <li>
-              <button
-                onClick={handleLogout}
-                className="text-red-600 font-medium hover:underline"
-              >
-                Logout
-              </button>
+              <button onClick={handleLogout}>Logout</button>
             </li>
+          ) : (
+            <li><NavLink className='hidden lg:block' to="/login">Signin</NavLink></li>
           )}
         </ul>
       </div>

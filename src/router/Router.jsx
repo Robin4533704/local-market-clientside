@@ -14,13 +14,16 @@ import DashBord from "../pages/dashbord/DashBord";
 import Myparcels from "../pages/dashbord/Myparcels";
 
 // ✅ Stripe Elements import
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import PaymentForm from "../pages/dashbord/paymentmethod/PaymentFrom";
+
+
 import Payment from "../pages/dashbord/paymentmethod/Payment";
+import PaymentHistry from "../pages/dashbord/paymentmethod/PaymentHistry";
+import TackParcel from "../pages/dashbord/tackparcel/TackParcel";
+import UpdateTracking from "../pages/dashbord/tackparcel/UpdateTracking";
+import BeARider from "../pages/dashbord/barider/BeARider";
 
 // ✅ Stripe publishable key দিয়ে instance তৈরি
-const stripePromise = loadStripe("pk_test_YourPublicKeyHere"); // ← এখানে তোমার Stripe public key বসাও
+ // ← এখানে তোমার Stripe public key বসাও
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +38,11 @@ export const router = createBrowserRouter([
         path: "/coverage",
         Component: Coverage,
         loader: () => fetch("/Services.json"),
+      },
+      {
+        path:'beaider',
+        element: <PrivetRoute> <BeARider/> </PrivetRoute>,
+          loader: () => fetch("/Services.json"),
       },
       {
         path: "/sentparsel",
@@ -74,12 +82,25 @@ export const router = createBrowserRouter([
         path: "myparcels",
         element: <Myparcels />,
       },
-      {
-        path: "payment/:parcelId",
-        // ✅ Wrapped with <Elements> to fix the error
-        element: <Payment/>
       
-      },
+        {
+  path: "payment/:parcelId",
+  element:  <Payment />
+   
+  
+},
+{
+  path: "payment-history",
+  Component: PaymentHistry
+},
+{
+  path: 'tracking',
+  Component : TackParcel
+},
+{
+  path: 'tracking/:trackingId',
+  Component: UpdateTracking
+},
     ],
   },
 ]);

@@ -5,7 +5,7 @@ import useAxiosSecure from "../../hooks/UseAxiosSecure";
 import UseAuth from "../../hooks/UseAuth";
 import { useNavigate } from "react-router-dom"; // 🛠️ useRouter → useNavigate should be from 'react-router-dom'
 
-const MyParcelsTable = () => {
+const MyParcels = () => {
   const { user } = UseAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
@@ -117,4 +117,4 @@ const MyParcelsTable = () => {
   );
 };
 
-export default MyParcelsTable;
+export default MyParcels;

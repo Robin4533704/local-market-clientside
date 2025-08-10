@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UseAuth from '../../../hooks/UseAuth';
+import Swal from 'sweetalert2';
+
 
    const PaymentForm = () => {
   const stripe = useStripe();
@@ -12,7 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
   const [error, setError] = useState('');
   const { parcelId } = useParams();
   const axiosSecure = UseAxiosSecure();
-
+  const { user } =UseAuth()
+const navigate = useNavigate();
   const { isPending, data: parcelinfo = {} } = useQuery({
     queryKey: ['parcels', parcelId],
     queryFn: async () => {
@@ -27,77 +31,103 @@ import 'react-toastify/dist/ReactToastify.css';
 
   const amount = parcelinfo.cost;
   const amountInCents = Math.round(amount * 100); // Stripe চায় সেন্টে
-  console.log(amountInCents);
+  
 
   const handleSubmit = async (e) => {
   e.preventDefault();
-  if (!stripe || !elements){
-    return; 
 
-  } 
+  if (!stripe || !elements) return;
 
   const card = elements.getElement(CardElement);
-
-  if (!card){
-      console.error("CardElement not found.");
+  if (!card) {
+    console.error("CardElement not found.");
     return;
   }
- // Create payment method
+
+  // Step 1: Create payment method
   const { error, paymentMethod } = await stripe.createPaymentMethod({
-  type: 'card',
-  card,
-});
-
-if (error) {
-  console.error("Payment Method Error:", error.message);
-  setError(error.message);
-  return;
-} else {
-  setError('');
-  console.log("✅ payment method", paymentMethod);
-}
-
+    type: 'card',
+    card,
+  });
 
   if (error) {
-    console.error("Payment Method Error:", error);
+    console.error("Payment Method Error:", error.message);
+    setError(error.message);
     return;
-   
-  }
-   
-  else{
-    setError(``);
-    console.log("✅ payment method", paymentMethod);
+  } else {
+    setError('');
+    console.log("✅ Payment Method:", paymentMethod);
   }
 
-
-// Send request to backend to get clientSecret 
- const res = await axiosSecure.post('/create-payment-intent', {
-  amountInCents,
-  parcelId,
-
- })
- const clientSecret =res.data.clientSecret
- const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: {
-          name: 'Customer Name',
-        },
-      }
+  // Step 2: Get clientSecret from backend
+  let clientSecret;
+  try {
+    const res = await axiosSecure.post('/create-payment-intent', {
+      amountInCents,
+      parcelId,
     });
-     if (result.error) {
-     setError(`Payment failed: ${result.error.message}`);
-      toast.error(`Payment failed: ${result.error.message}`);
-     
-    } else {
-      if (result.paymentIntent.status === 'succeeded') {
-         setError(null);
-      toast.success('Payment Successful!');
-       
+    clientSecret = res.data.clientSecret;
+  } catch (err) {
+    console.error("Error getting clientSecret:", err);
+    toast.error("Failed to initiate payment.");
+    return;
+  }
+
+  // Step 3: Confirm card payment
+  const result = await stripe.confirmCardPayment(clientSecret, {
+    payment_method: {
+      card,
+      billing_details: {
+        name: user.displayName,
+        email: user.email,
+      },
+    },
+  });
+
+  if (result.error) {
+    setError(`Payment failed: ${result.error.message}`);
+    toast.error(`Payment failed: ${result.error.message}`);
+    return;
+  }
+
+  if (result.paymentIntent.status === 'succeeded') {
+    toast.success('Payment Successful!');
+    console.log("✅ Payment Success:", result);
+
+    // Step 4: Save payment entry & update parcel
+    const paymentEntry = {
+      parcelId,
+      email: user.email,
+      amount,
+      transactionId: result.paymentIntent.id,
+      paymentMethod: result.paymentIntent.payment_method_types?.[0] || "unknown",
+    };
+
+    try {
+      const paymentsres = await axiosSecure.post('/payments', paymentEntry);
+      if (paymentsres.data.insertedId) {
+        Swal.fire({
+          title: 'Payment Successful!',
+          html: `
+            <strong>Transaction ID:</strong><br/>
+            <code>${result.paymentIntent.id}</code>
+          `,
+          icon: 'success',
+          confirmButtonText: 'Go to My Parcels',
+          confirmButtonColor: '#3085d6',
+        }).then((res) => {
+          if (res.isConfirmed) {
+           navigate('/dashboard/myparcels');
+          }
+        });
       }
+    } catch (err) {
+      console.error("Failed to record payment:", err);
+      toast.error("Payment succeeded, but failed to save record.");
     }
- console.log('res from intent', res);
+  }
 };
+
 
 
   return (

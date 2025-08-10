@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import Profileslogo from '../home/banner/Profileslogo';
-
+import { FaHome, FaBox, FaCreditCard, FaSearchLocation, FaUserEdit } from 'react-icons/fa';
 const DashBord = () => {
   return (
     <div className="drawer drawer-mobile lg:drawer-open min-h-screen">
@@ -40,8 +40,31 @@ const DashBord = () => {
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu p-4 w-64 min-h-full bg-base-200 text-base-content">
           <Profileslogo />
-          <li><NavLink to="">Home</NavLink></li>
-          <li><NavLink to="/dashboard/myparcels">My Parcels</NavLink></li>
+           <li>
+    <NavLink to="/dashboard" className="flex items-center gap-2">
+      <FaHome /> Home
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/dashboard/myparcels" className="flex items-center gap-2">
+      <FaBox /> My Parcels
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/dashboard/payment-history" className="flex items-center gap-2">
+      <FaCreditCard /> Payment History
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/dashboard/tracking" className="flex items-center gap-2">
+      <FaSearchLocation /> Track A Package
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/dashboard/updateProfiles" className="flex items-center gap-2">
+      <FaUserEdit /> Update Profiles
+    </NavLink>
+  </li>
         </ul>
       </div>
     </div>
