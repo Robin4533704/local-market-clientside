@@ -1,13 +1,15 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/Loading";
 import Swal from "sweetalert2";
-import useAxiosSecure from "../../hooks/UseAxiosSecure";
+
 import UseAuth from "../../hooks/UseAuth";
 import { useNavigate } from "react-router-dom"; // 🛠️ useRouter → useNavigate should be from 'react-router-dom'
+import UseAxiosSecure from "../../hooks/UseAxiosSecure";
+
 
 const MyParcels = () => {
   const { user } = UseAuth();
-  const axiosSecure = useAxiosSecure();
+  const axiosSecure = UseAxiosSecure();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 

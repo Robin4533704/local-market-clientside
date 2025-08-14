@@ -2,6 +2,7 @@ import React from 'react';
 import UseAuth from '../../../hooks/UseAuth';
 import { useQuery } from '@tanstack/react-query';
 import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
+import Loading from '../../loading/Loading';
 
 const PaymentHistry = () => {
   const { user } = UseAuth();
@@ -17,7 +18,7 @@ const PaymentHistry = () => {
   });
 
   if (isPending) {
-    return <div className="p-4 text-center text-gray-500">Loading...</div>;
+    return <div className="p-4 text-center text-gray-500"> <Loading/> </div>;
   }
 
   return (

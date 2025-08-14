@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import service from "../../../../public/Services.json"; // your service centers data
 import Swal from "sweetalert2";
 import UseAuth from "../../../hooks/UseAuth";
- import UseAxiosSecure from "../../../hooks/UseAxiosSecure";
+import UseAxiosSecure from "../../../hooks/useAxiosSecure";
+
 
 const BeARider = () => {
   const { user } = UseAuth(); // Assuming user has displayName and email

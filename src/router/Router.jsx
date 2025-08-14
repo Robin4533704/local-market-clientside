@@ -14,16 +14,16 @@ import DashBord from "../pages/dashbord/DashBord";
 import Myparcels from "../pages/dashbord/Myparcels";
 
 // ✅ Stripe Elements import
-
-
 import Payment from "../pages/dashbord/paymentmethod/Payment";
 import PaymentHistry from "../pages/dashbord/paymentmethod/PaymentHistry";
 import TackParcel from "../pages/dashbord/tackparcel/TackParcel";
 import UpdateTracking from "../pages/dashbord/tackparcel/UpdateTracking";
 import BeARider from "../pages/dashbord/barider/BeARider";
+import PandingRiders from "../pages/dashbord/panding riders/PandingRiders";
+import ActiveRiders from "../pages/dashbord/activeriders/ActiveRiders";
+import UpdateProfiles from "../pages/updateprofile/UpdateProfiles";
 
-// ✅ Stripe publishable key দিয়ে instance তৈরি
- // ← এখানে তোমার Stripe public key বসাও
+
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +44,11 @@ export const router = createBrowserRouter([
         element: <PrivetRoute> <BeARider/> </PrivetRoute>,
           loader: () => fetch("/Services.json"),
       },
+       {
+  path: '/updateprofile',
+   Component: UpdateProfiles
+},
+     
       {
         path: "/sentparsel",
         element: (
@@ -65,6 +70,7 @@ export const router = createBrowserRouter([
             path: "/register",
             Component: Register,
           },
+         
           {
             path: "/forgetpasword",
             Component: ForgotPassword,
@@ -90,8 +96,20 @@ export const router = createBrowserRouter([
   
 },
 {
+  path: 'updateprofile',
+   Component: UpdateProfiles
+},
+{
   path: "payment-history",
   Component: PaymentHistry
+},
+{
+  path: 'pending-riders',
+  Component: PandingRiders
+},
+{
+  path: 'active-riders',
+  Component: ActiveRiders
 },
 {
   path: 'tracking',

@@ -2,18 +2,15 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import Profileslogo from '../../home/banner/Profileslogo';
 import UseAuth from '../../../hooks/UseAuth';
+import defaultImage from '../../../assets/images/download.png'; // ✅ default image import
 
 const Navber = () => {
   const { user, logOut } = UseAuth();
 
   const handleLogout = () => {
     logOut()
-      .then(() => {
-        console.log('logged out successfully');
-      })
-      .catch((error) => {
-        console.log("logout error", error);
-      });
+      .then(() => console.log('Logged out successfully'))
+      .catch(err => console.log('Logout error', err));
   };
 
   const links = (
@@ -22,14 +19,8 @@ const Navber = () => {
       <li><NavLink to='/coverage'>Coverage</NavLink></li>
       <li><NavLink to='/sentparsel'>Sent A Parcel</NavLink></li>
       <li><NavLink to='/dashboard'>Dashboard</NavLink></li>
-        <li><NavLink to='/beaider'>BeARider</NavLink></li>
-        <li><NavLink to='/about'>About Us</NavLink></li>
-      {user ? (
-        <li><NavLink to='/login' className="btn btn-sm bg-red-500 hover:bg-red-600 text-white hidden lg:black">Logout</NavLink></li>
-      ) : (
-        <li><NavLink to='/login'>Signin</NavLink></li>
-      )}
-    
+      <li><NavLink to='/beaider'>BeARider</NavLink></li>
+      <li><NavLink to='/about'>About Us</NavLink></li>
     </>
   );
 
@@ -47,55 +38,51 @@ const Navber = () => {
         </ul>
       </div>
 
-      {/* Right side: user info or Sign In */}
-      <div className="navbar-end hidden lg:flex items-center gap-2">
+      {/* Right side: user info */}
+      <Link to='/updateprofile' className="navbar-end flex items-center gap-3">
         {user ? (
           <>
-            <span className="text-sm block lg:hidden font-medium text-white">{user.email}</span>
-            <button
-              onClick={handleLogout}
-              className="btn btn-sm bg-red-500 hover:bg-red-600 text-white hidden lg:block"
-            >
+            {/* Profile Picture */}
+            <img
+              src={user.photoURL || defaultImage} // ✅ Firebase photoURL use
+              alt="Profile"
+              className="h-12 w-12 rounded-full object-cover cursor-pointer"
+            />
+           
+            <button onClick={handleLogout} className="btn btn-sm lg:block hidden bg-red-500 hover:bg-red-600 text-white">
               Logout
             </button>
           </>
         ) : (
-          <Link
-            to="/login"
-            className="btn btn-sm px-6 font-semibold py-2 bg-lime-500 hover:bg-lime-600 text-white"
-          >
+          <Link to="/login" className="btn btn-sm px-6 font-semibold py-2 bg-lime-500 hover:bg-lime-600 text-white hidden lg:block">
             Sign In
           </Link>
         )}
-      </div>
+      </Link>
 
       {/* Mobile Menu Dropdown */}
       <div className="dropdown dropdown-end block lg:hidden ml-auto">
-        <div tabIndex={0} role="button" className="btn btn-ghost">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+        <div tabIndex={0} className="btn btn-ghost">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </div>
-
-        <ul
-          tabIndex={0}
-          className="menu menu-sm dropdown-content mt-3 z-[999] p-2 shadow bg-base-100 text-black rounded-box w-52"
-        >
+        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 text-black rounded-box w-52">
           {links}
-           {/* Logout button */}
-          {user?.uid ? (  // Check if user is logged in
-            <li>
-              <button onClick={handleLogout}>Logout</button>
-            </li>
-          ) : (
-            <li><NavLink className='hidden lg:block' to="/login">Signin</NavLink></li>
-          )}
+          <div className="flex items-center gap-2 mt-2">
+            {user ? (
+              <>
+              
+    <button onClick={handleLogout} className="btn btn-sm bg-red-500 hover:bg-red-600 text-white ">
+      Logout
+    </button>
+              </>
+            ) : (
+              <Link to="/login" className="btn btn-sm bg-lime-500 hover:bg-lime-600 text-white ">
+                Sign In
+              </Link>
+            )}
+          </div>
         </ul>
       </div>
     </div>

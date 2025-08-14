@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import UseAuth from "../../hooks/UseAuth";
 import Swal from "sweetalert2";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin";
 import axios from "axios";
 import UseAxios from "../../hooks/UseAxios";
@@ -14,7 +14,9 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
    const [profilePic, setProfilePic] = useState('')
  const {createUser, updateUserProfiles} = UseAuth()
-
+ const location = useLocation()
+    const navigate = useNavigate()
+   const from = location.state?.from?.pathname || '/';
   const onSubmit = (data) => {
   console.log("Form data:", data);
   createUser(data.email, data.password)
@@ -39,6 +41,7 @@ console.log(userRes);
       }
       updateUserProfiles(userProfile)
       .then(() =>{
+        navigate(from);
         console.log('profiles name picture update');
       }).catch(error =>{
         console.log(error);
@@ -120,16 +123,21 @@ const handleImageUplode =async (e)=>{
         )}
 
         {/* Photo URL */}
-        <label className="label">
-        <span className="label-text">Photo URL</span>
-      </label>
-      <input
-        type="file"
-        onChange={handleImageUplode}
-        className="input"
-        placeholder="Your Profile Picture"
-        accept="image/*"
-      />
+       {/* Photo URL */}
+<label className="label">
+  <span className="label-text">Photo URL</span>
+</label>
+<input
+  type="file"
+  onChange={handleImageUplode}
+  className="input"
+  placeholder="Your Profile Picture"
+  accept="image/*"
+/>
+
+
+
+
         
         {/* Password */}
         <label className="label">
@@ -159,7 +167,7 @@ const handleImageUplode =async (e)=>{
         )}
 
         {/* Submit Button */}
-        <button
+        <button state={{from}}
           type="submit"
           className="btn text-white font-semibold w-full transition duration-200 hover:shadow-lg hover:scale-105 bg-gradient-to-r from-lime-400 via-lime-500 to-green-500 hover:from-lime-500 hover:to-green-600"
         >

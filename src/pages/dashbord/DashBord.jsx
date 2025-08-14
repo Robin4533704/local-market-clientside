@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import Profileslogo from '../home/banner/Profileslogo';
-import { FaHome, FaBox, FaCreditCard, FaSearchLocation, FaUserEdit } from 'react-icons/fa';
+import { FaHome,FaMotorcycle, FaClock, FaBox, FaCreditCard, FaSearchLocation, FaUserEdit } from 'react-icons/fa';
 const DashBord = () => {
   return (
     <div className="drawer drawer-mobile lg:drawer-open min-h-screen">
@@ -61,10 +61,21 @@ const DashBord = () => {
     </NavLink>
   </li>
   <li>
-    <NavLink to="/dashboard/updateProfiles" className="flex items-center gap-2">
+    <NavLink to="/dashboard/updateprofile" className="flex items-center gap-2">
       <FaUserEdit /> Update Profiles
     </NavLink>
   </li>
+  {/* New Links for Riders */}
+<li>
+  <NavLink to="/dashboard/active-riders" className="flex items-center gap-2">
+    <FaMotorcycle /> Active Riders
+  </NavLink>
+</li>
+<li>
+  <NavLink to="/dashboard/pending-riders" className="flex items-center gap-2">
+    <FaClock /> Pending Riders
+  </NavLink>
+</li>
         </ul>
       </div>
     </div>
