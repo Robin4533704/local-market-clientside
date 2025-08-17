@@ -25,8 +25,8 @@ const Navber = () => {
   );
 
   return (
-    <div className="navbar bg-lime-600 shadow-sm text-white px-4">
-      {/* Logo */}
+    <div className="navbar bg-lime-400 shadow-sm text-white px-4 fixed top-0 left-0 w-full z-50">
+   
       <div className="navbar-start">
         <Profileslogo />
       </div>

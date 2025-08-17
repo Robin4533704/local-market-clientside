@@ -1,26 +1,58 @@
-import React from 'react';
+// src/pages/Auth/ForgotPassword.jsx
+import React, { useContext, useState } from "react";
+import Swal from "sweetalert2";
+import { AuthContext } from "../../constex/AuthContext";
+import { useNavigate } from "react-router";
+ // path ঠিক করুন
 
 const ForgotPassword = () => {
-  const handleReset = (e) => {
+  const navigate = useNavigate()
+  const { passwordReset } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+
+  const handleReset = async (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
-    // এখানে তোমার firebase বা backend API দিয়ে reset করতে পারো
-    console.log("Password reset link sent to:", email);
+    try {
+      await passwordReset(email);
+      Swal.fire({
+        icon: "success",
+        title: "Reset Link Sent!",
+        text: `Password reset link has been sent to ${email}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+      setEmail("");
+       navigate("/login"); // form reset
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.message,
+      });
+    }
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Reset Your Password</h2>
-      <form onSubmit={handleReset} className="space-y-4">
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          className="input input-bordered w-full"
-          required
-        />
-        <button type="submit" className="btn btn-primary w-full">Send Reset Link</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 sm:p-8">
+        <h2 className="text-2xl font-bold mb-6 text-center">Reset Your Password</h2>
+        <form onSubmit={handleReset} className="space-y-4">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="input input-bordered w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full btn btn-primary py-2 text-white font-semibold hover:bg-blue-700 transition duration-300"
+          >
+            Send Reset Link
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

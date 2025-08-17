@@ -22,6 +22,12 @@ import BeARider from "../pages/dashbord/barider/BeARider";
 import PandingRiders from "../pages/dashbord/panding riders/PandingRiders";
 import ActiveRiders from "../pages/dashbord/activeriders/ActiveRiders";
 import UpdateProfiles from "../pages/updateprofile/UpdateProfiles";
+import About from "../pages/About";
+import ContactUs from "../pages/ContactUs";
+import OrganicEssentials from "../pages/home/OrganicEssentials/OrganicEssentials";
+
+import MakeAdmin from "../pages/dashbord/makAddmin/MakeAdmin";
+
 
 
 
@@ -47,6 +53,18 @@ export const router = createBrowserRouter([
        {
   path: '/updateprofile',
    Component: UpdateProfiles
+},
+{
+  path: '/about',
+  Component: About
+},
+{
+path: '/contactus',
+Component: ContactUs
+},
+{
+  path: '/OrganicEssentials',
+  element:  <OrganicEssentials/>
 },
      
       {
@@ -94,6 +112,9 @@ export const router = createBrowserRouter([
   element:  <Payment />
    
   
+},{
+  path: 'makeadmin',
+  Component: MakeAdmin
 },
 {
   path: 'updateprofile',

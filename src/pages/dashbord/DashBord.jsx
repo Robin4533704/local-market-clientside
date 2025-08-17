@@ -2,7 +2,10 @@ import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import Profileslogo from '../home/banner/Profileslogo';
 import { FaHome,FaMotorcycle, FaClock, FaBox, FaCreditCard, FaSearchLocation, FaUserEdit } from 'react-icons/fa';
+import useUserRole from '../../hooks/useUserRole';
 const DashBord = () => {
+  const {role, roleLoading} = useUserRole();
+  console.log(role);
   return (
     <div className="drawer drawer-mobile lg:drawer-open min-h-screen">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -10,7 +13,7 @@ const DashBord = () => {
       {/* Main Content */}
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
-        <div className="w-full navbar bg-base-300 lg:hidden">
+        <div className="w-full navbar bg-lime-300 lg:hidden">
           <label htmlFor="my-drawer-2" className="btn btn-square btn-ghost">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -38,44 +41,86 @@ const DashBord = () => {
       {/* Sidebar */}
       <div className="drawer-side">
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-        <ul className="menu p-4 w-64 min-h-full bg-base-200 text-base-content">
+        <ul className="menu p-4 w-64 min-h-full bg-lime-500 text-base-content">
           <Profileslogo />
            <li>
-    <NavLink to="/dashboard" className="flex items-center gap-2">
+    <NavLink to="/dashboard" className="text-white flex items-center gap-2">
       <FaHome /> Home
     </NavLink>
   </li>
   <li>
-    <NavLink to="/dashboard/myparcels" className="flex items-center gap-2">
+    <NavLink to="/dashboard/myparcels"  className={({ isActive }) =>
+          `px-4 py-2 rounded-md ${
+            isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"
+          }`
+        }>
       <FaBox /> My Parcels
     </NavLink>
   </li>
   <li>
-    <NavLink to="/dashboard/payment-history" className="flex items-center gap-2">
+    <NavLink to="/dashboard/payment-history"  className={({ isActive }) =>
+          `px-4 py-2 rounded-md ${
+            isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"
+          }`
+        }>
       <FaCreditCard /> Payment History
     </NavLink>
   </li>
   <li>
-    <NavLink to="/dashboard/tracking" className="flex items-center gap-2">
+    <NavLink to="/dashboard/tracking"  className={({ isActive }) =>
+          `px-4 py-2 rounded-md ${
+            isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"
+          }`
+        }>
       <FaSearchLocation /> Track A Package
     </NavLink>
   </li>
   <li>
-    <NavLink to="/dashboard/updateprofile" className="flex items-center gap-2">
+    <NavLink to="/dashboard/updateprofile"  className={({ isActive }) =>
+          `px-4 py-2 rounded-md ${
+            isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"
+          }`
+        }>
       <FaUserEdit /> Update Profiles
     </NavLink>
   </li>
+
   {/* New Links for Riders */}
-<li>
-  <NavLink to="/dashboard/active-riders" className="flex items-center gap-2">
+{!roleLoading && role === 'admin' && 
+
+  <>
+  <li>
+  <NavLink to="/dashboard/active-riders"  className={({ isActive }) =>
+          `px-4 py-2 rounded-md ${
+            isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"
+          }`
+        }>
     <FaMotorcycle /> Active Riders
   </NavLink>
 </li>
 <li>
-  <NavLink to="/dashboard/pending-riders" className="flex items-center gap-2">
+  <NavLink to="/dashboard/pending-riders"  className={({ isActive }) =>
+          `px-4 py-2 rounded-md ${
+            isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"
+          }`
+        }>
     <FaClock /> Pending Riders
   </NavLink>
 </li>
+ <li>
+  <NavLink
+        to="/dashboard/makeadmin"
+        className={({ isActive }) =>
+          `px-4 py-2 rounded-md ${
+            isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"
+          }`
+        }
+      >
+        🔑 Make Admin
+      </NavLink>
+ </li>
+  </>
+}
         </ul>
       </div>
     </div>

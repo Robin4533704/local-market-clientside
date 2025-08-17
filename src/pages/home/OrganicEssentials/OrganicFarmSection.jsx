@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 const OrganicFarmSection = () => {
+  
   return (
     <div className="flex flex-col md:flex-row bg-red-100 p-2 lg:p-8 max-w-7xl mx-auto">
       {/* বাম অংশ - লেখা */}
@@ -13,9 +15,9 @@ const OrganicFarmSection = () => {
         <p className="mb-6 text-gray-700">
           Our organic practices mean fresher flavors, healthier meals, and a cleaner conscience.
         </p>
-       <button className="bg-yellow-400 text-white font-semibold px-4 py-2 rounded-full shadow hover:bg-yellow-500 transition duration-300">
+       <Link to='/about' className="bg-yellow-400 text-center text-white font-semibold px-4 py-2 rounded-full shadow hover:bg-yellow-500 transition duration-300">
   More About Us
-</button>
+</Link>
 
       </div>
       

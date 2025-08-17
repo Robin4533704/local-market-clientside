@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router';
 
 const FAQSection = () => {
   const faqs = [
@@ -77,9 +78,9 @@ const FAQSection = () => {
         <button className="bg-yellow-400 text-white px-6 py-2 rounded-full font-semibold hover:bg-white hover:text-black transition duration-300">
           View All FAQs
         </button>
-        <button className="border border-gray-300 px-6 py-2 rounded-full font-semibold hover:bg-yellow-400 hover:text-white transition duration-300">
+        <Link to='/contactus' className="border border-gray-300 px-6 py-2 rounded-full font-semibold hover:bg-yellow-400 hover:text-white transition duration-300">
           Contact Us
-        </button>
+        </Link>
       </div>
     </div>
    </div>

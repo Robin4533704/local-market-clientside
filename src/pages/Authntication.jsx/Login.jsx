@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaLock } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaLock } from 'react-icons/fa';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'; // react-router এর সঠিক import
 import UseAuth from '../../hooks/UseAuth';
 import SocialLogin from '../SocialLogin';
@@ -15,7 +15,7 @@ const Login = () => {
     const location = useLocation()
     const navigate = useNavigate()
    const from = location.state?.from?.pathname || '/';
-
+   const [showPassword, setShowPassword] = useState(false);
 
 
 
@@ -70,25 +70,43 @@ const Login = () => {
           )}
 
           {/* Password */}
-          <label className="label">
-            <span className="label-text">Password</span>
-          </label>
-          <input
-            {...register('password', {
-              required: 'Password is required',
-              pattern: {
-                value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/,
-                message:
-                  'Password must be at least 6 characters long and contain at least one letter and one number',
-              },
-            })}
-            type="password"
-            placeholder="Enter your password"
-            className="input input-bordered w-full"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
-          )}
+          <div className="relative w-full">
+      <input
+        {...register('password', {
+          required: 'Password is required',
+          pattern: {
+            value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/,
+            message:
+              'Password must be at least 6 characters long and contain at least one letter and one number',
+          },
+        })}
+        type={showPassword ? "text" : "password"} // ✅ toggle here
+        placeholder="Enter your password"
+        className="input input-bordered w-full pr-10" // pr-10 for button spacing
+      />
+      {/* Toggle button */}
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+      >
+          {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+      </button>
+      {errors.password && (
+        <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+      )}
+    </div>
+      {/* Toggle button */}
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+      >
+      
+      </button>
+      {errors.password && (
+        <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+      )}
 
           <div className="flex items-center justify-start gap-2 text-sm mt-2">
             <FaLock className="text-blue-500" />
