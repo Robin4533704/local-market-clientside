@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { FaEye, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
-import UseAxiosSecure from '../../../hooks/useAxiosSecure';
+import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
+
 
 const PandingRiders = () => {
   const [selectedRider, setSelectedRider] = useState(null);

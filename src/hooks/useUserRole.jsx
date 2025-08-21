@@ -1,36 +1,26 @@
-import { useState, useEffect, useCallback } from "react";
-import UseAxiosSecure from "./UseAxiosSecure"; 
+import React from 'react';
 import UseAuth from "./UseAuth";
+import UseAxiosSecure from "./UseAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+
 
 const useUserRole = () => {
-  const { user, loading: authLoading } = UseAuth(); // user object and auth loading
-  const [role, setRole] = useState(null);
-  const [roleLoading, setRoleLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+  const { user, loading: authLoading } = UseAuth();
   const axiosSecure = UseAxiosSecure();
 
-  const fetchRole = useCallback(async () => {
-    if (!user?.email) return;
-
-    setRoleLoading(true);
-    try {
-      const res = await axiosSecure.get(`/users/role?email=${user.email}`);
-      setRole(res.data?.role || "user"); // default to "user"
-    } catch (err) {
-      console.error("Error fetching user role:", err);
-      setError(err);
-      setRole("user");
-    } finally {
-      setRoleLoading(false);
+  const {
+    data: role = 'user',
+    isLoading: roleLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['userRole', user?.email],
+    enabled: !authLoading && !! user?.email,
+    queryFn: async () =>{
+      const res = await axiosSecure.get(`/users/${user.email}/role`);
+      return res.data.role;
     }
-  }, [user?.email, axiosSecure]);
-
-  useEffect(() => {
-    fetchRole();
-  }, [fetchRole]);
-
-  return { role, roleLoading, authLoading: authLoading || roleLoading, error, refetch: fetchRole };
+  })
+  return{ role, loading: authLoading || roleLoading,refetch}
 };
 
 export default useUserRole;

@@ -49,7 +49,7 @@ const UpdateProfiles = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
+    <div className="w-full max-w-md mx-auto p-4 pt-28 bg-white rounded-lg shadow-md">
       <h1 className="text-2xl font-semibold mb-4 text-center text-gray-700">
         আপনার প্রোফাইল আপডেট করুন
       </h1>

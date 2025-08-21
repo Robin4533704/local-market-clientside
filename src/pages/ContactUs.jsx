@@ -44,7 +44,7 @@ const handleSubmit = async (e) => {
 
 
   return (
-    <div className="max-w-lg mx-auto p-6 sm:p-8 bg-white rounded-lg shadow-md mt-8">
+    <div className="max-w-lg mx-auto pt-16 pb-12 sm:pt-24 bg-white rounded-lg shadow-md mt-8">
       <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Contact Us</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

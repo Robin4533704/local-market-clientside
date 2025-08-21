@@ -22,6 +22,7 @@ const slides = [
 ];
 
 const Banner = () => (
+<div className=""> {/* navbar height অনুযায়ী adjust করো: pt-20/pt-24/pt-28 */}
   <Carousel
     showThumbs={false}
     showStatus={false}
@@ -35,7 +36,7 @@ const Banner = () => (
         <img
           src={slide.img}
           alt={slide.title}
-          className="w-full h-[350px] md:h-[530px] object-cover"
+          className="w-full h-[350px] md:h-[600px] object-cover"
         />
         <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center px-4">
           <h2 className="text-white text-2xl md:text-3xl font-bold">{slide.title}</h2>
@@ -51,6 +52,8 @@ const Banner = () => (
       </div>
     ))}
   </Carousel>
+</div>
+
 );
 
 export default Banner;

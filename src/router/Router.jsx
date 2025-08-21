@@ -27,6 +27,8 @@ import ContactUs from "../pages/ContactUs";
 import OrganicEssentials from "../pages/home/OrganicEssentials/OrganicEssentials";
 
 import MakeAdmin from "../pages/dashbord/makAddmin/MakeAdmin";
+import Forbidden from "../pages/forbedn/Forbidden";
+import AdminRoute from "../route/AdminRoute";
 
 
 
@@ -44,6 +46,10 @@ export const router = createBrowserRouter([
         path: "/coverage",
         Component: Coverage,
         loader: () => fetch("/Services.json"),
+      },
+      {
+        path: "/forbidden",
+        Component: Forbidden
       },
       {
         path:'beaider',
@@ -112,9 +118,6 @@ Component: ContactUs
   element:  <Payment />
    
   
-},{
-  path: 'makeadmin',
-  Component: MakeAdmin
 },
 {
   path: 'updateprofile',
@@ -125,12 +128,19 @@ Component: ContactUs
   Component: PaymentHistry
 },
 {
-  path: 'pending-riders',
-  Component: PandingRiders
+  path: 'makeadmin',
+
+  element: <AdminRoute> <MakeAdmin></MakeAdmin> </AdminRoute>
 },
+
 {
   path: 'active-riders',
-  Component: ActiveRiders
+  // Component: ActiveRiders
+  element: <AdminRoute> <ActiveRiders></ActiveRiders> </AdminRoute>
+},
+{
+  path: 'pending-riders',
+ element: <AdminRoute> <PandingRiders></PandingRiders> </AdminRoute>
 },
 {
   path: 'tracking',

@@ -1,28 +1,48 @@
 import axios from 'axios';
 import UseAuth from './UseAuth';
-import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 const axiosSecure = axios.create({
   baseURL: 'http://localhost:5000'
 });
 
 const UseAxiosSecure = () => {
-  const { user } = UseAuth();
-
-  // প্রতি রেন্ডারে ইন্টারসেপ্টর যোগ না করে useEffect এর ভিতরে যোগ করো
-  useEffect(() => {
-    const interceptor = axiosSecure.interceptors.request.use(config => {
-      if (user?.accessToken) {
+  const { user,  logOut } = UseAuth();
+  const navigate = useNavigate();
+ 
+  axiosSecure.interceptors.request.use(config => { 
+     
         config.headers.Authorization = `Bearer ${user.accessToken}`;
+        return config;
+      },
+      error =>{
+        return Promise.reject(error);
       }
-      return config;
-    });
+    )
+      
+   axiosSecure.interceptors.response.use(
+  res =>{
+  return res;
+  } , error =>{
+    console.log('inside res interceptor',error.status);
+    const status = error.status;
+     if(status === 401){
+    navigate('/forbidden')
+    }
+    else if (status === 401){
+      logOut()
+      .then(() =>{
+navigate('/logOut')
+      })
+      .catch((error) =>{
+        console.error('logout error', error)
+      })
+    }
+    return Promise.reject(error);
+   
+  }
 
-    // ক্লিনআপ করে ইন্টারসেপ্টর রিমুভ করা দরকার
-    return () => {
-      axiosSecure.interceptors.request.eject(interceptor);
-    };
-  }, [user?.accessToken]);
+);
 
   return axiosSecure;
 };
