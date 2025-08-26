@@ -1,13 +1,14 @@
-import axios from 'axios';
-import React from 'react';
-
+// src/hooks/useAxios.js
+import axios from "axios";
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000',
-  // Optional:
-  // withCredentials: true,
+  baseURL: "http://localhost:5000",
+  withCredentials: true, 
 });
-const UseAxios = () => {
+
+
+const useAxios = () => {
   return axiosInstance;
 };
 
-export default UseAxios;
+
+export default useAxios;

@@ -1,24 +1,29 @@
 import React from 'react';
-import UseAuth from '../../../hooks/UseAuth';
 import { useQuery } from '@tanstack/react-query';
-import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
 import Loading from '../../loading/Loading';
+import useAxiosSecure from '../../../hooks/UseAxiosSecure';
+import UseAuth from '../../../hooks/UseAuth';
 
-const PaymentHistry = () => {
+const PaymentHistory = () => {
   const { user } = UseAuth();
-  const axiosSecure = UseAxiosSecure();
+  const axiosSecure = useAxiosSecure();
 
-  const { isPending, data: payment = [] } = useQuery({
+  const { isLoading, data: payments = [] } = useQuery({
     queryKey: ['payment', user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/payments?email=${user.email}`);
+      console.log('Payment API response:', res.data); // debug
       return res.data;
     },
-    enabled: !!user?.email, // ensures query only runs when email exists
+    enabled: !!user?.email,
   });
 
-  if (isPending) {
-    return <div className="p-4 text-center text-gray-500"> <Loading/> </div>;
+  if (isLoading) {
+    return (
+      <div className="p-4 text-center text-gray-500">
+        <Loading />
+      </div>
+    );
   }
 
   return (
@@ -31,19 +36,17 @@ const PaymentHistry = () => {
               <th className="px-4 py-2 border">#</th>
               <th className="px-4 py-2 border">Parcel ID</th>
               <th className="px-4 py-2 border">Amount</th>
-            
               <th className="px-4 py-2 border">Transaction ID</th>
               <th className="px-4 py-2 border">Method</th>
               <th className="px-4 py-2 border">Paid At</th>
             </tr>
           </thead>
           <tbody>
-            {payment.map((pay, index) => (
+            {payments.map((pay, index) => (
               <tr key={pay.transactionId || index} className="hover:bg-gray-50">
                 <td className="px-4 py-2 border text-center">{index + 1}</td>
                 <td className="px-4 py-2 border">{pay.parcelId}</td>
                 <td className="px-4 py-2 border">${pay.amount}</td>
-              
                 <td className="px-4 py-2 border">{pay.transactionId}</td>
                 <td className="px-4 py-2 border capitalize">{pay.paymentMethod}</td>
                 <td className="px-4 py-2 border">{new Date(pay.paid_at).toLocaleString()}</td>
@@ -51,7 +54,7 @@ const PaymentHistry = () => {
             ))}
           </tbody>
         </table>
-        {payment.length === 0 && (
+        {payments.length === 0 && (
           <div className="text-center py-4 text-gray-500">No payment records found.</div>
         )}
       </div>
@@ -59,4 +62,4 @@ const PaymentHistry = () => {
   );
 };
 
-export default PaymentHistry;
+export default PaymentHistory;

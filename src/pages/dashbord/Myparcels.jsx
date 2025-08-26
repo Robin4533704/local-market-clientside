@@ -3,7 +3,7 @@ import Loading from "../loading/Loading";
 import Swal from "sweetalert2";
 
 import UseAuth from "../../hooks/UseAuth";
-import { useNavigate } from "react-router-dom"; // 🛠️ useRouter → useNavigate should be from 'react-router-dom'
+import { useNavigate } from "react-router-dom"; 
 import UseAxiosSecure from "../../hooks/UseAxiosSecure";
 
 
@@ -15,7 +15,7 @@ const MyParcels = () => {
 
   const { data: parcels = [], isLoading } = useQuery({
     queryKey: ['parcels', user?.email],
-    enabled: !!user?.email, // 🛠️ Wait for user.email to exist before running query
+    enabled: !!user?.email, 
     queryFn: async () => {
       const res = await axiosSecure.get(`/parcels?email=${user.email}`);
       return res.data;

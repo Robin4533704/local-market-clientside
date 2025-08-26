@@ -1,16 +1,20 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Profileslogo from '../../home/banner/Profileslogo';
 import UseAuth from '../../../hooks/UseAuth';
 import defaultImage from '../../../assets/images/download.png'; // ✅ default image import
 
 const Navber = () => {
   const { user, logOut } = UseAuth();
+ const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logOut()
-      .then(() => console.log('Logged out successfully'))
-      .catch(err => console.log('Logout error', err));
+ const handleLogout = async () => {
+    try {
+      await logOut(); // ✅ UseAuth থেকে logOut() কল
+      navigate("/login"); // ✅ logout হলে login পেজে redirect
+    } catch (error) {
+      console.error("Logout Error:", error.message);
+    }
   };
 
   const links = (

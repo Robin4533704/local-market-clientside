@@ -53,14 +53,17 @@ const Dashboard = () => {
             </NavLink>
           </li>
 
-          <li>
-            <NavLink
-              to="/dashboard/payment-history"
-              className={({ isActive }) => `px-4 py-2 rounded-md ${isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"}`}
-            >
-              <FaCreditCard /> Payment History
-            </NavLink>
-          </li>
+         <li>
+  <NavLink
+    to="/dashboard/payment-history"
+    className={({ isActive }) =>
+      `px-4 py-2 rounded-md ${isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"}`
+    }
+  >
+    <FaCreditCard /> Payment History
+  </NavLink>
+</li>
+
 
           <li>
             <NavLink
@@ -79,7 +82,25 @@ const Dashboard = () => {
               <FaUserEdit /> Update Profiles
             </NavLink>
           </li>
+          {/* {riders links} */}
+           {
+            !roleLoading && role === "rider" && <>
+           <li>
+  <NavLink
+    to="/dashboard/pending-deliveries"
+    className={({ isActive }) =>
+      `px-4 py-2 rounded-md ${
+        isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"
+      }`
+    }
+  >
+    📦 Pending Deliveries
+  </NavLink>
+</li>
 
+            </>
+           }
+            
           {/* Admin-only links */}
           {!roleLoading && role === "admin" && (
             <>
@@ -100,6 +121,16 @@ const Dashboard = () => {
                   <FaClock /> Pending Riders
                 </NavLink>
               </li>
+               <li>
+               <NavLink
+  to="/dashboard/assign-riders"
+  className={({ isActive }) =>
+    `px-4 py-2 rounded-md ${isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"}`
+  }
+>
+  🛵 Assign Rider
+</NavLink>
+ </li>
 
               <li>
                 <NavLink
@@ -109,6 +140,7 @@ const Dashboard = () => {
                   🔑 Make Admin
                 </NavLink>
               </li>
+             
             </>
           )}
         </ul>

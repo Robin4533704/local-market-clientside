@@ -1,0 +1,10 @@
+[
+  { "region": "Dhaka", "centers": ["Uttara", "Banani", "Dhanmondi","lalbag", "badda", "Mirpur"] },
+  { "region": "Chattogram", "centers": ["Pahartali", "GEC", "Agrabad", "halishar"] },
+  { "region": "Rajshahi", "centers": ["Boalia", "Rajpara", "Rajshahi Citry"] },
+  { "region": "Khulna", "centers": ["Sonadanga", "Rupsha"] },
+  { "region": "Sylhet", "centers": ["Jalalabad", "Zindabazar"] },
+  { "region": "Barisal", "centers": ["Kakrail", "Chowmuhani"] },
+  { "region": "Rangpur", "centers": ["Rangpur Sadar", "Gangachara"] },
+  { "region": "Mymensingh", "centers": ["Trishal", "Muktagacha"] }
+]

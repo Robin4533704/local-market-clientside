@@ -9,7 +9,6 @@ import ForgotPassword from "../pages/Authntication.jsx/ForgetPassword";
 import Register from "../pages/register/Register";
 import Coverage from "../pages/coverage/Coverage";
 import PrivetRoute from "../route/PrivetRoute";
-import SentParsel from "../pages/sentparsel/SentParsel";
 import DashBord from "../pages/dashbord/DashBord";
 import Myparcels from "../pages/dashbord/Myparcels";
 
@@ -29,6 +28,10 @@ import OrganicEssentials from "../pages/home/OrganicEssentials/OrganicEssentials
 import MakeAdmin from "../pages/dashbord/makAddmin/MakeAdmin";
 import Forbidden from "../pages/forbedn/Forbidden";
 import AdminRoute from "../route/AdminRoute";
+import AssainRiders from "../pages/dashbord/assingriders/AssainRiders";
+import SentParcel from "../pages/sentparsel/SentParsel";
+import pendingDeliveries from "../pages/dashbord/pandingdelivery/pendingDeliveries";
+import RiderRoute from "../route/riderRoute";
 
 
 
@@ -52,7 +55,7 @@ export const router = createBrowserRouter([
         Component: Forbidden
       },
       {
-        path:'beaider',
+        path:'/beaider',
         element: <PrivetRoute> <BeARider/> </PrivetRoute>,
           loader: () => fetch("/Services.json"),
       },
@@ -60,6 +63,10 @@ export const router = createBrowserRouter([
   path: '/updateprofile',
    Component: UpdateProfiles
 },
+ {
+  path: '/pending-deliveries',
+  element: <RiderRoute> <pendingDeliveries></pendingDeliveries> </RiderRoute>
+ },
 {
   path: '/about',
   Component: About
@@ -73,15 +80,13 @@ Component: ContactUs
   element:  <OrganicEssentials/>
 },
      
-      {
-        path: "/sentparsel",
-        element: (
-          <PrivetRoute>
-            <SentParsel />
-          </PrivetRoute>
-        ),
-        loader: () => fetch("/Services.json"),
-      },
+    {
+  path: "/sentparsel",
+  element: <PrivetRoute><SentParcel /></PrivetRoute>,
+  loader: () => fetch("/serviceData.json").then(res => res.json())
+
+}
+,
       {
         path: "/",
         Component: AuthLayout,
@@ -128,6 +133,10 @@ Component: ContactUs
   Component: PaymentHistry
 },
 {
+  path: "pending-deliveries",
+  Component: pendingDeliveries
+},
+{
   path: 'makeadmin',
 
   element: <AdminRoute> <MakeAdmin></MakeAdmin> </AdminRoute>
@@ -145,6 +154,10 @@ Component: ContactUs
 {
   path: 'tracking',
   Component : TackParcel
+},
+{
+  path:'assign-riders',
+  element: <AdminRoute> <AssainRiders/> </AdminRoute>
 },
 {
   path: 'tracking/:trackingId',
