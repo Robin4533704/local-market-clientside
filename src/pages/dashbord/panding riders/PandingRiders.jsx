@@ -35,38 +35,42 @@ const PandingRiders = () => {
   });
 
   // Approve/Reject handler
-  const handleDecision = async (riderId, action, email) => {
-    const confirm = await Swal.fire({
-      title: `${action === "approve" ? "Approve" : "Reject"} Application?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "Cancel",
-    });
+const handleDecision = async (riderId, action, email) => {
+  const confirm = await Swal.fire({
+    title: `${action === "approve" ? "Approve" : "Reject"} Application?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "Cancel",
+  });
 
-    if (!confirm.isConfirmed) return;
+  if (!confirm.isConfirmed) return;
 
-    try {
-      const status = action === "approve" ? "active" : "rejected";
-      const res = await axiosSecure.patch(`/riders/${riderId}`, { status, email });
+  try {
+    const status = action === "approve" ? "active" : "rejected";
 
-      if (res.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: `Rider ${status} successfully!`,
-          timer: 2000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-        });
-        setModalOpen(false);
-        refetch();
-      }
-    } catch (err) {
-      console.error("Decision error:", err);
-      Swal.fire({ icon: "error", title: "Error", text: err.message || "Error updating rider status" });
+    console.log("Updating rider ID:", riderId, "with status:", status, "and email:", email);
+
+    const res = await axiosSecure.patch(`/riders/${riderId}`, { status, email });
+
+    if (res.status === 200) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: `Rider ${status} successfully!`,
+        timer: 2000,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
+      setModalOpen(false);
+      refetch();
     }
-  };
+  } catch (err) {
+    console.error("Decision error:", err);
+    Swal.fire({ icon: "error", title: "Error", text: err.message || "Error updating rider status" });
+  }
+};
+
 
   if (!user) return <p className="text-center mt-4">Checking user...</p>;
   if (isLoading) return <p className="text-center mt-4">Loading pending riders...</p>;

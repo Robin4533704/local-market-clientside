@@ -32,6 +32,8 @@ import AssainRiders from "../pages/dashbord/assingriders/AssainRiders";
 import SentParcel from "../pages/sentparsel/SentParsel";
 import pendingDeliveries from "../pages/dashbord/pandingdelivery/pendingDeliveries";
 import RiderRoute from "../route/riderRoute";
+import CompletedDeliveries from "../pages/dashbord/pandingdelivery/completeddeliver/CompletedDeliveries";
+import PendingDeliveries from "../pages/dashbord/pandingdelivery/pendingDeliveries";
 
 
 
@@ -134,7 +136,11 @@ Component: ContactUs
 },
 {
   path: "pending-deliveries",
-  Component: pendingDeliveries
+ element: <RiderRoute> <PendingDeliveries/> </RiderRoute>
+},
+{
+  path: 'completed-deliveries',
+ element: <RiderRoute> <CompletedDeliveries/> </RiderRoute>
 },
 {
   path: 'makeadmin',

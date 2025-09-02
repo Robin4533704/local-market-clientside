@@ -3,7 +3,7 @@ import Loading from "../loading/Loading";
 import Swal from "sweetalert2";
 
 import UseAuth from "../../hooks/UseAuth";
-import { useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import UseAxiosSecure from "../../hooks/UseAxiosSecure";
 
 
@@ -94,7 +94,7 @@ const MyParcels = () => {
               </td>
               <td className="border border-gray-300 px-4 py-2 space-y-1">
                 <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
-                  <button className="btn btn-xs btn-info text-white">View</button>
+                  <Link to="/dashboard/payment-history" className="btn btn-xs btn-info text-white">View</Link>
                   {parcel.payment_status !== 'paid' && (
                     <button
                       onClick={() => handlePay(parcel._id)}

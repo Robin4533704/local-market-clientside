@@ -1,128 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
-import Loading from '../../loading/Loading';
+import React, { useEffect, useState } from "react";
+import useAxiosSecure from "../../../hooks/UseAxiosSecure";
 
-// Simple Loading Component
+const ParcelStatusForm = () => {
+  const axiosSecure = useAxiosSecure();
 
+  const [location, setLocation] = useState("");
+  const [parcels, setParcels] = useState([]);
+  const [parcelId, setParcelId] = useState("");
+  const [status, setStatus] = useState("");
 
-const TackParcel = () => {
-  const [trackingId, setTrackingId] = useState('');
-  const [parcelId, setParcelId] = useState('');
-  const [status, setStatus] = useState('pending');
-  const [locations, setLocations] = useState([]);
-  const [location, setLocation] = useState('');
-
-  const axiosSecure = UseAxiosSecure();
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-useEffect(() => {
-  setLoading(true);
- fetch('/public/Services.json')
-
-    .then(res => res.json())
-    .then(data => {
-      console.log('Fetched locations:', data);
-      setLocations(data || []);
-      // প্রথম district default হিসেবে set করা
-      if (data && data.length > 0 && data[0].district) {
-        setLocation(data[0].district);
-      }
-    })
-    .catch(err => {
-      console.error('Error fetching locations:', err);
-      setLocations([]);
-      setLocation('');
-    })
-    .finally(() => setLoading(false));
-}, []);
-
+  // 🔹 যখন location change হবে তখন parcel লোড করবে
+  useEffect(() => {
+    if (location) {
+      axiosSecure
+        .get(`/parcels?location=${location}`)
+        .then((res) => {
+          setParcels(res.data || []);
+        })
+        .catch((err) => {
+          console.error("Error fetching parcels:", err);
+          setParcels([]);
+        });
+    }
+  }, [location, axiosSecure]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setSuccess(false);
-    setError('');
+
+    if (!parcelId || !status) {
+      alert("Please select parcel and status");
+      return;
+    }
 
     try {
-      const res = await axiosSecure.post('/tracking', { trackingId, parcelId, status, location });
-      if (res.status === 201) {
-        setSuccess(true);
-        setTrackingId('');
-        setParcelId('');
-        setStatus('pending');
-        if (locations.length > 0) setLocation(locations[0].district);
-        else setLocation('');
-      }
+      await axiosSecure.patch(`/parcels/${parcelId}/status`, {
+        delivery_status: status,
+      });
+      alert("Parcel status updated!");
+      setParcelId("");
+      setStatus("");
     } catch (err) {
-      setError(err.response?.data?.error || err.message || 'Error occurred');
-    } finally {
-      setLoading(false);
+      console.error(err);
+      alert("Failed to update status");
     }
   };
 
-  if (loading) {
-    return <Loading/>
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white shadow rounded max-w-md">
-      <input
-        type="text"
-        placeholder="Tracking ID"
-        value={trackingId}
-        onChange={(e) => setTrackingId(e.target.value)}
+    <form onSubmit={handleSubmit} className="p-4 border rounded space-y-4">
+      {/* Location select */}
+      <select
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
         className="border p-2 rounded w-full"
         required
-      />
-      <input
-        type="text"
-        placeholder="Parcel ID"
+      >
+        <option value="">Select Location</option>
+        <option value="Dhaka">Dhaka</option>
+        <option value="Rajshahi">Rajshahi</option>
+        <option value="Chittagong">Chittagong</option>
+        {/* চাইলে database থেকে location গুলো আনতে পারো */}
+      </select>
+
+      {/* Parcel dropdown */}
+      <select
         value={parcelId}
         onChange={(e) => setParcelId(e.target.value)}
         className="border p-2 rounded w-full"
         required
-      />
+      >
+        <option value="">Select Parcel</option>
+        {parcels.map((parcel) => (
+          <option key={parcel._id} value={parcel._id}>
+            {parcel.tracking_id} - {parcel.title}
+          </option>
+        ))}
+      </select>
+
+      {/* Status select */}
       <select
         value={status}
         onChange={(e) => setStatus(e.target.value)}
         className="border p-2 rounded w-full"
         required
       >
+        <option value="">Select Status</option>
         <option value="pending">Pending</option>
-        <option value="in transit">In Transit</option>
+        <option value="in-transit">In Transit</option>
         <option value="delivered">Delivered</option>
       </select>
 
-  
-<select
-  value={location}
-  onChange={(e) => setLocation(e.target.value)}
-  className="border p-2 rounded w-full"
-  required
->
-  {locations.length > 0 ? (
-    locations.map((loc, index) => (
-      <option key={index} value={loc.district || loc.name}>
-        {loc.district || loc.name}
-      </option>
-    ))
-  ) : (
-    <option disabled>No locations found</option>
-  )}
-</select>
-
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-        disabled={loading}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
       >
-        Add Tracking Update
+        Update Status
       </button>
-      {success && <p className="text-green-600">✅ Tracking update added successfully!</p>}
-      {error && <p className="text-red-500">❌ {error}</p>}
     </form>
   );
 };
 
-export default TackParcel;
+export default ParcelStatusForm;

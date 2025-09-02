@@ -63,9 +63,7 @@ const Dashboard = () => {
     <FaCreditCard /> Payment History
   </NavLink>
 </li>
-
-
-          <li>
+ <li>
             <NavLink
               to="/dashboard/tracking"
               className={({ isActive }) => `px-4 py-2 rounded-md ${isActive ? "bg-blue-600 text-white" : "text-gray-800 hover:bg-gray-200"}`}
@@ -96,6 +94,21 @@ const Dashboard = () => {
   >
     📦 Pending Deliveries
   </NavLink>
+</li>
+<li>
+
+  <NavLink
+  to="/dashboard/completed-deliveries"
+  className={({ isActive }) =>
+    `px-4 py-2 rounded-md ${
+      isActive
+        ? "bg-green-600 text-white" // Completed deliveries active হলে green
+        : "text-gray-800 hover:bg-gray-200"
+    }`
+  }
+>
+  ✅ Completed Deliveries
+</NavLink>
 </li>
 
             </>

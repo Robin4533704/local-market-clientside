@@ -13,12 +13,12 @@ const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState('');
-  const { parcelId } = useParams(); // Ensure your route has :parcelId
+  const [isProcessing, setIsProcessing] = useState(false); // ← new state
+  const { parcelId } = useParams();
   const axiosSecure = UseAxiosSecure();
   const { user } = UseAuth();
   const navigate = useNavigate();
 
-  // Fetch parcel info
   const { isLoading, data: parcelinfo = {} } = useQuery({
     queryKey: ['parcels', parcelId],
     queryFn: async () => {
@@ -31,7 +31,6 @@ const PaymentForm = () => {
 
   const amount = parcelinfo.cost;
   if (!amount || isNaN(amount)) {
-    console.error('Invalid amount:', parcelinfo);
     return <p className="text-red-600 text-center mt-4">Invalid parcel cost.</p>;
   }
 
@@ -41,11 +40,10 @@ const PaymentForm = () => {
     e.preventDefault();
     if (!stripe || !elements) return;
 
+    setIsProcessing(true); // ← start processing
+
     const card = elements.getElement(CardElement);
-    if (!card) {
-      console.error('CardElement not found.');
-      return;
-    }
+    if (!card) return;
 
     // Step 1: Create payment method
     const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
@@ -55,10 +53,10 @@ const PaymentForm = () => {
 
     if (stripeError) {
       setError(stripeError.message);
+      setIsProcessing(false);
       return;
     } else {
       setError('');
-      console.log('✅ Payment Method:', paymentMethod);
     }
 
     // Step 2: Get clientSecret from backend
@@ -68,10 +66,9 @@ const PaymentForm = () => {
         amountInCents,
         parcelId,
       });
-      console.log('Sending to server:', { amountInCents, parcelId });
       clientSecret = res.data.clientSecret;
     } catch (err) {
-      console.error('Error getting clientSecret:', err);
+      setIsProcessing(false);
       toast.error('Failed to initiate payment.');
       return;
     }
@@ -87,6 +84,8 @@ const PaymentForm = () => {
       },
     });
 
+    setIsProcessing(false); // ← stop processing after payment
+
     if (result.error) {
       setError(`Payment failed: ${result.error.message}`);
       toast.error(`Payment failed: ${result.error.message}`);
@@ -94,10 +93,6 @@ const PaymentForm = () => {
     }
 
     if (result.paymentIntent.status === 'succeeded') {
-      toast.success('Payment Successful!');
-      console.log('✅ Payment Success:', result);
-
-      // Step 4: Save payment entry & update parcel
       const paymentEntry = {
         parcelId,
         email: user.email,
@@ -120,31 +115,40 @@ const PaymentForm = () => {
           });
         }
       } catch (err) {
-        console.error('Failed to record payment:', err);
         toast.error('Payment succeeded, but failed to save record.');
       }
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 w-full"
-    >
-      <div className="border border-gray-300 rounded-md p-4 mb-4 bg-gray-50">
-        <CardElement className="p-2" />
-      </div>
+   <form
+  onSubmit={handleSubmit}
+  className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 w-full relative"
+>
+  {/* Card Element */}
+  <div className="border border-gray-300 rounded-md p-4 mb-4 bg-gray-50">
+    <CardElement className="p-2" />
+  </div>
 
-      <button
-        type="submit"
-        disabled={!stripe}
-        className="w-full bg-gradient-to-r from-lime-400 via-green-400 to-green-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-transform duration-200"
-      >
-        Pay ${amount}
-      </button>
+  {/* Submit Button */}
+  <button
+    type="submit"
+    disabled={!stripe || isProcessing}
+    className="w-full bg-gradient-to-r from-lime-400 via-green-400 to-green-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-transform duration-200"
+  >
+    {isProcessing ? 'Processing Payment...' : `Pay $${amount}`}
+  </button>
 
-      {error && <p className="mt-4 text-red-600 text-center font-medium">{error}</p>}
-    </form>
+  {/* Show loading overlay while processing */}
+  {isProcessing && (
+    <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-lg">
+      <Loading />
+    </div>
+  )}
+
+  {error && <p className="mt-4 text-red-600 text-center font-medium">{error}</p>}
+</form>
+
   );
 };
 
