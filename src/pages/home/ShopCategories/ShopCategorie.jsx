@@ -1,69 +1,91 @@
-import React from 'react';
+// ShopCategorie.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const categories = [
-  {
-    image: "https://i.ibb.co/NdTtZLY3/fruits-1761031-640.jpg",
-    title: 'Fresh Vegetables',
-    description: 'Tomatoes, lettuce, carrots, and more.',
-  },
-  {
-    image:"https://i.ibb.co/XxPzYrJq/peanuts-8314955-640.jpg",
-    title: 'Grains & Legumes',
-    description: 'Wheat, corn, soybeans, and lentils.',
-  },
-  {
-    image: "https://i.ibb.co/NdCwMf7R/apples-6604178-640.jpg",
-    title: 'Seasonal Fruits',
-    description: 'Apples, strawberries, blueberries, and peaches.',
-  },
-  {
-    image: "https://i.ibb.co/bjkVgr5q/savoy-cabbage-7102903-640.jpg",
-    title: 'Leafy Greens',
-    description: 'Organic kale, lettuce, baby spinach, and more.',
-  },
-  {
-    image: "https://i.ibb.co/zT4Z5NDX/chicken-2789493-640.jpg",
-    title: 'Free-Range Poultry',
-    description: 'Eggs and poultry raised with care.',
-  },
-];
+const ShopCategorie = ({ showButton = true }) => { // prop add
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
 
-const ShopCategorie = () => (
-  <div className="bg-wheat-100 p-5" style={{ backgroundColor: '#f5deb3' }}>
-  <h2 className="text-center mb-5 text-xl font-semibold">Shop by Category:</h2>
-  <div className="flex flex-wrap justify-center gap-5">
-  {categories.map((category, index) => (
-    <div
-      key={index}
-      className="relative w-full sm:w-[45%] md:w-[200px] h-[280px] rounded-lg overflow-hidden shadow-md bg-white cursor-pointer transition-transform transition-shadow duration-300"
-      onMouseEnter={e => {
-        e.currentTarget.style.transform = 'scale(1.05)';
-        e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.3)';
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = 'scale(1)';
-        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-      }}
-      style={{
-        backgroundImage: `url(${category.image})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      {/* Linear Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-70"></div>
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/shoppingdata")
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error("Error fetching categories:", err));
+  }, []);
 
-      {/* Text content */}
-      <div className="absolute bottom-0 z-10 p-3 text-white">
-        <h4 className="m-0 text-base font-semibold drop-shadow-sm">{category.title}</h4>
-        <p className="m-0 text-xs drop-shadow-sm">{category.description}</p>
+  const handleAddToCart = (category) => {
+    if (!category._id) return;
+    navigate(`/productcard/${category._id}`);
+  };
+
+  return (
+    <div className="" style={{ backgroundColor: "#f5deb3" }}>
+      <h2 className="text-center mb-5 text-xl font-semibold">
+        Shop by Category:
+      </h2>
+
+      {/* Category Cards */}
+      <div className="flex flex-wrap justify-center gap-5">
+        {categories.map((category) => (
+          <div
+            key={category._id}
+            className="relative w-full sm:w-[45%] md:w-[220px] h-[360px] rounded-lg overflow-hidden shadow-md bg-white cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+          >
+            <img
+              src={category.image}
+              alt={category.product_name}
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-3 flex flex-col justify-between h-[calc(100%-160px)]">
+              <div>
+                <h4 className="text-base font-semibold">{category.product_name}</h4>
+                <p className="text-xs text-gray-700 mb-2">{category.description}</p>
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-sm font-semibold text-green-600">
+                    ${category.final_price}{" "}
+                    {category.price !== category.final_price && (
+                      <span className="line-through text-gray-400 text-xs">
+                        ${category.price}
+                      </span>
+                    )}
+                  </p>
+                  <p
+                    className={`text-xs px-2 py-1 rounded text-white ${
+                      category.status === "in stock" ? "bg-green-500" : "bg-red-500"
+                    }`}
+                  >
+                    {category.status}
+                  </p>
+                </div>
+                <p className="text-sm text-yellow-500">{category.stars}</p>
+              </div>
+
+              {/* Add to Cart Button */}
+              <button
+                onClick={() => handleAddToCart(category)}
+                className="mt-2 w-full bg-lime-500 hover:bg-lime-600 text-white py-2 rounded-lg font-semibold transition"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
+
+      {/* Conditional Show Now Button */}
+      {showButton && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => navigate("/productlist")}
+            className="px-6 py-2 bg-lime-500 hover:bg-lime-600 transition text-white rounded-2xl font-semibold text-lg"
+          >
+            Show Now
+          </button>
+        </div>
+      )}
     </div>
-  ))}
-</div>
-
-</div>
-
-);
+  );
+};
 
 export default ShopCategorie;

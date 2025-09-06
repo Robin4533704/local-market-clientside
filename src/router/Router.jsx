@@ -1,6 +1,4 @@
-import {
-  createBrowserRouter,
-} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../layout/RootLayout";
 import Home from "../pages/home/Home";
 import Login from "../pages/Authntication.jsx/Login";
@@ -12,7 +10,7 @@ import PrivetRoute from "../route/PrivetRoute";
 import DashBord from "../pages/dashbord/DashBord";
 import Myparcels from "../pages/dashbord/Myparcels";
 
-// ✅ Stripe Elements import
+// Stripe Elements
 import Payment from "../pages/dashbord/paymentmethod/Payment";
 import PaymentHistry from "../pages/dashbord/paymentmethod/PaymentHistry";
 import TackParcel from "../pages/dashbord/tackparcel/TackParcel";
@@ -30,145 +28,68 @@ import Forbidden from "../pages/forbedn/Forbidden";
 import AdminRoute from "../route/AdminRoute";
 import AssainRiders from "../pages/dashbord/assingriders/AssainRiders";
 import SentParcel from "../pages/sentparsel/SentParsel";
-import pendingDeliveries from "../pages/dashbord/pandingdelivery/pendingDeliveries";
 import RiderRoute from "../route/riderRoute";
 import CompletedDeliveries from "../pages/dashbord/pandingdelivery/completeddeliver/CompletedDeliveries";
 import PendingDeliveries from "../pages/dashbord/pandingdelivery/pendingDeliveries";
-
+import ProductList from "../pages/dashbord/pandingdelivery/ProductList/ProductList";
+import ProductCard from "../pages/dashbord/pandingdelivery/ProductList/ProductCard";
+import NotificationsBall from "../pages/home/banner/NotificationsBall";
+import ShopCategorie from "../pages/home/ShopCategories/ShopCategorie";
 
 
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayout,
+    element: <RootLayout />,
     children: [
-      {
-        index: true,
-        Component: Home,
-      },
-      {
-        path: "/coverage",
-        Component: Coverage,
-        loader: () => fetch("/Services.json"),
-      },
-      {
-        path: "/forbidden",
-        Component: Forbidden
-      },
-      {
-        path:'/beaider',
-        element: <PrivetRoute> <BeARider/> </PrivetRoute>,
-          loader: () => fetch("/Services.json"),
-      },
-       {
-  path: '/updateprofile',
-   Component: UpdateProfiles
-},
- {
-  path: '/pending-deliveries',
-  element: <RiderRoute> <pendingDeliveries></pendingDeliveries> </RiderRoute>
- },
-{
-  path: '/about',
-  Component: About
-},
-{
-path: '/contactus',
-Component: ContactUs
-},
-{
-  path: '/OrganicEssentials',
-  element:  <OrganicEssentials/>
-},
-     
-    {
-  path: "/sentparsel",
-  element: <PrivetRoute><SentParcel /></PrivetRoute>,
-  loader: () => fetch("/serviceData.json").then(res => res.json())
+      { index: true, element: <Home /> },
+      { path: "coverage", element: <Coverage />, loader: () => fetch("/Services.json") },
+      { path: "forbidden", element: <Forbidden /> },
+      { path: "beaider", element: <PrivetRoute><BeARider /></PrivetRoute>, loader: () => fetch("/Services.json") },
+      { path: "updateprofile", element: <UpdateProfiles /> },
+      { path: "pending-deliveries", element: <RiderRoute><PendingDeliveries /></RiderRoute> },
+      { path: "about", element: <About /> },
+      { path: "contactus", element: <ContactUs /> },
+      { path: "OrganicEssentials", element: <OrganicEssentials /> },
+      { path: "productlist", element: <PrivetRoute><ProductList /></PrivetRoute> },
+      { path: "productcard/:id", element: <PrivetRoute><ProductCard /></PrivetRoute> },
+      { path: "sentparsel", element: <PrivetRoute><SentParcel /></PrivetRoute>, loader: () => fetch("/serviceData.json").then(res => res.json()) },
+        { path: "notificationsBall" , element: <NotificationsBall/>},
+        {
+          path: "/shoppingcatagory",
+          element: <PrivetRoute> <ShopCategorie/> </PrivetRoute>
+        },
 
-}
-,
+      // Auth routes
       {
         path: "/",
-        Component: AuthLayout,
+        element: <AuthLayout />,
         children: [
-          {
-            path: "/login",
-            Component: Login,
-          },
-          {
-            path: "/register",
-            Component: Register,
-          },
-         
-          {
-            path: "/forgetpasword",
-            Component: ForgotPassword,
-          },
-        ],
-      },
-    ],
+          { path: "login", element: <Login /> },
+          { path: "register", element: <Register /> },
+          { path: "forgetpassword", element: <ForgotPassword /> },
+        ]
+      }
+    ]
   },
 
   {
     path: "/dashboard",
     element: <DashBord />,
     children: [
-      {
-        path: "myparcels",
-        element: <Myparcels />,
-      },
-      
-        {
-  path: "payment/:parcelId",
-  element:  <Payment />
-   
-  
-},
-{
-  path: 'updateprofile',
-   Component: UpdateProfiles
-},
-{
-  path: "payment-history",
-  Component: PaymentHistry
-},
-{
-  path: "pending-deliveries",
- element: <RiderRoute> <PendingDeliveries/> </RiderRoute>
-},
-{
-  path: 'completed-deliveries',
- element: <RiderRoute> <CompletedDeliveries/> </RiderRoute>
-},
-{
-  path: 'makeadmin',
-
-  element: <AdminRoute> <MakeAdmin></MakeAdmin> </AdminRoute>
-},
-
-{
-  path: 'active-riders',
-  // Component: ActiveRiders
-  element: <AdminRoute> <ActiveRiders></ActiveRiders> </AdminRoute>
-},
-{
-  path: 'pending-riders',
- element: <AdminRoute> <PandingRiders></PandingRiders> </AdminRoute>
-},
-{
-  path: 'tracking',
-  Component : TackParcel
-},
-{
-  path:'assign-riders',
-  element: <AdminRoute> <AssainRiders/> </AdminRoute>
-},
-{
-  path: 'tracking/:trackingId',
-  Component: UpdateTracking
-},
-    ],
-  },
+      { path: "myparcels", element: <Myparcels /> },
+      { path: "pending-deliveries", element: <RiderRoute><PendingDeliveries /></RiderRoute> },
+      { path: "completed-deliveries", element: <RiderRoute><CompletedDeliveries /></RiderRoute> },
+      { path: "makeadmin", element: <AdminRoute><MakeAdmin /></AdminRoute> },
+      { path: "active-riders", element: <AdminRoute><ActiveRiders /></AdminRoute> },
+      { path: "pending-riders", element: <AdminRoute><PandingRiders /></AdminRoute> },
+      { path: "assign-riders", element: <AdminRoute><AssainRiders /></AdminRoute> },
+      { path: "payment/:parcelId", element: <Payment /> },
+      { path: "payment-history", element: <PaymentHistry /> },
+      { path: "tracking", element: <TackParcel /> },
+      { path: "tracking/:trackingId", element: <UpdateTracking /> },
+      { path: "updateprofile", element: <UpdateProfiles /> },
+    ]
+  }
 ]);

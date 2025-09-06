@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Works = () => {
+  const navigate = useNavigate(); // Initialize navigate inside the component
+
   return (
     <div className="bg-lime-500 py-10 px-4">
       {/* হেডার */}
@@ -77,7 +80,10 @@ const Works = () => {
 
       {/* Start Shopping Button */}
       <div className="mt-8 flex justify-center">
-        <button className="bg-yellow-400 text-white font-semibold px-6 py-3 rounded-full hover:bg-yellow-500 transition duration-300">
+        <button
+          onClick={() => navigate("/productlist")}
+          className="bg-yellow-400 text-white font-semibold px-6 py-3 rounded-full hover:bg-yellow-500 transition duration-300"
+        >
           Start Shopping
         </button>
       </div>
