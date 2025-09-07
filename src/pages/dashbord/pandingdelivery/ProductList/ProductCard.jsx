@@ -1,11 +1,11 @@
 // ProductCard.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, NavLink } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
 import Loading from "../../../loading/Loading";
 import UseAuth from "../../../../hooks/UseAuth";
-import toast from "react-hot-toast";
+
+import useAxios from "../../../../hooks/useAxios";
 
 const VALID_COUPONS = {
   SAVE10: 10,
@@ -14,6 +14,7 @@ const VALID_COUPONS = {
 };
 
 const ProductCard = () => {
+  const userUserAxios = useAxios()
   const { id } = useParams();
   const location = useLocation();
   const { user } = UseAuth();
@@ -28,17 +29,13 @@ const ProductCard = () => {
   const [processing, setProcessing] = useState(false);
 
 
-  // Review State
-  const [reviews, setReviews] = useState(product?.reviews || []);
-  const [newReview, setNewReview] = useState("");
-
   useEffect(() => {
     if (!product) {
       const fetchProduct = async () => {
         try {
-          const res = await axios.get(`http://localhost:5000/shoppingdata/${id}`);
+          const res = await userUserAxios.get(`/shoppingdata/${id}`);
           setProduct(res.data);
-          setReviews(res.data.reviews || []);
+         
         } catch (err) {
           console.error(err);
           setError("Failed to load product");
@@ -96,7 +93,7 @@ const handleCheckout = async () => {
 
   try {
     // Server will handle notifications
-    const res = await axios.post("http://localhost:5000/orders", orderData);
+    const res = await userUserAxios.post("http://localhost:5000/orders", orderData);
     const orderId = res.data.orderId; // Server sends inserted orderId
 
     Swal.fire({
@@ -122,30 +119,6 @@ const handleCheckout = async () => {
 
 
 
-  // Add Review
-const handleAddReview = async () => {
-  if (!newReview) return toast.warning("Please write a review");
-
-  try {
-   const res = await axios.post(
-  `http://localhost:5000/shoppingdata/${product._id}/reviews`,
-  {
-    userName: user?.displayName || "Guest",
-    comment: newReview,
-    rating: 5,
-  }
-);
-
-
-    // Update front-end reviews state
-    setReviews([res.data, ...reviews]);
-    setNewReview("");
-    toast.success("Review added!");
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to add review");
-  }
-};
 
 
   if (loading) return <Loading />;
@@ -215,42 +188,7 @@ const handleAddReview = async () => {
         </button>
       </div>
 
-      {/* Reviews Section */}
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-2">Reviews</h3>
-
-        {/* Add Review */}
-        <div className="flex flex-col md:flex-row gap-2 mb-4">
-          <input
-            type="text"
-            placeholder="Write a review..."
-            value={newReview}
-            onChange={(e) => setNewReview(e.target.value)}
-            className="border rounded px-3 py-1 flex-1"
-          />
-          <button
-            onClick={handleAddReview}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded font-semibold"
-          >
-            Submit
-          </button>
-        </div>
-
-        {/* Display Reviews */}
-        <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
-          {reviews.length === 0 ? (
-            <p className="text-gray-500">No reviews yet.</p>
-          ) : (
-            reviews.map((rev, idx) => (
-              <div key={idx} className="border-b py-2">
-                <p className="font-semibold">{rev.userName}:</p>
-                <p>{rev.comment}</p>
-                <p className="text-xs text-gray-400">{new Date(rev.date).toLocaleString()}</p>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+   
     </div>
   );
 };

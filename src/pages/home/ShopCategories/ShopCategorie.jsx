@@ -1,35 +1,39 @@
-// ShopCategorie.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import useAxios from "../../../hooks/useAxios";
 
-const ShopCategorie = ({ showButton = true }) => { // prop add
+const ShopCategorie = ({ showButton = true, handleDetails }) => {
   const [categories, setCategories] = useState([]);
+  const userUserAxios = useAxios();
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/shoppingdata")
+    userUserAxios.get("/shoppingdata")
       .then((res) => setCategories(res.data))
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
 
-  const handleAddToCart = (category) => {
+  const handleCardClick = (category) => {
     if (!category._id) return;
-    navigate(`/productcard/${category._id}`);
+    if (handleDetails) handleDetails(category);
   };
 
-  return (
-    <div className="" style={{ backgroundColor: "#f5deb3" }}>
-      <h2 className="text-center mb-5 text-2xl font-semibold">
-        Shop by Category:
-      </h2>
+const handleAddCard = (product) => {
+  if (!product._id) return;
+  // এখন navigate করে ProductCard এ যাওয়া হবে
+  navigate(`/productcard/${product._id}`, { state: product });
+};
 
-      {/* Category Cards */}
+
+  return (
+    <div style={{ backgroundColor: "#f5deb3" }}>
+      <h2 className="text-center mb-5 text-2xl font-semibold">Shop by Category:</h2>
+
       <div className="flex flex-wrap justify-center gap-5">
         {categories.map((category) => (
           <div
             key={category._id}
+            onClick={() => handleCardClick(category)}
             className="relative w-full sm:w-[45%] md:w-[220px] h-[360px] rounded-lg overflow-hidden shadow-md bg-white cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow-xl"
           >
             <img
@@ -61,9 +65,11 @@ const ShopCategorie = ({ showButton = true }) => { // prop add
                 <p className="text-sm text-yellow-500">{category.stars}</p>
               </div>
 
-              {/* Add to Cart Button */}
               <button
-                onClick={() => handleAddToCart(category)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddCard(category);
+                }}
                 className="mt-2 w-full bg-lime-500 hover:bg-lime-600 text-white py-2 rounded-lg font-semibold transition"
               >
                 Add to Cart
@@ -73,7 +79,6 @@ const ShopCategorie = ({ showButton = true }) => { // prop add
         ))}
       </div>
 
-      {/* Conditional Show Now Button */}
       {showButton && (
         <div className="flex justify-center mt-6">
           <button

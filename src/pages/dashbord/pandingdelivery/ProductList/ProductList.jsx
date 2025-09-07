@@ -1,21 +1,19 @@
-// ProductList.jsx
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { FaShoppingCart } from "react-icons/fa";
-
 import ShopCategorie from "../../../home/ShopCategories/ShopCategorie";
+import useAxios from "../../../../hooks/useAxios";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const useUserAxios = useAxios();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/products");
+        const res = await useUserAxios.get("/products");
         setProducts(res.data);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -27,9 +25,16 @@ const ProductList = () => {
     fetchProducts();
   }, []);
 
-  const handleAddToCart = (product) => {
-    navigate(`/productcard/${product._id}`, { state: product });
+  const handleDetails = (product) => {
+    if (!product) return;
+    navigate("/product-details", { state: { product } });
   };
+
+const handleAddToCard = (product) => {
+  if (!product._id) return;
+  // এখন navigate করে ProductCard এ যাওয়া হবে
+  navigate(`/productcard/${product._id}`, { state: product });
+};
 
   if (loading) return <p className="text-center mt-10">Loading products...</p>;
   if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
@@ -47,15 +52,15 @@ const ProductList = () => {
         <h2 className="text-4xl font-bold">Shop</h2>
       </div>
 
-      {/* Shop by Category - Show only heading, no button */}
-    
-      <ShopCategorie showButton={false} /> {/* Show Now button hidden */}
+      {/* Shop by Category */}
+      <ShopCategorie showButton={false} handleDetails={handleDetails} />
 
       {/* Product Cards */}
       <div className="flex flex-wrap gap-5 justify-center mt-8">
         {products.map((product) => (
           <div
             key={product._id}
+            onClick={() => handleDetails(product)}
             className="relative w-full sm:w-[45%] md:w-[220px] bg-white rounded-lg shadow-md p-4 cursor-pointer 
                        transition-transform transition-shadow duration-300 hover:scale-105 hover:shadow-xl"
           >
@@ -85,7 +90,10 @@ const ProductList = () => {
 
             {/* Add to Cart Button */}
             <button
-              onClick={() => handleAddToCart(product)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddToCard (product);
+              }}
               className="mt-2 w-full bg-lime-500 hover:bg-lime-600 text-white py-2 rounded-lg font-semibold transition"
             >
               Add to Cart
