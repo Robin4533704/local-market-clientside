@@ -61,10 +61,10 @@ const Navber = () => {
     <div className="navbar-end flex items-center gap-3 relative">
   {/* 🔔 Notification Bell (for ALL roles) */}
 
-{user && <NotificationsBall user={user} />}
+ <NotificationsBall  />
  
 
-  {/* User Profile */}
+
   {user ? (
     <>
       <Link to="/updateprofile">

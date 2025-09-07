@@ -42,7 +42,7 @@ const Banner = () => (
           <h2 className="text-white text-2xl md:text-3xl font-bold">{slide.title}</h2>
           <p className="text-white text-md md:text-lg mt-1">{slide.subtitle}</p>
           <div className="mt-2">
-            <Link className="inline-block p-1 bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 rounded-full">
+            <Link to="/productlist" className="inline-block p-1 bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 rounded-full">
               <span className="block bg-lime-400 text-white font-semibold py-2 px-6 rounded-full transition-colors duration-300 ease-in-out hover:bg-transparent hover:text-white">
                 Shop new
               </span>

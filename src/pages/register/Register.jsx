@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
-import useAxios from "../../hooks/useAxios";
 import UseAuth from "../../hooks/UseAuth";
 import SocialLogin from "../SocialLogin";
+import useAxios from "../../hooks/useAxios";
 import axios from "axios";
 
 const Register = () => {
@@ -18,6 +18,7 @@ const Register = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
+  // Image upload
   const handleImageUpload = async (e) => {
     const image = e.target.files[0];
     if (!image) return;
@@ -29,26 +30,25 @@ const Register = () => {
 
     try {
       const res = await axios.post(url, formData);
-      if (res.data.success) {
-        setProfilePic(res.data.data.display_url);
-      }
+      if (res.data.success) setProfilePic(res.data.data.display_url);
     } catch (err) {
       console.error("Image upload error:", err);
     }
   };
 
+  // Form submit
   const onSubmit = async (data) => {
     try {
-      // Firebase signup
+      // 1. Firebase signup
       const result = await createUser(data.email, data.password);
-      console.log(result.user);
-      // Firebase profile update
+
+      // 2. Firebase profile update
       await updateUserProfiles({
         displayName: data.name,
         photoURL: profilePic,
       });
 
-      // MongoDB backend insert
+      // 3. MongoDB backend insert
       const userInfo = {
         email: data.email,
         role: "user",
@@ -83,7 +83,6 @@ const Register = () => {
     <div className="max-w-md mx-auto mt-10 p-6 shadow-lg rounded-md bg-white">
       <h1 className="text-2xl font-bold mb-4 text-center">Create Account</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Name */}
         <input
           {...authRegister("name", { required: "Name required" })}
           placeholder="Name"
@@ -91,7 +90,6 @@ const Register = () => {
         />
         {errors.name && <p className="text-red-500">{errors.name.message}</p>}
 
-        {/* Email */}
         <input
           {...authRegister("email", { required: "Email required" })}
           type="email"
@@ -100,7 +98,6 @@ const Register = () => {
         />
         {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-        {/* Password */}
         <div className="relative">
           <input
             {...authRegister("password", { required: "Password required", minLength: 6 })}
@@ -117,13 +114,9 @@ const Register = () => {
           </button>
         </div>
 
-        {/* Profile Image */}
         <input type="file" onChange={handleImageUpload} accept="image/*" className="input w-full" />
 
-        <button
-          type="submit"
-          className="btn w-full bg-green-500 hover:bg-green-600 text-white font-bold"
-        >
+        <button type="submit" className="btn w-full bg-green-500 hover:bg-green-600 text-white font-bold">
           Register Now
         </button>
       </form>

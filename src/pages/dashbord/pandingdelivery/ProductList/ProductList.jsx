@@ -35,25 +35,29 @@ const ProductList = () => {
   if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
 
   return (
-    <div className="pt-16 px-4 md:px-10 bg-[#f5deb3] min-h-screen">
+    <div className="pt-16 px-4 md:px-20 bg-[#f5deb3] min-h-screen">
       {/* Header */}
       <div className="text-center mb-8 bg-rose-200 p-8 rounded-lg shadow-md">
         <div className="mb-4 text-sm">
-          <NavLink to="/" className="text-black btn hover:underline">Home</NavLink> 
-          <span className="ml-2 btn">Product</span>
+          <NavLink to="/" className="text-black btn hover:underline">
+            Home
+          </NavLink>{" "}
+          / <span className="ml-2 btn">Product</span>
         </div>
+        <h2 className="text-4xl font-bold">Shop</h2>
       </div>
 
-      {/* Shopping Categories */}
+      {/* Shop by Category - Show only heading, no button */}
+    
       <ShopCategorie showButton={false} /> {/* Show Now button hidden */}
 
       {/* Product Cards */}
-      <div className="flex flex-wrap justify-center gap-5 pt-4 ">
+      <div className="flex flex-wrap gap-5 justify-center mt-8">
         {products.map((product) => (
           <div
             key={product._id}
             className="relative w-full sm:w-[45%] md:w-[220px] bg-white rounded-lg shadow-md p-4 cursor-pointer 
-                       transition-transform transition-shadow duration-300 hover:scale-105 hover:shadow-xl mb-5"
+                       transition-transform transition-shadow duration-300 hover:scale-105 hover:shadow-xl"
           >
             {product.discount && (
               <div className="absolute top-2 right-2 bg-yellow-300 text-xs px-2 py-1 rounded shadow">

@@ -6,7 +6,7 @@ import OrganicEssentials from './OrganicEssentials/OrganicEssentials';
 import Works from './OrganicEssentials/Works';
 import OrganicFarmSection from './OrganicEssentials/OrganicFarmSection';
 import FAQSection from './OrganicEssentials/FAQsection';
-import Farmers from './Farmers';
+
 import LogoMarquee from './LogoMarquee';
 
 const Home = () => {
@@ -14,14 +14,16 @@ const Home = () => {
         <div>
            <Banner/>
            <Services/>
-           <ShopCategorie/>
+         <div className='pb-2 pt-10 bg-[#f5deb3]'>
+              <ShopCategorie/>
+         </div>
            <OrganicEssentials/>
            <Works/>
            
            <OrganicFarmSection/>
 <LogoMarquee/>
            <FAQSection/>
-           <Farmers/>
+          
            
 
         </div>

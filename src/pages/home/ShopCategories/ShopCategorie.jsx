@@ -21,7 +21,7 @@ const ShopCategorie = ({ showButton = true }) => { // prop add
 
   return (
     <div className="" style={{ backgroundColor: "#f5deb3" }}>
-      <h2 className="text-center mb-5 text-xl font-semibold">
+      <h2 className="text-center mb-5 text-2xl font-semibold">
         Shop by Category:
       </h2>
 
