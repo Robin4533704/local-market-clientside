@@ -1,40 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useAxios from "../../../hooks/useAxios";
+import axios from "axios";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5000"); // তোমার server URL
 
 const OrderDetails = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-const userAxios = useAxios()
+
+  // Fetch order details
+  const fetchOrder = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/orders/${id}`);
+      setOrder(res.data);
+    } catch (err) {
+      console.error("Error fetching order:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const res = await userAxios.get(`/orders/${id}`);
-        setOrder(res.data);
-      } catch (err) {
-        console.error("Error fetching order:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchOrder();
+
+    // Listen for real-time updates
+    socket.on("orderUpdated", (updatedOrder) => {
+      if (updatedOrder._id === id) {
+        setOrder(updatedOrder);
+      }
+    });
+
+    return () => {
+      socket.off("orderUpdated");
+    };
   }, [id]);
 
   if (loading) return <p>Loading...</p>;
   if (!order) return <p>Order not found</p>;
 
-  // Determine order stage
-  let statusMessage = "Pending";
-  if (order.riderAccepted) statusMessage = "Rider Accepted - On the way";
-  else if (order.adminAccepted) statusMessage = "Admin Accepted - Awaiting Rider";
-  else if (order.status) statusMessage = order.status;
-
   return (
     <div className="pt-24 p-4 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Order Details</h1>
       <p><strong>Order ID:</strong> {order._id}</p>
-      <p><strong>Status:</strong> {statusMessage}</p>
+      <p><strong>Status:</strong> {order.status || "Pending"}</p>
+      <p><strong>Admin Accepted:</strong> {order.adminAccepted ? "✅" : "❌"}</p>
+      <p><strong>Rider Accepted:</strong> {order.riderAccepted ? "✅" : "❌"}</p>
       <p><strong>Created At:</strong> {new Date(order.createdAt).toLocaleString()}</p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Products</h2>
