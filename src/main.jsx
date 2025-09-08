@@ -4,8 +4,9 @@ import './index.css';
 import { RouterProvider } from "react-router";
 import { router } from './router/Router.jsx';
 import AuthProvider from './constex/AuthProvider.jsx';
-import { NotificationProvider } from './constex/NotificationContext.jsx';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { NotificationProvider } from './pages/home/banner/NotificationProvider.jsx';
 
 const queryClient = new QueryClient();
 

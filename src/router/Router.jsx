@@ -36,6 +36,7 @@ import ProductCard from "../pages/dashbord/pandingdelivery/ProductList/ProductCa
 import NotificationsBall from "../pages/home/banner/NotificationsBall";
 import ShopCategorie from "../pages/home/ShopCategories/ShopCategorie";
 import ProductDetails from "../pages/home/ShopCategories/ProductDetails";
+import OrderDetails from "../pages/home/banner/OrderDetails";
 
 
 
@@ -59,8 +60,12 @@ export const router = createBrowserRouter([
         path: "/product-details",
         element: <ProductDetails/>
       },
-      { path: "sentparsel", element: <PrivetRoute><SentParcel /></PrivetRoute>, loader: () => fetch("/serviceData.json").then(res => res.json()) },
-        { path: "notificationsBall" , element: <NotificationsBall/>},
+      {
+        path:"/orders/:id", element:<OrderDetails />
+      },
+{ path: "sentparsel", element: <PrivetRoute><SentParcel /></PrivetRoute>, loader: () => fetch("/serviceData.json").then(res => res.json()) },
+
+        { path: "notificationsBall" , element:<PrivetRoute> <NotificationsBall/></PrivetRoute>},
         {
           path: "/shoppingcatagory",
           element: <PrivetRoute> <ShopCategorie/> </PrivetRoute>
