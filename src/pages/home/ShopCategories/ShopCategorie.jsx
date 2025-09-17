@@ -1,94 +1,102 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BsCurrencyDollar } from "react-icons/bs";
+import { FaEye, FaStar } from "react-icons/fa";
+import { MdOutlineInventory2 } from "react-icons/md";
+import { FaCalendarAlt } from "react-icons/fa";
 import useAxios from "../../../hooks/useAxios";
+import UseAuth from "../../../hooks/UseAuth";
+import Loading from "../../loading/Loading";
 
-const ShopCategorie = ({ showButton = true, handleDetails }) => {
+const ShopCategorie = () => {
   const [categories, setCategories] = useState([]);
-  const userUserAxios = useAxios();
+  const [loading, setLoading] = useState(true);
+  const userAxios = useAxios();
   const navigate = useNavigate();
+  const { user } = UseAuth();
 
   useEffect(() => {
-    userUserAxios.get("/shoppingdata")
-      .then((res) => setCategories(res.data))
-      .catch((err) => console.error("Error fetching categories:", err));
-  }, []);
+    const fetchCategories = async () => {
+      setLoading(true);
+      try {
+        const res = await userAxios.get("/shoppingdata");
+        setCategories(res.data);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, [userAxios]);
 
-  const handleCardClick = (category) => {
-    if (!category._id) return;
-    if (handleDetails) handleDetails(category);
+  const handleDetails = (product) => {
+    if (!user) return navigate("/login");
+    navigate(`/product-details/${product._id}`, { state: { product } });
   };
 
-const handleAddCard = (product) => {
-  if (!product._id) return;
-  // এখন navigate করে ProductCard এ যাওয়া হবে
-  navigate(`/productcard/${product._id}`, { state: product });
-};
-
+  if (loading) return <Loading />;
 
   return (
-    <div style={{ backgroundColor: "#f5deb3" }}>
-      <h2 className="text-center mb-5 text-2xl font-semibold">Shop by Category:</h2>
+    <div className="px-4 md:px-20 bg-[#f5deb3] min-h-screen">
 
-      <div className="flex flex-wrap justify-center gap-5">
-        {categories.map((category) => (
-          <div
-            key={category._id}
-            onClick={() => handleCardClick(category)}
-            className="relative w-full sm:w-[45%] md:w-[220px] h-[360px] rounded-lg overflow-hidden shadow-md bg-white cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow-xl"
-          >
-            <img
-              src={category.image}
-              alt={category.product_name}
-              className="w-full h-40 object-cover"
-            />
-            <div className="p-3 flex flex-col justify-between h-[calc(100%-160px)]">
-              <div>
-                <h4 className="text-base font-semibold">{category.product_name}</h4>
-                <p className="text-xs text-gray-700 mb-2">{category.description}</p>
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-sm font-semibold text-green-600">
-                    ${category.final_price}{" "}
-                    {category.price !== category.final_price && (
-                      <span className="line-through text-gray-400 text-xs">
-                        ${category.price}
-                      </span>
-                    )}
-                  </p>
-                  <p
-                    className={`text-xs px-2 py-1 rounded text-white ${
-                      category.status === "in stock" ? "bg-green-500" : "bg-red-500"
-                    }`}
-                  >
-                    {category.status}
-                  </p>
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
+        {categories.length > 0 ? (
+          categories.map((product) => (
+            <div
+              key={product._id}
+              onClick={() => handleDetails(product)}
+              className="relative bg-white rounded-lg shadow-md p-4 cursor-pointer hover:scale-105 transition-transform flex flex-col"
+            >
+              {product.discount && (
+                <div className="absolute top-2 right-2 bg-yellow-300 text-xs px-2 py-1 rounded shadow z-10">
+                  -{product.discount}%
                 </div>
-                <p className="text-sm text-yellow-500">{category.stars}</p>
+              )}
+
+              <div className="w-full h-48 sm:h-56 md:h-48 lg:h-56 overflow-hidden rounded-lg mb-3">
+                <img
+                  src={product.image}
+                  alt={product.product_name}
+                  className="w-full h-full object-cover transition-transform hover:scale-110"
+                />
+              </div>
+
+              <h3 className="font-semibold text-lg mb-1 truncate">{product.product_name}</h3>
+
+              <div className="flex flex-col gap-1 mb-1 text-sm sm:text-base">
+                <div className="flex items-center gap-1 text-gray-700">
+                  <BsCurrencyDollar /> ${product.final_price}
+                </div>
+                <div className="flex items-center gap-1 text-yellow-500">
+                  <FaStar /> {product.stars || "0"}
+                </div>
+                <div className="flex items-center gap-1">
+                  <MdOutlineInventory2 /> Qty: {product.count}
+                </div>
+                <div className="flex items-center gap-1">
+                  <FaCalendarAlt /> {new Date(product.date || Date.now()).toLocaleDateString()}
+                </div>
+                <div className="flex items-center gap-1">🏪 {product.marketName}</div>
+                <div className="flex items-center gap-1">👨‍🌾 {product.vendorName}</div>
               </div>
 
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleAddCard(category);
+                  handleDetails(product);
                 }}
-                className="mt-2 w-full bg-lime-500 hover:bg-lime-600 text-white py-2 rounded-lg font-semibold transition"
+                className="mt-auto w-full bg-lime-500 hover:bg-lime-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 text-sm sm:text-base"
               >
-                Add to Cart
+                <FaEye size={18} /> View Details
               </button>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center text-gray-600 text-lg mt-8">No products found</p>
+        )}
       </div>
-
-      {showButton && (
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={() => navigate("/productlist")}
-            className="px-6 py-2 bg-lime-500 hover:bg-lime-600 transition text-white rounded-2xl font-semibold text-lg"
-          >
-            Show Now
-          </button>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,12 +1,29 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { NotificationContext } from "./NotificationProvider";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5000"); // Backend socket connection
 
 const NotificationBell = () => {
-  const { notifications, unreadCount, markAllRead } = useContext(NotificationContext);
+  const { notifications, setNotifications, unreadCount, setUnreadCount, markAllRead } =
+    useContext(NotificationContext);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Live socket listener for incoming notifications
+  useEffect(() => {
+    socket.on("notification", (data) => {
+      // prepend new notification
+      setNotifications((prev) => [data, ...prev]);
+      setUnreadCount((prev) => prev + 1);
+    });
+
+    return () => {
+      socket.off("notification");
+    };
+  }, [setNotifications, setUnreadCount]);
 
   const toggleDropdown = () => {
     setOpen(!open);
@@ -44,7 +61,9 @@ const NotificationBell = () => {
               onClick={() => handleNotificationClick(n)}
             >
               {n.message}
-              <div className="text-blue-400 text-xs">{new Date(n.createdAt).toLocaleString()}</div>
+              <div className="text-blue-400 text-xs">
+                {new Date(n.createdAt).toLocaleString()}
+              </div>
             </div>
           ))}
         </div>

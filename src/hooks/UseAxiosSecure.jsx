@@ -8,22 +8,22 @@ const useAxiosSecure = () => {
   const { logOut } = useAuth();
   const navigate = useNavigate();
 
-  const axiosSecure = useMemo(
-    () =>
-      axios.create({
-        baseURL: "http://localhost:5000",
-      }),
-    []
-  );
+  const axiosSecure = useMemo(() => {
+    return axios.create({
+      baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+      timeout: 10000,
+    });
+  }, []);
 
   useEffect(() => {
-    // Request interceptor: Firebase token attach
+    // Request interceptor
     const reqInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         const auth = getAuth();
         const user = auth.currentUser;
 
         if (user) {
+          // Always refresh token to make sure DELETE/PUT requests are authorized
           const token = await user.getIdToken(true);
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -33,19 +33,21 @@ const useAxiosSecure = () => {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor: handle 401 / 403
+    // Response interceptor
     const resInterceptor = axiosSecure.interceptors.response.use(
-      (res) => res,
-      (error) => {
+      (response) => response,
+      async (error) => {
         const status = error.response?.status;
-
         if (status === 401) {
-          logOut().then(() => navigate("/login"));
+          console.log("Unauthorized: Logging out");
+          await logOut();
+          navigate("/login");
         } else if (status === 403) {
-          console.warn("Access forbidden");
+          console.log("Forbidden: Redirecting");
           navigate("/forbidden");
+        } else if (status === 404) {
+          console.log("Not found:", error.response?.data);
         }
-
         return Promise.reject(error);
       }
     );
@@ -54,7 +56,7 @@ const useAxiosSecure = () => {
       axiosSecure.interceptors.request.eject(reqInterceptor);
       axiosSecure.interceptors.response.eject(resInterceptor);
     };
-  }, [logOut, navigate, axiosSecure]);
+  }, [axiosSecure, logOut, navigate]);
 
   return axiosSecure;
 };

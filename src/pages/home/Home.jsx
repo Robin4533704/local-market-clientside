@@ -8,6 +8,7 @@ import OrganicFarmSection from './OrganicEssentials/OrganicFarmSection';
 import FAQSection from './OrganicEssentials/FAQsection';
 
 import LogoMarquee from './LogoMarquee';
+import PublicData from '../dashbord/pandingdelivery/ProductList/PublicData';
 
 const Home = () => {
     return (
@@ -15,7 +16,7 @@ const Home = () => {
            <Banner/>
            <Services/>
          <div className='pb-2 pt-10 bg-[#f5deb3]'>
-              <ShopCategorie/>
+              <PublicData/>
          </div>
            <OrganicEssentials/>
            <Works/>

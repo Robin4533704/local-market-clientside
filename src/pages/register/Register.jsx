@@ -41,7 +41,7 @@ const Register = () => {
     try {
       // 1. Firebase signup
       const result = await createUser(data.email, data.password);
-
+       console.log(result);
       // 2. Firebase profile update
       await updateUserProfiles({
         displayName: data.name,

@@ -20,11 +20,13 @@ const Navber = () => {
 
   const links = [
     { to: "/", label: "Home" },
+    { to: "/productlist", label: "All Products" },
+    { to: "/addproduct", label: "Add Products" },
     { to: "/coverage", label: "Coverage" },
     { to: "/sentparsel", label: "Sent A Parcel" },
     { to: "/dashboard", label: "Dashboard" },
     { to: "/beaider", label: "BeARider" },
-    { to: "/about", label: "About Us" },
+    
   ];
 
   return (

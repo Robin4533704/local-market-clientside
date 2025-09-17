@@ -5,17 +5,17 @@ import { Link } from 'react-router-dom';
 
 const slides = [
   {
-    img: "https://i.ibb.co/C3kTh6cH/side-view-women-shopping-groceries.jpg",
+    img: "/public/zpj/beautiful-street-market-sunset.jpg",
     title: "Welcome to Farmer Market",
     subtitle: "Taste the freshness direct from local farms"
   },
   {
-    img: "https://i.ibb.co/hxv7dLKj/beautiful-street-market-sunset.jpg",
+    img: "/public/zpj/side-view-women-shopping-groceries.jpg",
     title: "Organic & Pure",
     subtitle: "Healthier choices for your family and home"
   },
   {
-    img: "https://i.ibb.co/b5gKBVMs/market-1154999-640.jpg",
+    img:"/public/zpj/medium-shot-women-holding-shopping-bags.jpg",
     title: "Join Our Community",
     subtitle: "Support sustainable, small-scale farmers"
   },

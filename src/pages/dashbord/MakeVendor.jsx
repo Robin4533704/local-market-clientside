@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import UseAxiosSecure from "../../../hooks/UseAxiosSecure";
+import useAxiosSecure from "../../hooks/UseAxiosSecure";
 
-const MakeAdmin = () => {
+const MakeVendor = () => {
   const [emailQuery, setEmailQuery] = useState("");
-  const axiosSecure = UseAxiosSecure();
+  const axiosSecure = useAxiosSecure();
 
-  // সব ইউজার load
+  // সব user load
   const { data: allUsers = [], refetch: refetchAll, isLoading: isAllLoading } = useQuery({
     queryKey: ["allUsers"],
     queryFn: async () => {
@@ -27,7 +27,7 @@ const MakeAdmin = () => {
     },
   });
 
-  // Role update (email দিয়ে)
+  // Role update
   const { mutateAsync: updateRole } = useMutation({
     mutationFn: async ({ email, newRole }) =>
       await axiosSecure.patch(`/users/${encodeURIComponent(email)}/role`, { newRole }),
@@ -38,8 +38,8 @@ const MakeAdmin = () => {
   });
 
   const handleRoleChange = async (email, currentRole) => {
-    const action = currentRole === "admin" ? "Remove Admin" : "Make Admin";
-    const newRole = currentRole === "admin" ? "user" : "admin";
+    const action = currentRole === "vendor" ? "Remove Vendor" : "Make Vendor";
+    const newRole = currentRole === "vendor" ? "user" : "vendor";
 
     const confirm = await Swal.fire({
       title: `${action}?`,
@@ -54,12 +54,12 @@ const MakeAdmin = () => {
       await updateRole({ email, newRole });
       Swal.fire("Success", `${action} successful`, "success");
     } catch (err) {
-      console.error("UpdateRole error:", err);
-      Swal.fire("Error", "Failed to update role", "error");
+      console.error("MakeVendor error:", err);
+      Swal.fire("Error", "Failed to update vendor role", "error");
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
     setEmailQuery(e.target.email.value.trim());
   };
@@ -69,10 +69,10 @@ const MakeAdmin = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4">🔑 Manage Admin Role</h2>
+      <h2 className="text-2xl font-bold mb-4">🛍 Manage Vendor Role</h2>
 
-      {/* Search form */}
-      <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+      {/* search form */}
+      <form onSubmit={handleSearchSubmit} className="flex gap-2 mb-4">
         <input
           type="email"
           name="email"
@@ -93,7 +93,7 @@ const MakeAdmin = () => {
         )}
       </form>
 
-      {/* Users list */}
+      {/* users list */}
       {isLoading ? (
         <p>Loading...</p>
       ) : displayUsers.length > 0 ? (
@@ -119,10 +119,10 @@ const MakeAdmin = () => {
                     <button
                       onClick={() => handleRoleChange(user.email, user.role)}
                       className={`px-3 py-1 rounded-md text-white ${
-                        user.role === "admin" ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+                        user.role === "vendor" ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
                       }`}
                     >
-                      {user.role === "admin" ? "Remove Admin" : "Make Admin"}
+                      {user.role === "vendor" ? "Remove Vendor" : "Make Vendor"}
                     </button>
                   </td>
                 </tr>
@@ -137,4 +137,4 @@ const MakeAdmin = () => {
   );
 };
 
-export default MakeAdmin;
+export default MakeVendor;

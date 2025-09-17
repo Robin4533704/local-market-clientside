@@ -36,7 +36,26 @@ import ProductCard from "../pages/dashbord/pandingdelivery/ProductList/ProductCa
 import NotificationsBall from "../pages/home/banner/NotificationsBall";
 import ShopCategorie from "../pages/home/ShopCategories/ShopCategorie";
 import ProductDetails from "../pages/home/ShopCategories/ProductDetails";
-import OrderDetails from "../pages/home/banner/OrderDetails";
+import PublicData from "../pages/dashbord/pandingdelivery/ProductList/PublicData";
+import OrderListTable from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends/OrderListTable";
+import Checkout from "../pages/home/banner/Checkout";
+import AddProducts from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends/AddProducts";
+import AddTable from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends/AddTable";
+import PriceTrends from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends";
+import ManageWatchlist from "../pages/dashbord/pandingdelivery/ProductList/ManageWatchlist";
+import MyOrders from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends/Myorder";
+
+import MyProductsVendor from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends/MyProducts";
+import AddProductVendor from "../pages/home/ShopCategories/AddProductVandor";
+import MakeVendor from "../pages/dashbord/MakeVendor";
+import VendorRoute from "../route/VendorRoute";
+import UpdateProduct from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends/UpdateProduct";
+import AddAdvertisement from "../pages/dashbord/pandingdelivery/AddAdvertisement/AddAdvertisement";
+import MyAdvertisements from "../pages/dashbord/pandingdelivery/AddAdvertisement/MyAdvertisements";
+import UpdateAdvertisement from "../pages/dashbord/pandingdelivery/AddAdvertisement/UpdateAdvertisement";
+import AdminAllProducts from "../pages/home/banner/amincomponet/AdminAllProducts";
+import AdminAllUsers from "../pages/home/banner/amincomponet/AdminAllUsers";
+
 
 
 
@@ -46,9 +65,11 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <Home /> },
-      { path: "coverage", element: <Coverage />, loader: () => fetch("/Services.json") },
+
+      { path: "coverage", element: <Coverage />, loader: () => fetch("/Services.json")},
       { path: "forbidden", element: <Forbidden /> },
       { path: "beaider", element: <PrivetRoute><BeARider /></PrivetRoute>, loader: () => fetch("/Services.json") },
+     
       { path: "updateprofile", element: <UpdateProfiles /> },
       { path: "pending-deliveries", element: <RiderRoute><PendingDeliveries /></RiderRoute> },
       { path: "about", element: <About /> },
@@ -56,13 +77,37 @@ export const router = createBrowserRouter([
       { path: "OrganicEssentials", element: <OrganicEssentials /> },
       { path: "productlist", element: <PrivetRoute><ProductList /></PrivetRoute> },
       { path: "productcard/:id", element: <PrivetRoute><ProductCard /></PrivetRoute> },
+      
+ {
+        path: "myorde",
+        element: <MyOrders/>
+       },
       {
-        path: "/product-details",
+        path: "/product-details/:id",
         element: <ProductDetails/>
       },
+
       {
-        path:"/orders/:id", element:<OrderDetails />
+        path: "/PublicData",
+        element: <PublicData/>
       },
+      {
+        path: "/orderlist", element:<OrderListTable/> 
+      },
+   
+    {
+  path: "/checkout/:productId",
+  element: <Checkout />
+}
+,
+{
+ path: "/addtable",
+ element: <AddTable/>
+},
+{
+  path: "/addproduct",
+  element: <AddProducts></AddProducts>
+},
 { path: "sentparsel", element: <PrivetRoute><SentParcel /></PrivetRoute>, loader: () => fetch("/serviceData.json").then(res => res.json()) },
 
         { path: "notificationsBall" , element:<PrivetRoute> <NotificationsBall/></PrivetRoute>},
@@ -92,6 +137,11 @@ export const router = createBrowserRouter([
       { path: "pending-deliveries", element: <RiderRoute><PendingDeliveries /></RiderRoute> },
       { path: "completed-deliveries", element: <RiderRoute><CompletedDeliveries /></RiderRoute> },
       { path: "makeadmin", element: <AdminRoute><MakeAdmin /></AdminRoute> },
+
+      {
+        path: "makevendor", element: <AdminRoute> <MakeVendor/> </AdminRoute>
+      },
+
       { path: "active-riders", element: <AdminRoute><ActiveRiders /></AdminRoute> },
       { path: "pending-riders", element: <AdminRoute><PandingRiders /></AdminRoute> },
       { path: "assign-riders", element: <AdminRoute><AssainRiders /></AdminRoute> },
@@ -100,6 +150,46 @@ export const router = createBrowserRouter([
       { path: "tracking", element: <TackParcel /> },
       { path: "tracking/:trackingId", element: <UpdateTracking /> },
       { path: "updateprofile", element: <UpdateProfiles /> },
-    ]
+       {
+         path:"price-trends", element:<PriceTrends />,
+       },
+      
+       {
+        path:"watchlist" ,element:<ManageWatchlist/>
+       },
+       {
+  path: "make-vendor",
+  element: <AdminRoute><MakeVendor /></AdminRoute>
+},
+
+       {
+  path: "myproductvandor",
+  element: <MyProductsVendor/>
+},
+{
+  path: "update-product/:id",
+ element: <UpdateProduct/>
+},
+ {
+       path: "addproductvandor",
+       element: <AddProductVendor/>
+      },
+      {
+        path:"Add-Advertisement",
+        element: <VendorRoute> <AddAdvertisement/> </VendorRoute>
+      },
+      {
+        path: "update-advertisement/:id",
+        element: <VendorRoute><UpdateAdvertisement/> </VendorRoute>
+      },
+      {
+        path: "AdminAllProducts",
+        element: <AdminAllProducts/>
+      },
+      {
+        path: "adminuserall",
+        element: <AdminAllUsers/>
+      }
+      ]
   }
 ]);
