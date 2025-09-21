@@ -72,18 +72,19 @@ const UpdateProduct = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await axiosSecure.put(`/vendor/products/${id}`, formData);
-      console.log(data)
-      toast.success("Product updated successfully!");
-      navigate("/dashboard/myproductvandor");
-    } catch (err) {
-      console.error("Update Product Error:", err);
-      toast.error("Failed to update product");
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    console.log("Updating product ID:", id); // debug
+    const { data } = await axiosSecure.put(`/vendor/products/${id}`, formData);
+    console.log(data);
+    toast.success("Product updated successfully!");
+    navigate("/dashboard/myproductvandor");
+  } catch (err) {
+    console.error("Update Product Error:", err);
+    toast.error(err.response?.data?.message || "Failed to update product");
+  }
+};
 
   return (
     <div className="pt-16 md:pt-24 px-4 md:px-10 lg:px-20 min-h-screen bg-[#f5f0e1] flex items-center justify-center">

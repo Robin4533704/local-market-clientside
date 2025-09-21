@@ -1,16 +1,14 @@
-import React, { useState, useContext } from "react"; 
+import React, { useState, useContext } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { ProductContext } from "../../../paymentmethod/productContext/ProductContext";
-import useAxios from "../../../../../hooks/useAxios";
-
-
+import useAxiosSecure from "../../../../../hooks/UseAxiosSecure";
 
 const AddProducts = () => {
-  const { products, setProducts } = useContext(ProductContext); 
-  console.log(products)
-  const axiosInstance = useAxios()
-  const navigate = useNavigate()
+  const { fetchProducts } = useContext(ProductContext);
+  const axiosInstance = useAxiosSecure();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     product_name: "",
     image: "",
@@ -23,9 +21,6 @@ const AddProducts = () => {
     date: new Date().toISOString().split("T")[0],
   });
 
- 
-
-  // Input change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -49,20 +44,29 @@ const AddProducts = () => {
       ...prev,
       items: prev.items.filter((_, i) => i !== index),
     }));
-
-  // Submit handler
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const { data } = await axiosInstance.post("/products", formData);
+    const currentDate = new Date().toISOString().split("T")[0]; // আজকের তারিখ
+    const productData = {
+      ...formData,
+      final_price: Number(formData.final_price), // নিশ্চিত করুন দাম সংখ্যা
+      date: currentDate,
+    };
+
+    console.log("Sending data:", productData);
+
+    const { data } = await axiosInstance.post("/products", productData);
+    console.log("POST response:", data);
 
     if (data.success || data.insertedId) {
       Swal.fire("Success", "Product added successfully!", "success");
 
-      // ✅ Context state update
-      setProducts((prev) => [...prev, { ...formData, _id: data.insertedId }]);
+      // আপডেটেড প্রোডাক্ট তালিকা রিফ্রেশ
+      await fetchProducts();
 
-      // Reset form
+      const productId = data.insertedId;
+      // ফর্ম রিসেট
       setFormData({
         product_name: "",
         image: "",
@@ -74,6 +78,9 @@ const AddProducts = () => {
         status: "approved",
         date: new Date().toISOString().split("T")[0],
       });
+
+      // প্রোডাক্টের বিস্তারিত পেজে নেভিগেট করুন
+      navigate(`/productlist/${productId}`);
     } else {
       Swal.fire("Error", data?.message || "Failed to add product", "error");
     }
@@ -81,19 +88,12 @@ const AddProducts = () => {
     console.error(err);
     Swal.fire("Error", "Failed to add product", "error");
   }
-  navigate("/productlist")
 };
-
-
-  const handleAddtable = () => navigate("/addtable");
 
   return (
     <div className="pt-24 px-4 md:px-20 min-h-screen bg-[#f5f0e1]">
-      <div className="flex justify-between items-center mb-6">
+      <div className="text-center mb-6">
         <h2 className="text-2xl font-bold">Add New Product</h2>
-        <p onClick={handleAddtable} className="text-blue-600 btn cursor-pointer">
-          View Products Table
-        </p>
       </div>
 
       <form
@@ -114,7 +114,7 @@ const AddProducts = () => {
           name="vendorName"
           value={formData.vendorName}
           onChange={handleChange}
-          placeholder="Vendor Name"
+          placeholder="User Name"
           className="border p-2 w-full rounded mb-2"
           required
         />

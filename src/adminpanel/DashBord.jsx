@@ -1,19 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import Profileslogo from "../home/banner/Profileslogo";
 import { 
   FaHome, FaMotorcycle, FaClock, FaBox, FaCreditCard, 
   FaSearchLocation, FaUserEdit, FaChartLine, FaList, 
-  FaUsers,
-  FaProductHunt,
-  FaBullhorn,
-  FaShoppingCart
+  FaUsers, FaProductHunt, FaBullhorn, FaShoppingCart
 } from "react-icons/fa";
-import useUserRole from "../../hooks/useUserRole";
-import NotificationsBall from "../home/banner/NotificationsBall";
+import Profileslogo from "../pages/home/banner/Profileslogo";
+import useUserRole from "../hooks/useUserRole";
 
 const Dashboard = () => {
   const { role, roleLoading } = useUserRole();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   if (roleLoading) return <div>Loading...</div>;
 
@@ -24,22 +21,27 @@ const Dashboard = () => {
 
   return (
     <div className="drawer drawer-mobile lg:drawer-open min-h-screen">
-      <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+      <input 
+        id="dashboard-drawer" 
+        type="checkbox" 
+        className="drawer-toggle" 
+        checked={drawerOpen} 
+        onChange={() => setDrawerOpen(!drawerOpen)} 
+      />
 
       {/* Main Content */}
       <div className="drawer-content flex flex-col">
+        {/* Navbar for small screens */}
         <div className="w-full navbar bg-lime-300 lg:hidden">
-          <label htmlFor="my-drawer-2" className="btn btn-square btn-ghost">
+          <label htmlFor="dashboard-drawer" className="btn btn-square btn-ghost">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 stroke-current" fill="none" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </label>
-          <div className="ml-2 text-lg font-semibold flex justify-between w-full">
-            Dashboard
-            {role && <NotificationsBall user={{ role }} />}
-          </div>
+          <div className="ml-2 text-lg font-semibold flex-1">Dashboard</div>
         </div>
 
+        {/* Outlet for nested routes */}
         <div className="p-4">
           <Outlet />
         </div>
@@ -47,13 +49,13 @@ const Dashboard = () => {
 
       {/* Sidebar */}
       <div className="drawer-side">
-        <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
+        <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
         <ul className="menu p-4 w-64 min-h-full bg-lime-500 text-base-content">
           <Profileslogo />
 
           {/* Home */}
           <li>
-            <NavLink to="/dashboard" className="text-white flex items-center gap-2">
+            <NavLink to="/dashboard" className={({ isActive }) => linkClass(isActive)}>
               <FaHome /> Home
             </NavLink>
           </li>
@@ -73,14 +75,11 @@ const Dashboard = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/dashboard/myorder" className={({ isActive }) => linkClass(isActive)}>
+                <NavLink to="/dashboard/orderlist" className={({ isActive }) => linkClass(isActive)}>
                   <FaBox /> My Orders
                 </NavLink>
               </li>
-            </>
-          )}
-  {/* Parcel / Payment / Tracking */}
-          <li>
+               <li>
             <NavLink to="/dashboard/myparcels" className={({ isActive }) => linkClass(isActive)}>
               <FaBox /> My Parcels
             </NavLink>
@@ -90,6 +89,11 @@ const Dashboard = () => {
               <FaCreditCard /> Payment History
             </NavLink>
           </li>
+            </>
+          )}
+
+          {/* Parcel / Payment / Tracking */}
+         
           <li>
             <NavLink to="/dashboard/tracking" className={({ isActive }) => linkClass(isActive)}>
               <FaSearchLocation /> Track A Package
@@ -100,7 +104,7 @@ const Dashboard = () => {
               <FaUserEdit /> Update Profile
             </NavLink>
           </li>
-          
+
           {/* Vendor Links */}
           {role === "vendor" && (
             <>
@@ -127,8 +131,6 @@ const Dashboard = () => {
               </li>
             </>
           )}
-
-        
 
           {/* Rider Links */}
           {role === "rider" && (
@@ -174,7 +176,7 @@ const Dashboard = () => {
                   🔑 Make Admin
                 </NavLink>
               </li>
-                <li>
+              <li>
                 <NavLink to="/dashboard/adminuserall" className={({ isActive }) => linkClass(isActive)}>
                   <FaUsers /> All Users
                 </NavLink>
@@ -185,15 +187,15 @@ const Dashboard = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/dashboard/my-advertisements" className={({ isActive }) => linkClass(isActive)}>
+                <NavLink to="/dashboard/AdminAllAdvertisements" className={({ isActive }) => linkClass(isActive)}>
                   <FaBullhorn /> All Advertisements
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/dashboard/myorder" className={({ isActive }) => linkClass(isActive)}>
+                <NavLink to="/dashboard/AdminAllOrders" className={({ isActive }) => linkClass(isActive)}>
                   <FaShoppingCart /> All Orders
                 </NavLink>
-                </li>
+              </li>
             </>
           )}
         </ul>

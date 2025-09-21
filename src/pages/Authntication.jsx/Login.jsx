@@ -19,10 +19,10 @@ const Login = () => {
 
 
 
-  const { singInUser } = UseAuth();
+  const { signInUser } = UseAuth();
 
   const onSubmit = (data) => {
-    singInUser(data.email, data.password)
+    signInUser(data.email, data.password)
       .then((result) => {
       Swal.fire({
           icon: 'success',

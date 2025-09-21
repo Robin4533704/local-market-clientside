@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import UseAxiosSecure from "../../../hooks/UseAxiosSecure";
-import { LoaderIcon } from "react-hot-toast";
 import { FaSearch } from "react-icons/fa"; // search icon
+import Loading from "../../loading/Loading";
 
 const ActiveRiders = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,7 +54,7 @@ const ActiveRiders = () => {
   if (isLoading)
     return (
       <p className="text-center mt-6">
-        <LoaderIcon className="w-12 h-12 mx-auto text-green-500" />
+       <Loading/>
       </p>
     );
 

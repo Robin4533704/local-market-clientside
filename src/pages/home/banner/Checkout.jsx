@@ -10,28 +10,27 @@ const CheckoutForm = ({ paymentData }) => {
   const {
     product,
     quantity: initialQty,
-    subtotal: initialSubtotal,
-    discount: initialDiscount,
-    total: initialTotal,
+    discount: initialDiscount = 0,
     coupon,
   } = paymentData;
 
   const [quantity, setQuantity] = useState(initialQty);
-  const [subtotal, setSubtotal] = useState(initialSubtotal);
+  const [subtotal, setSubtotal] = useState(0);
+  const [total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(initialDiscount);
-  const [total, setTotal] = useState(initialTotal);
 
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
-
+ console.log(setDiscount)
   useEffect(() => {
-    const newSubtotal = product.price * quantity;
-    const newTotal = newSubtotal - discount;
+    const price = product.final_price ?? product.price ?? 0; 
+    const newSubtotal = price * quantity;
+    const newTotal = newSubtotal - (newSubtotal * discount) / 100;
     setSubtotal(newSubtotal);
     setTotal(newTotal > 0 ? newTotal : 0);
-  }, [quantity, discount, product.price]);
+  }, [quantity, discount, product]);
 
   const handlePayment = async (e) => {
     e.preventDefault();
@@ -62,21 +61,23 @@ const CheckoutForm = ({ paymentData }) => {
       const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: { card },
       });
-     console.log(paymentIntent)
+    console.log( paymentIntent)
       if (error) throw error;
 
-      // 🔹 Save order to localStorage
-      const order = {
-        _id: new Date().getTime(),
-        product_name: product.product_name,
-        marketName: product.marketName || "Local Market",
-        final_price: total,
-        quantity,
-        date: new Date().toLocaleDateString(),
-      };
-      const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
-      storedOrders.push(order);
-      localStorage.setItem("orders", JSON.stringify(storedOrders));
+      // Save order locally
+     // Save order locally
+const order = {
+  _id: new Date().getTime(),
+  product_name: product.product_name,
+  marketName: product.marketName || "Local Market",
+  final_price: total,
+  quantity,
+  date: new Date().toLocaleDateString(),
+  paid: true, // ✅ Add this
+};
+const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+storedOrders.push(order);
+localStorage.setItem("orders", JSON.stringify(storedOrders));
 
       Swal.fire(
         "Payment Successful",
@@ -84,7 +85,7 @@ const CheckoutForm = ({ paymentData }) => {
         "success"
       );
 
-      navigate("/orderlist"); // Redirect to order list
+      navigate("/dashboard/orderlist"); // Redirect to order list
     } catch (err) {
       console.error(err);
       Swal.fire("Payment Error", err.message || "Payment failed", "error");
@@ -94,10 +95,7 @@ const CheckoutForm = ({ paymentData }) => {
   };
 
   return (
-    <form
-      onSubmit={handlePayment}
-      className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow"
-    >
+    <form onSubmit={handlePayment} className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-2xl font-bold mb-4">{product.product_name}</h2>
 
       <div className="mb-4">
@@ -112,7 +110,7 @@ const CheckoutForm = ({ paymentData }) => {
       </div>
 
       <p className="mb-2">Subtotal: ${subtotal.toFixed(2)}</p>
-      <p className="mb-2">Discount: ${discount.toFixed(2)}</p>
+      <p className="mb-2">Discount ({discount}%): -${((subtotal * discount) / 100).toFixed(2)}</p>
       <p className="mb-4 font-bold text-lg">Total: ${total.toFixed(2)}</p>
 
       <CardElement className="border p-2 rounded mb-4" />

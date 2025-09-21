@@ -1,6 +1,6 @@
 import React from "react"; 
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "./UseAxiosSecure"; // Axios instance with token
+import useAxiosSecure from "./UseAxiosSecure"; 
 import useAuth from "./UseAuth";
 
 const useUserRole = () => {
@@ -16,42 +16,42 @@ const useUserRole = () => {
     enabled: !authLoading && !!user?.email,
     queryFn: async () => {
       try {
-        if (!user?.email) return "user"; // safety fallback
+        if (!user?.email) return "user"; // fallback if no email
 
-        // Check localStorage cache first
+        // ✅ Check localStorage cache first
         const cachedRole = localStorage.getItem(`role_${user.email}`);
         if (cachedRole) return cachedRole;
 
-        // Refresh token once (avoid forced refresh every render)
-        const token = await user.getIdToken(); 
+        // ✅ Refresh token
+        const token = await user.getIdToken();
 
-        // Set token in Axios headers
-        axiosSecure.defaults.headers.Authorization = `Bearer ${token}`;
-
-        // Encode email for safe URL
+        // ✅ Encode email for safe URL
         const encodedEmail = encodeURIComponent(user.email);
-        const res = await axiosSecure.get(`/users/${encodedEmail}/role`);
 
-        const role = res.data.role || "user";
+        // ✅ Pass token per-request (safer than setting defaults)
+        const res = await axiosSecure.get(`/users/${encodedEmail}/role`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        // Cache role in localStorage for faster subsequent access
+        const role =
+          typeof res.data.role === "string" && res.data.role.trim() !== ""
+            ? res.data.role
+            : "user";
+
+        // ✅ Cache in localStorage
         localStorage.setItem(`role_${user.email}`, role);
 
         return role;
       } catch (err) {
         console.error("Failed to fetch user role:", err);
 
-        // Handle Firebase quota exceeded error gracefully
         if (err.code === "auth/quota-exceeded") {
-          console.warn("Firebase quota exceeded: using fallback 'user' role");
+          console.warn("Firebase quota exceeded: fallback to 'user'");
         }
-
-        // Handle network errors
         if (err.code === "auth/network-request-failed") {
-          console.warn("Network issue: fallback to 'user' role");
+          console.warn("Network issue: fallback to 'user'");
         }
 
-        // Fallback to 'user' role on any error
         return "user"; 
       }
     },
@@ -59,10 +59,14 @@ const useUserRole = () => {
     cacheTime: 1000 * 60 * 60 * 24, // 24 hours
   });
 
-  // Optional: clear localStorage if user logs out
+  // ✅ Clear localStorage roles if user logs out
   React.useEffect(() => {
-    if (!user) {
-      localStorage.removeItem(`role_${user?.email}`);
+    if (!user?.email) {
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("role_")) {
+          localStorage.removeItem(key);
+        }
+      });
     }
   }, [user]);
 

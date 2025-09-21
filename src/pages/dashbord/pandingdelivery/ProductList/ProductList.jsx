@@ -1,107 +1,65 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import useAxios from "../../../../hooks/useAxios";
-import { FaStar, FaCalendarAlt, FaEye } from "react-icons/fa";
+import { FaStar, FaCalendarAlt, FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { BsCurrencyDollar } from "react-icons/bs";
+import Swal from "sweetalert2";
 import Loading from "../../../loading/Loading";
-import ShopCategorie from "../../../home/ShopCategories/ShopCategorie";
-import PublicData from "./PublicData";
 import UseAuth from "../../../../hooks/UseAuth";
+import { ProductContext } from "../../paymentmethod/productContext/ProductContext";
+import useAxios from "../../../../hooks/useAxios";
+import useUserRole from "../../../../hooks/useUserRole";
 
 const ProductList = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [sortBy, setSortBy] = useState(""); // price_asc, price_desc
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  const useUserAxios = useAxios();
+  const { products, setProducts, loading } = useContext(ProductContext);
   const navigate = useNavigate();
-  const { user } = UseAuth();
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      let query = [];
-      if (sortBy) query.push(`sort=${sortBy}`);
-      if (startDate) query.push(`startDate=${startDate}`);
-      if (endDate) query.push(`endDate=${endDate}`);
-      const queryString = query.length > 0 ? "?" + query.join("&") : "";
-
-      const res = await useUserAxios.get(`/products${queryString}`);
-      const approved = res.data.filter((p) => ["approved", "in stock"].includes(p.status));
-      setProducts(approved);
-    } catch (err) {
-      console.error("Error fetching products:", err);
-      setError("Failed to load products");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [useUserAxios, sortBy, startDate, endDate]);
+  const { user } = UseAuth(); 
+   const { role } = useUserRole();
+  const axiosInstance = useAxios();
 
   const handleDetails = (product) => {
     if (!user) return navigate("/login");
     navigate(`/product-details/${product._id}`, { state: { product } });
   };
+console.log(user)
+  const handleDelete = async (id) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        await axiosInstance.delete(`/products/${id}`);
+        Swal.fire("Deleted!", "Product has been deleted.", "success");
+        setProducts((prev) => prev.filter((p) => p._id !== id));
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Failed to delete product", "error");
+      }
+    }
+  };
+const handleEdit = (product) => {
+  navigate(`/editproducts/${product._id}`, { state: { product } });
+};
 
   if (loading) return <Loading />;
-  if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
 
   return (
     <div className="pt-16 px-4 md:px-20 bg-[#f5deb3] min-h-screen">
-      {/* Page Header */}
-      <div className="text-center mb-8 bg-rose-200 p-8 rounded-lg shadow-md">
-        <div className="mb-4 text-sm">
-          <NavLink to="/" className="text-black btn hover:underline">Home</NavLink>{" "}
-          <span className="ml-2 btn">Shop</span>
+      {/* Header + Add Product Button */}
+      <div className="flex justify-between items-center mb-8 bg-rose-200 p-8 rounded-lg shadow-md">
+        <div>
+          <NavLink to="/" className="text-black btn hover:underline mr-2">Home</NavLink>
+          <span className="btn">Products</span>
         </div>
-        <h2 className="text-4xl font-bold">Shop</h2>
+      
       </div>
-
-     
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
-        <div>
-          <label>Sort by Price:</label>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="border px-2 py-1 rounded ml-2"
-          >
-            <option value="">-- Select --</option>
-            <option value="price_asc">Low to High</option>
-            <option value="price_desc">High to Low</option>
-          </select>
-        </div>
-
-        <div>
-          <label>Start Date:</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border px-2 py-1 rounded ml-2"
-          />
-        </div>
-
-        <div>
-          <label>End Date:</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border px-2 py-1 rounded ml-2"
-          />
-        </div>
-      </div>
- <ShopCategorie />
-      <PublicData showButton={false} />
 
       {/* Products Grid */}
       <div className="grid px-8 pb-2 lg:px-20 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
@@ -111,52 +69,66 @@ const ProductList = () => {
           products.map((product) => (
             <div
               key={product._id}
-              onClick={() => handleDetails(product)}
               className="relative bg-white rounded-lg shadow-md p-4 cursor-pointer hover:scale-105 transition-transform flex flex-col"
             >
-              {product.discount && (
-                <div className="absolute top-2 right-2 bg-yellow-300 text-xs px-2 py-1 rounded shadow z-10">
-                  -{product.discount}%
-                </div>
-              )}
-
+             {/* Product Image */}
               <div className="w-full h-48 sm:h-56 md:h-48 lg:h-56 overflow-hidden rounded-lg mb-3">
                 <img
-                  src={product.image}
+                  src={product.image || "/placeholder.png"}
                   alt={product.product_name}
                   className="w-full h-full object-cover transition-transform hover:scale-110"
+                  onClick={() => handleDetails(product)}
                 />
               </div>
 
-              <h3 className="font-semibold text-lg mb-1 truncate">{product.product_name}</h3>
+              {/* Product Info */}
+            
+                <h3 className="font-semibold text-lg mb-1 truncate">{product.product_name}</h3>
+              
+             
+              <div className="flex flex-col gap-1 mb-2 text-sm sm:text-base">
 
-              <div className="flex flex-col gap-1 mb-1 text-sm sm:text-base">
-                <div className="flex items-center gap-1 text-gray-700">
-                  <BsCurrencyDollar /> ${product.final_price}
+                <div className="flex justify-between items-center">
+                     <div className="flex items-center gap-1 text-gray-700"><BsCurrencyDollar /> {product.final_price}
+                
+                    <div className="absolute right-2 flex gap-2 items-center">
+ {/* Admin Edit Icon */}
+{role === "admin" && (
+  <div>
+    <button
+    onClick={(e) => { 
+      e.stopPropagation(); 
+     handleEdit(product);  
+    }}
+    className="p-2 rounded-full transition-transform transform hover:scale-110 shadow-md bg-yellow-100 hover:bg-yellow-200"
+    title="Edit Product"
+  >
+    <FaEdit className="w-4 h-4 text-yellow-600" />
+  </button>
+  <button
+    onClick={(e) => { e.stopPropagation(); handleDelete(product._id); }}
+    className="p-2 rounded-full transition-transform transform hover:scale-105 shadow-md"
+    title="Delete Product"
+  >
+    <FaTrashAlt className="w-4 h-4 md:w-4 md:h-4 text-red-500" />
+  </button>
+  </div>
+)}
+</div>
                 </div>
-                <div className="flex items-center gap-1 text-yellow-500">
-                  <FaStar /> {product.stars || "0"}
+             
+                 
                 </div>
-                <div className="flex items-center gap-1">
-                  <MdOutlineInventory2 /> Qty: {product.count}
-                </div>
-                <div className="flex items-center gap-1">
-                  <FaCalendarAlt /> {new Date(product.date || Date.now()).toLocaleDateString()}
-                </div>
-                <div className="flex items-center gap-1">
-                  🏪 {product.marketName}
-                </div>
-                <div className="flex items-center gap-1">
-                  👨‍🌾 {product.vendorName}
-                </div>
+                <div className="flex items-center gap-1 text-yellow-500"><FaStar /> {product.stars || "0"}</div>
+                <div className="flex items-center gap-1"><MdOutlineInventory2 /> Qty: {product.count || 0}</div>
+                <div className="flex items-center gap-1"><FaCalendarAlt /> {new Date(product.date || Date.now()).toLocaleDateString()}</div>
+                <div className="flex items-center gap-1">🏪 {product.marketName}</div>
+                <div className="flex items-center gap-1">👨‍🌾 {product.vendorName}</div>
               </div>
 
-              {/* Button */}
+              {/* View Details Button */}
               <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click
-                  handleDetails(product);
-                }}
+                onClick={(e) => { e.stopPropagation(); handleDetails(product); }}
                 className="mt-auto w-full bg-lime-500 hover:bg-lime-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 <FaEye size={20} /> View Details

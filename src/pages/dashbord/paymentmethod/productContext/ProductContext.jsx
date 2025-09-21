@@ -13,15 +13,11 @@ export const ProductProvider = ({ children }) => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get("/products");
-      setProducts(response.data);
+      const res = await axiosInstance.get("/products");
+      setProducts(res.data); // সব product set করা হবে
     } catch (err) {
       console.error(err);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: err.response?.data?.message || "Failed to load products",
-      });
+      Swal.fire("Error", err.response?.data?.message || "Failed to load products", "error");
     } finally {
       setLoading(false);
     }
@@ -32,7 +28,9 @@ export const ProductProvider = ({ children }) => {
   }, []);
 
   return (
-    <ProductContext.Provider value={{ products, loading, fetchProducts }}>
+    <ProductContext.Provider
+      value={{ products, setProducts, loading, fetchProducts }}
+    >
       {children}
     </ProductContext.Provider>
   );

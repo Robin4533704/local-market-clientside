@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
-import useAxios from "../../hooks/useAxios";
+import useAxios from "../../hooks/UseAxios";
+
 
 const MakeVendorButton = ({ userId }) => {
   const axiosInstance = useAxios();

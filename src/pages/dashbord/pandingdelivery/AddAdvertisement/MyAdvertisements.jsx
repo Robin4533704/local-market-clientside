@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../../hooks/UseAuth";
 import useAxiosSecure from "../../../../hooks/UseAxiosSecure";
+import Loading from "../../../loading/Loading";
 
 const MyAdvertisements = () => {
   const axiosSecure = useAxiosSecure();
@@ -50,7 +51,7 @@ const MyAdvertisements = () => {
     }
   };
 
-  if (loading || userLoading) return <p>Loading...</p>;
+  if (loading || userLoading) return <div><Loading/></div>;
 
   return (
     <div className="max-w-4xl mx-auto p-6">

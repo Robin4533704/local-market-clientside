@@ -1,13 +1,14 @@
-import axios from "axios";
-import { getAuth } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 import useAuth from "./UseAuth";
 
 const useAxiosSecure = () => {
   const { logOut } = useAuth();
   const navigate = useNavigate();
 
+  // Create Axios instance
   const axiosSecure = useMemo(() => {
     return axios.create({
       baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
@@ -16,42 +17,41 @@ const useAxiosSecure = () => {
   }, []);
 
   useEffect(() => {
-    // Request interceptor
+    // ✅ Request interceptor
     const reqInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
-        const auth = getAuth();
-        const user = auth.currentUser;
-
+        const user = getAuth().currentUser;
         if (user) {
-          // Always refresh token to make sure DELETE/PUT requests are authorized
+          // Always get fresh token
           const token = await user.getIdToken(true);
           config.headers.Authorization = `Bearer ${token}`;
+          console.log("Axios token set:", token);
         }
-
         return config;
       },
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor
+    // ✅ Response interceptor
     const resInterceptor = axiosSecure.interceptors.response.use(
       (response) => response,
       async (error) => {
         const status = error.response?.status;
+
         if (status === 401) {
-          console.log("Unauthorized: Logging out");
+          console.log("Unauthorized (401) → logging out");
           await logOut();
           navigate("/login");
         } else if (status === 403) {
-          console.log("Forbidden: Redirecting");
+          console.log("Forbidden (403) → redirecting to /forbidden");
           navigate("/forbidden");
-        } else if (status === 404) {
-          console.log("Not found:", error.response?.data);
         }
+
         return Promise.reject(error);
       }
     );
 
+    // Cleanup interceptors
     return () => {
       axiosSecure.interceptors.request.eject(reqInterceptor);
       axiosSecure.interceptors.response.eject(resInterceptor);

@@ -18,7 +18,7 @@ const ProductCard = () => {
   const location = useLocation();
   const { user } = UseAuth();
   const navigate = useNavigate();
- console.log(user)
+
   const [product, setProduct] = useState(location.state?.product || null);
   const [quantity, setQuantity] = useState(location.state?.quantity || 1);
   const [coupon, setCoupon] = useState("");
@@ -66,25 +66,24 @@ const ProductCard = () => {
   };
 
   // Safe price calculation
-  const price = product?.final_price ?? product?.price ?? 0;
+  const price = Number(product?.final_price ?? product?.price ?? 0);
   const subtotal = price * quantity;
   const totalAfterDiscount = subtotal - (subtotal * discount) / 100;
 
-// ProductCard.jsx (core part)
-const handleCheckout = () => {
-  navigate(`/checkout/${product._id}`, {
-    state: {
-      product,
-      quantity,
-      subtotal,
-      discount,
-      total: totalAfterDiscount,
-      coupon: appliedCoupon,
-    },
-  });
-};
+  const handleCheckout = () => {
+    navigate(`/checkout/${product._id}`, {
+      state: {
+        product,
+        quantity,
+        subtotal,
+        discount,
+        total: totalAfterDiscount,
+        coupon: appliedCoupon,
+      },
+    });
+  };
 
-if (loading) return <Loading />;
+  if (loading) return <Loading />;
   if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
   if (!product) return <p className="text-center mt-10">Product not found</p>;
 
@@ -122,7 +121,7 @@ if (loading) return <Loading />;
                 />
                 <span className="text-lg font-medium">{product?.product_name || "No Name"}</span>
               </td>
-              <td className="border px-4 py-2">${price}</td>
+              <td className="border px-4 py-2">${isNaN(price) ? "0.00" : price.toFixed(2)}</td>
               <td className="border px-4 py-2">
                 <input
                   type="number"
@@ -132,7 +131,7 @@ if (loading) return <Loading />;
                   className="w-20 text-center border rounded px-2 py-1"
                 />
               </td>
-              <td className="border px-4 py-2">${subtotal.toFixed(2)}</td>
+              <td className="border px-4 py-2">${isNaN(subtotal) ? "0.00" : subtotal.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
@@ -168,18 +167,16 @@ if (loading) return <Loading />;
       <div className="flex flex-col md:flex-row md:justify-between md:items-center border-t border-gray-300 pt-6 gap-4 mb-8">
         <div>
           <h3 className="text-xl font-semibold mb-2">Cart Totals</h3>
-          <p>Subtotal: ${subtotal.toFixed(2)}</p>
+          <p>Subtotal: ${isNaN(subtotal) ? "0.00" : subtotal.toFixed(2)}</p>
           <p>Discount ({appliedCoupon || "None"}): {discount}%</p>
-          <p className="font-bold">Total: ${totalAfterDiscount.toFixed(2)}</p>
+          <p className="font-bold">Total: ${isNaN(totalAfterDiscount) ? "0.00" : totalAfterDiscount.toFixed(2)}</p>
         </div>
-<button
-  onClick={handleCheckout}
-  className="px-6 py-3 flex gap-2 rounded font-bold text-white bg-green-500 hover:bg-green-600"
->
- <FaShoppingCart size={20} /> Proceed to Payment
-</button>
-
-        
+        <button
+          onClick={handleCheckout}
+          className="px-6 py-3 flex gap-2 rounded font-bold text-white bg-green-500 hover:bg-green-600"
+        >
+          <FaShoppingCart size={20} /> Proceed to Payment
+        </button>
       </div>
     </div>
   );
