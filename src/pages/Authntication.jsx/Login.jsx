@@ -24,6 +24,8 @@ const Login = () => {
   const onSubmit = (data) => {
     signInUser(data.email, data.password)
       .then((result) => {
+        
+         
       Swal.fire({
           icon: 'success',
           title: 'Login Successful',

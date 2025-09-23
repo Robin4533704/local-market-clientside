@@ -31,7 +31,7 @@ import CompletedDeliveries from "../pages/dashbord/pandingdelivery/completeddeli
 import PendingDeliveries from "../pages/dashbord/pandingdelivery/pendingDeliveries";
 import ProductList from "../pages/dashbord/pandingdelivery/ProductList/ProductList";
 import ProductCard from "../pages/dashbord/pandingdelivery/ProductList/ProductCard";
-import NotificationsBall from "../pages/home/banner/NotificationsBall";
+
 import ProductDetails from "../pages/home/ShopCategories/ProductDetails";
 import PublicData from "../pages/dashbord/pandingdelivery/ProductList/PublicData";
 import OrderListTable from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends/OrderListTable";
@@ -114,9 +114,6 @@ export const router = createBrowserRouter([
   element:<PrivetRoute><AddProducts></AddProducts></PrivetRoute>
 },
 { path: "sentparsel", element: <PrivetRoute><SentParcel /></PrivetRoute>, loader: () => fetch("/serviceData.json").then(res => res.json()) },
-
-        { path: "notificationsBall" , element:<PrivetRoute> <NotificationsBall/></PrivetRoute>},
-     
 
       // Auth routes
       {

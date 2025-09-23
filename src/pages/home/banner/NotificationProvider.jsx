@@ -8,7 +8,7 @@ export const NotificationProvider = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000"); // backend URL
+    const socket = io("https://daily-local-market-server.vercel.app"); // backend URL
 
     socket.on("notification", (data) => {
       setNotifications((prev) => [data, ...prev]);

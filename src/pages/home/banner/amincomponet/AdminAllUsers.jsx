@@ -12,7 +12,7 @@ const AdminAllUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
   const axiosSecure = useAxiosSecure();
-
+ 
   const fetchUsers = async () => {
     setLoading(true);
     try {

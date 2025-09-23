@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://daily-local-market-server.vercel.app");
 
 export default function NotificationsBell() {
   const [notifications, setNotifications] = useState([]);

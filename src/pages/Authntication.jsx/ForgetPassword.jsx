@@ -3,16 +3,19 @@ import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../constex/AuthContext";
 import { useNavigate } from "react-router";
+import { auth } from "../../Firebase.config";
+import UseAuth from "../../hooks/UseAuth";
  // path ঠিক করুন
 
 const ForgotPassword = () => {
   const navigate = useNavigate()
   const { passwordReset } = useContext(AuthContext);
   const [email, setEmail] = useState("");
-
+ const [ sendPassword] = UseAuth()
   const handleReset = async (e) => {
     e.preventDefault();
     try {
+      sendPassword(auth, email)
       await passwordReset(email);
       Swal.fire({
         icon: "success",

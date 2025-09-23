@@ -11,7 +11,7 @@ const useAxiosSecure = () => {
   // Create Axios instance
   const axiosSecure = useMemo(() => {
     return axios.create({
-      baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+      baseURL: import.meta.env.VITE_API_URL || "https://daily-local-market-server.vercel.app",
       timeout: 10000,
     });
   }, []);

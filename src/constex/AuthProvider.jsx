@@ -2,14 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import {
-  signInWithPopup,
+  signInWithPopup,sendEmailVerification,
   signOut,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   updateProfile,
-  sendPasswordResetEmail
+ sendPasswordResetEmail
 } from "firebase/auth";
 import { auth } from "../Firebase.config";
 
@@ -21,7 +21,24 @@ const AuthProvider = ({ children }) => {
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
+  
   };
+const sendVerificationEmail = () => {
+  if (auth.currentUser) {
+    return sendEmailVerification(auth.currentUser)
+      .then(() => console.log("Verification email sent!"))
+      .catch(err => console.log("Email send error:", err));
+  } else {
+    console.log("No user logged in");
+  }
+};
+
+const sendPassword = (email) =>{
+  return sendPasswordResetEmail(auth, email)
+  .then(() => {
+    console.log("password reset email sent")
+  })
+}
 
   // sign in user (login)
   const signInUser = (email, password) => {
@@ -80,7 +97,7 @@ const AuthProvider = ({ children }) => {
     signInGoogleUser,
     updateUserProfiles,
     user,
-    loading,
+    loading,sendVerificationEmail,sendPassword 
   };
 
   return (

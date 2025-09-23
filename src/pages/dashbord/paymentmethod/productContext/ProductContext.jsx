@@ -13,7 +13,7 @@ export const ProductProvider = ({ children }) => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get("/products");
+      const res = await axiosInstance.get("/api/products");
       setProducts(res.data); // সব product set করা হবে
     } catch (err) {
       console.error(err);

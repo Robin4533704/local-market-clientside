@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Profileslogo from '../../home/banner/Profileslogo';
 import UseAuth from '../../../hooks/UseAuth';
 import defaultImage from '../../../assets/images/download.png';
-import NotificationsBall from '../../home/banner/NotificationsBall';
+
 
 const Navber = () => {
   const { user, logOut } = UseAuth();
@@ -61,9 +61,8 @@ const Navber = () => {
 
       {/* Right side */}
     <div className="navbar-end flex items-center gap-3 relative">
-  {/* 🔔 Notification Bell (for ALL roles) */}
 
- <NotificationsBall  />
+
  
 
 

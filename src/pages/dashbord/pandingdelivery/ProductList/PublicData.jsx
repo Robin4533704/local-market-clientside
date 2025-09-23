@@ -13,7 +13,7 @@ const PublicData = ({ showButton = true }) => {
   const [dateFilter, setDateFilter] = useState({ start: "", end: "" });
   const navigate = useNavigate();
   const { user } = UseAuth();
- console.log(setSortType,setDateFilter)
+
   // Load products
   useEffect(() => {
     const fetchData = async () => {

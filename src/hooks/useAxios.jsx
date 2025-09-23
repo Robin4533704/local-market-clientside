@@ -5,7 +5,7 @@ const useAxios = () => {
   const auth = getAuth();
 
   const instance = axios.create({
-    baseURL: "http://localhost:5000", // তোমার backend URL
+    baseURL: "https://daily-local-market-server.vercel.app", // তোমার backend URL
   });
 
   // রিকোয়েস্ট ইন্টারসেপ্টর দিয়ে টোকেন যোগ করা

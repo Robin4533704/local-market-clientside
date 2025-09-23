@@ -6,12 +6,12 @@ import Swal from "sweetalert2";
 import UseAuth from "../../hooks/UseAuth";
 import SocialLogin from "../SocialLogin";
 import useAxios from "../../hooks/useAxios";
-import axios from "axios";
+
 
 const Register = () => {
   const axiosInstance = useAxios();
   const { register: authRegister, handleSubmit, formState: { errors } } = useForm();
-  const { createUser, updateUserProfiles } = UseAuth();
+  const { createUser, updateUserProfiles} = UseAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [profilePic, setProfilePic] = useState("");
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Register = () => {
     const url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`;
 
     try {
-      const res = await axios.post(url, formData);
+      const res = await axiosInstance.post(url, formData);
       if (res.data.success) setProfilePic(res.data.data.display_url);
     } catch (err) {
       console.error("Image upload error:", err);
@@ -42,6 +42,9 @@ const Register = () => {
       // 1. Firebase signup
       const result = await createUser(data.email, data.password);
        console.log(result);
+
+      
+
       // 2. Firebase profile update
       await updateUserProfiles({
         displayName: data.name,

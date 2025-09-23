@@ -89,7 +89,7 @@ const ProductCard = () => {
 
   const imageUrl =
     product.image && !product.image.startsWith("http")
-      ? `http://localhost:5000${product.image}`
+      ? `https://daily-local-market-server.vercel.app${product.image}`
       : product.image || "/placeholder.png";
 
   return (

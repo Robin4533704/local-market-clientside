@@ -18,7 +18,7 @@ const SocialLogin = () => {
   created_at: new Date().toISOString(), // ✅ Corrected Date()
   last_log_in : new Date().toISOString()
 };
-const res = await axiosInstance.post('users', userInfo)
+const res = await axiosInstance.post('/users', userInfo)
 console.log('user update info',res.data);
 navigate('/')
 
