@@ -9,21 +9,20 @@ const useAxiosSecure = () => {
   const navigate = useNavigate();
 
   // ✅ Axios instance শুধুমাত্র একবার তৈরি হবে
-  const axiosSecure = useMemo(() => {
+const axiosSecure = useMemo(() => {
     return axios.create({
-      baseURL: import.meta.env.VITE_API_URL || "https://daily-local-market-server.vercel.app",
+      baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
       timeout: 10000,
     });
   }, []);
 
   useEffect(() => {
-    // Request interceptor → token attach করা
     const reqInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         const user = getAuth().currentUser;
         if (user) {
           try {
-            const token = await user.getIdToken(true); // Always fresh token
+            const token = await user.getIdToken(); // Always fresh token
             config.headers.Authorization = `Bearer ${token}`;
             console.log("Axios token set:", token);
           } catch (err) {

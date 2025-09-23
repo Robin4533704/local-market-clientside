@@ -4,23 +4,22 @@ import { getAuth } from "firebase/auth";
 const useAxios = () => {
   const auth = getAuth();
 
-  // ✅ Axios instance create
-  const instance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || "https://daily-local-market-server.vercel.app",
-    timeout: 10000,
+  const axiosInstance = axios.create({
+    baseURL: import.meta.env.VITE_API_URL,
+    timeout: 20000, // 20s
   });
 
-  // ✅ Request interceptor – Token attach
-  instance.interceptors.request.use(
+  axiosInstance.interceptors.request.use(
     async (config) => {
       const user = auth.currentUser;
       if (user) {
         try {
-          const token = await user.getIdToken(true); // Always fresh token
-          config.headers.Authorization = `Bearer ${token}`;
-          console.log("Token set in Axios:", token);
+          const token = await user.getIdToken().catch(() => null);
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
         } catch (error) {
-          console.error("Error fetching Firebase token:", error);
+          console.warn("Firebase token skipped:", error.message);
         }
       }
       return config;
@@ -28,18 +27,7 @@ const useAxios = () => {
     (error) => Promise.reject(error)
   );
 
-  // ✅ Response interceptor – optional, যদি 401/403 handle করতে চাও
-  instance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      const status = error.response?.status;
-      if (status === 401) console.warn("Unauthorized request (401)");
-      if (status === 403) console.warn("Forbidden request (403)");
-      return Promise.reject(error);
-    }
-  );
-
-  return instance;
+  return axiosInstance;
 };
 
 export default useAxios;
