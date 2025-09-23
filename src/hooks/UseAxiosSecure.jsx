@@ -8,7 +8,7 @@ const useAxiosSecure = () => {
   const { logOut } = useAuth();
   const navigate = useNavigate();
 
-  // Create Axios instance
+  // ✅ Axios instance শুধুমাত্র একবার তৈরি হবে
   const axiosSecure = useMemo(() => {
     return axios.create({
       baseURL: import.meta.env.VITE_API_URL || "https://daily-local-market-server.vercel.app",
@@ -17,22 +17,25 @@ const useAxiosSecure = () => {
   }, []);
 
   useEffect(() => {
-    // ✅ Request interceptor
+    // Request interceptor → token attach করা
     const reqInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         const user = getAuth().currentUser;
         if (user) {
-          // Always get fresh token
-          const token = await user.getIdToken(true);
-          config.headers.Authorization = `Bearer ${token}`;
-          console.log("Axios token set:", token);
+          try {
+            const token = await user.getIdToken(true); // Always fresh token
+            config.headers.Authorization = `Bearer ${token}`;
+            console.log("Axios token set:", token);
+          } catch (err) {
+            console.error("Error getting Firebase token:", err);
+          }
         }
         return config;
       },
       (error) => Promise.reject(error)
     );
 
-    // ✅ Response interceptor
+    // Response interceptor → 401/403 handle করা
     const resInterceptor = axiosSecure.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -51,7 +54,7 @@ const useAxiosSecure = () => {
       }
     );
 
-    // Cleanup interceptors
+    // Cleanup interceptors → memory leak এড়ানোর জন্য
     return () => {
       axiosSecure.interceptors.request.eject(reqInterceptor);
       axiosSecure.interceptors.response.eject(resInterceptor);

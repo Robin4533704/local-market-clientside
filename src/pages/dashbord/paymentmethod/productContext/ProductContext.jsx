@@ -17,7 +17,11 @@ export const ProductProvider = ({ children }) => {
       setProducts(res.data); // সব product set করা হবে
     } catch (err) {
       console.error(err);
-      Swal.fire("Error", err.response?.data?.message || "Failed to load products", "error");
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || err.message || "Failed to load products",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -25,7 +29,7 @@ export const ProductProvider = ({ children }) => {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [axiosInstance]); // dependency হিসাবে axiosInstance রাখা ভালো
 
   return (
     <ProductContext.Provider

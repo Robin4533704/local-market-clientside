@@ -67,10 +67,13 @@ import ErrorPage from "../pages/Errorpage";
 export const router = createBrowserRouter([
   {
     path: "/",
+    
     element: <RootLayout />,
      errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <Home /> },
+      { index: true,
+        
+        element: <Home /> },
 
       { path: "coverage", element: <Coverage />, loader: () => fetch("/Services.json")},
       { path: "forbidden", element: <Forbidden /> },
