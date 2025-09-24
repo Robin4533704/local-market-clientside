@@ -8,7 +8,6 @@ import Register from "../pages/register/Register";
 import Coverage from "../pages/coverage/Coverage";
 import PrivetRoute from "../route/PrivetRoute";
 import Myparcels from "../pages/dashbord/Myparcels";
-
 // Stripe Elements
 import Payment from "../pages/dashbord/paymentmethod/Payment";
 import PaymentHistry from "../pages/dashbord/paymentmethod/PaymentHistry";
@@ -59,8 +58,7 @@ import PriceTrends from "../pages/dashbord/pandingdelivery/ProductList/PriceTren
 import ProductEdit from "../pages/dashbord/pandingdelivery/ProductList/ProductEdit";
 import OrderDetails from "../pages/dashbord/pandingdelivery/ProductList/PriceTrends/OrderDetails";
 import ErrorPage from "../pages/Errorpage";
-
-
+import ParcelPayment from "../pages/dashbord/paymentmethod/parcelPayment";
 
 
 
@@ -69,7 +67,6 @@ export const router = createBrowserRouter([
     path: "/",
     
     element: <RootLayout />,
-     errorElement: <ErrorPage />,
     children: [
       { index: true,
         
@@ -116,7 +113,7 @@ export const router = createBrowserRouter([
   path: "/addproduct",
   element:<PrivetRoute><AddProducts></AddProducts></PrivetRoute>
 },
-{ path: "sentparsel", element: <PrivetRoute><SentParcel /></PrivetRoute>, loader: () => fetch("/serviceData.json").then(res => res.json()) },
+{ path: "/sentparsel", element: <PrivetRoute><SentParcel /></PrivetRoute>, loader: () => fetch("/serviceData.json").then(res => res.json()) },
 
       // Auth routes
       {
@@ -149,6 +146,7 @@ export const router = createBrowserRouter([
       { path: "pending-riders", element: <AdminRoute><PandingRiders /></AdminRoute> },
       { path: "assign-riders", element: <AdminRoute><AssainRiders /></AdminRoute> },
       { path: "payment/:parcelId", element: <Payment /> },
+      { path: "parcelpayment/:parcelId", element: <ParcelPayment/>},
       { path: "payment-history", element: <PaymentHistry /> },
       { path: "tracking", element: <TackParcel /> },
       { path: "tracking/:trackingId", element: <PrivetRoute><UpdateTracking /></PrivetRoute> },
@@ -224,7 +222,7 @@ export const router = createBrowserRouter([
        },
   
         {
-  path: "order-details/:id", // ✅ Relative
+  path: "order-details/:id", 
   element: <OrderDetails />
 }
 

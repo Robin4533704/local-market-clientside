@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import service from "../../../../public/Services.json"; // your service centers data
+import service from "../../../../public/Services.json";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/UseAxiosSecure";
 import UseAuth from "../../../hooks/UseAuth";
 
-
 const BeARider = () => {
-const { user } = UseAuth()
+  const { user } = UseAuth();
   const axiosSecure = useAxiosSecure();
 
   const [regions, setRegions] = useState([]);
@@ -23,7 +22,9 @@ const { user } = UseAuth()
     bikeRegNumber: "",
     status: "pending",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Prefill name/email from Firebase user
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
@@ -34,16 +35,20 @@ const { user } = UseAuth()
     }
   }, [user]);
 
+  // Load unique regions
   useEffect(() => {
     const uniqueRegions = [...new Set(service.map(item => item.region))];
     setRegions(uniqueRegions);
   }, []);
 
+  // Load districts based on region
   useEffect(() => {
     if (formData.region) {
-      const filteredDistricts = service
-        .filter(item => item.region === formData.region)
-        .map(item => item.district);
+      const filteredDistricts = [
+        ...new Set(service
+          .filter(item => item.region === formData.region)
+          .map(item => item.district))
+      ];
       setDistricts(filteredDistricts);
       setFormData(prev => ({ ...prev, district: "" }));
     } else {
@@ -59,6 +64,7 @@ const { user } = UseAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       // Check if user already exists
@@ -69,11 +75,14 @@ const { user } = UseAuth()
           title: "Oops...",
           text: "User already exists! You cannot submit twice.",
         });
+        setIsSubmitting(false);
         return;
       }
 
       // Submit new rider
       const res = await axiosSecure.post("/riders", formData);
+      console.log('Rider submission response:', res.data);
+
       if (res.data.insertedId) {
         Swal.fire({
           icon: "success",
@@ -100,10 +109,13 @@ const { user } = UseAuth()
         title: "Oops...",
         text: error.response?.data?.message || "Something went wrong! Please check the form and try again.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   return (
-    <div className="pt-24"> {/* compensate navbar height */}
+    <div className="pt-24">
       <form
         onSubmit={handleSubmit}
         className="space-y-6 bg-white p-6 rounded-xl shadow-lg max-w-4xl mx-auto"
@@ -239,8 +251,12 @@ const { user } = UseAuth()
         </div>
 
         <div className="pt-4">
-          <button type="submit" className="btn bg-lime-300 w-full">
-            Submit Application
+          <button
+            type="submit"
+            className="btn bg-lime-300 w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Application"}
           </button>
         </div>
       </form>

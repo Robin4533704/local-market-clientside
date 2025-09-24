@@ -19,7 +19,7 @@ const ProductList = () => {
 
   const handleDetails = (product) => {
     if (!user) return navigate("/login");
-    navigate(`/api/product-details/${product._id}`, { state: { product } });
+    navigate(`/product-details/${product._id}`, { state: { product } });
   };
 
   const handleDelete = async (id) => {

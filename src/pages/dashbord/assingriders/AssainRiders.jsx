@@ -3,11 +3,15 @@ import ReactModal from "react-modal";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/UseAxiosSecure";
 
+ReactModal.setAppElement("#root"); // accessibility
+
 const AssignRider = () => {
   const [parcels, setParcels] = useState([]);
   const [riders, setRiders] = useState([]);
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loadingRiders, setLoadingRiders] = useState(false);
+
   const axiosSecure = useAxiosSecure();
 
   // Load parcels: paid & not_collected
@@ -15,20 +19,27 @@ const AssignRider = () => {
     axiosSecure
       .get("/parcels?payment_status=paid&delivery_status=not_collected")
       .then((res) => setParcels(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error("Fetch parcels error:", err);
+        Swal.fire("Error", "Failed to load parcels", "error");
+      });
   }, [axiosSecure]);
 
   // Load riders when a parcel is selected
   useEffect(() => {
     if (selectedParcel?.senderRegion) {
-      console.log("Fetching riders for district:", selectedParcel.senderRegion);
+      setLoadingRiders(true);
       axiosSecure
         .get(`/riders/available?district=${selectedParcel.senderRegion}`)
         .then((res) => {
-          console.log("Riders fetched:", res.data);
           setRiders(res.data);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          console.error("Fetch riders error:", err);
+          Swal.fire("Error", "Failed to load riders", "error");
+          setRiders([]);
+        })
+        .finally(() => setLoadingRiders(false));
     }
   }, [selectedParcel, axiosSecure]);
 
@@ -40,8 +51,10 @@ const AssignRider = () => {
   const assignRider = (rider) => {
     if (!selectedParcel) return;
 
+    const parcelId = selectedParcel._id;
+
     axiosSecure
-      .patch(`/parcels/${selectedParcel._id}/assign-rider`, {
+      .patch(`/parcels/${parcelId}/assign-rider`, {
         riderId: rider._id,
         riderName: rider.name,
         riderEmail: rider.email,
@@ -51,11 +64,11 @@ const AssignRider = () => {
         setModalOpen(false);
         setSelectedParcel(null);
 
-        setParcels((prev) =>
-          prev.filter((p) => p._id !== selectedParcel._id)
-        );
+        // Remove assigned parcel from table
+        setParcels((prev) => prev.filter((p) => p._id !== parcelId));
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("Assign rider error:", err);
         Swal.fire("Error!", "Failed to assign rider.", "error");
       });
   };
@@ -63,6 +76,7 @@ const AssignRider = () => {
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4">Assign Riders</h2>
+
       <table className="w-full border">
         <thead>
           <tr className="bg-gray-200">
@@ -124,7 +138,9 @@ const AssignRider = () => {
               <span className="text-lime-300">{selectedParcel.title}</span>
             </h3>
 
-            {riders.length > 0 ? (
+            {loadingRiders ? (
+              <p>Loading riders...</p>
+            ) : riders.length > 0 ? (
               <table className="w-full border text-sm">
                 <thead>
                   <tr className="bg-gray-800">

@@ -2,20 +2,22 @@ import React from 'react';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 import { Link } from 'react-router-dom';
-
+import banner1 from "../../../assets/images/beautiful-street-market-sunset.jpg"
+import banner2 from "../../../assets/images/istockphoto-1941134987-612x612.webp"
+import banner3 from "../../../assets/images/side-view-women-shopping-groceries.jpg"
 const slides = [
   {
-    img: "/zpj/beautiful-street-market-sunset.jpg",
+    img: banner1,
     title: "Welcome to Farmer Market",
     subtitle: "Taste the freshness direct from local farms"
   },
   {
-    img: "/zpj/side-view-women-shopping-groceries.jpg",
+    img: banner2,
     title: "Organic & Pure",
     subtitle: "Healthier choices for your family and home"
   },
   {
-    img:"/zpj/medium-shot-women-holding-shopping-bags.jpg",
+    img:banner3,
     title: "Join Our Community",
     subtitle: "Support sustainable, small-scale farmers"
   },

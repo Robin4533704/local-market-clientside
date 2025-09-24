@@ -3,16 +3,15 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../../../hooks/UseAxiosSecure";
 import UseAuth from "../../../../hooks/UseAuth";
 
-
 const CompletedDeliveries = ({ riderEmail }) => {
   const [parcels, setParcels] = useState([]);
   const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecure();
-  const user = UseAuth();
+  const { user } = UseAuth(); // ✅ destructure user
 
   const fetchCompletedParcels = async () => {
     setLoading(true);
-    const emailToUse = riderEmail || (user && user.email);
+    const emailToUse = riderEmail || user?.email;
     if (!emailToUse) {
       Swal.fire("Error", "Rider email missing", "error");
       setLoading(false);
@@ -35,7 +34,6 @@ const CompletedDeliveries = ({ riderEmail }) => {
   useEffect(() => {
     fetchCompletedParcels();
   }, [riderEmail, user?.email]);
-  
 
   const cashOutParcel = async (parcelId) => {
     if (!parcelId) return;

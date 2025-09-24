@@ -4,40 +4,43 @@ import useAxiosSecure from "../../../hooks/UseAxiosSecure";
 import UseAuth from "../../../hooks/UseAuth";
 
 const PendingDeliveries = ({ riderEmail }) => {
+  const { user } = UseAuth();
+  const axiosSecure = useAxiosSecure();
+
   const [parcels, setParcels] = useState([]);
   const [loading, setLoading] = useState(true);
-  const axiosSecure = useAxiosSecure();
-  const { user } = UseAuth(); // ✅ fixed: destructure user
 
-  // Fetch parcels assigned to rider
-  const fetchParcels = async () => {
-    setLoading(true);
-    const emailToUse = riderEmail || user?.email;
+ const fetchParcels = async () => {
+  setLoading(true);
+  const emailToUse = riderEmail || user?.email;
+  console.log("Fetching parcels for:", emailToUse);
 
-    if (!emailToUse) {
-      Swal.fire("Error", "Rider email missing", "error");
-      setLoading(false);
-      return;
-    }
+  if (!emailToUse) {
+    setParcels([]);
+    setLoading(false);
+    return;
+  }
 
-    try {
-      const res = await axiosSecure.get("/riders/parcels", {
-        params: { email: emailToUse },
-      });
-      setParcels(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      console.error("Fetch parcels error:", err);
-      Swal.fire("Error", "Failed to fetch parcels", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const res = await axiosSecure.get("/riders/parcels", {
+      params: { email: emailToUse },
+    });
+    console.log("Fetched parcels:", res.data);
+    setParcels(Array.isArray(res.data) ? res.data : []);
+  } catch (err) {
+    console.error("Fetch parcels error:", err);
+    Swal.fire("Error", "Failed to fetch parcels", "error");
+    setParcels([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchParcels();
   }, [riderEmail, user?.email]);
 
-  // Update parcel status
   const updateStatus = async (parcelId, newStatus) => {
     if (!parcelId || !newStatus) return;
 
@@ -47,11 +50,7 @@ const PendingDeliveries = ({ riderEmail }) => {
       });
 
       if (res.status === 200) {
-        Swal.fire(
-          "Success",
-          `Parcel status updated to ${newStatus}`,
-          "success"
-        );
+        Swal.fire("Success", `Parcel status updated to ${newStatus}`, "success");
         fetchParcels();
       } else {
         Swal.fire("Error", "Failed to update status", "error");
@@ -62,8 +61,9 @@ const PendingDeliveries = ({ riderEmail }) => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-
+  if (loading) return <div className="p-4 text-center">Loading...</div>;
+  if (!parcels.length)
+  
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Pending Deliveries</h2>
@@ -89,13 +89,9 @@ const PendingDeliveries = ({ riderEmail }) => {
                 <td className="border px-4 py-2">{parcel.tracking_id}</td>
                 <td className="border px-4 py-2">{parcel.title}</td>
                 <td className="border px-4 py-2">{parcel.receiverName}</td>
-                <td className="border px-4 py-2">
-                  {parcel.receiverServiceCenter}
-                </td>
+                <td className="border px-4 py-2">{parcel.receiverServiceCenter}</td>
                 <td className="border px-4 py-2">{parcel.cost} BDT</td>
-                <td className="border px-4 py-2 capitalize">
-                  {status?.replace("_", " ")}
-                </td>
+                <td className="border px-4 py-2 capitalize">{status?.replace("_", " ")}</td>
                 <td className="border px-4 py-2 space-x-2">
                   {status === "rider_assigned" && (
                     <button
@@ -117,13 +113,6 @@ const PendingDeliveries = ({ riderEmail }) => {
               </tr>
             );
           })}
-          {parcels.length === 0 && (
-            <tr>
-              <td colSpan="7" className="text-center py-4">
-                No pending deliveries found
-              </td>
-            </tr>
-          )}
         </tbody>
       </table>
     </div>

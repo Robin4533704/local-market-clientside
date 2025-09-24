@@ -91,8 +91,6 @@ const Dashboard = () => {
           </li>
             </>
           )}
-
-          {/* Parcel / Payment / Tracking */}
          
           <li>
             <NavLink to="/dashboard/tracking" className={({ isActive }) => linkClass(isActive)}>

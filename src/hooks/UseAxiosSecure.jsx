@@ -9,7 +9,7 @@ const useAxiosSecure = () => {
   const navigate = useNavigate();
 
   // ✅ Axios instance শুধুমাত্র একবার তৈরি হবে
-const axiosSecure = useMemo(() => {
+  const axiosSecure = useMemo(() => {
     return axios.create({
       baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
       timeout: 10000,
@@ -17,12 +17,13 @@ const axiosSecure = useMemo(() => {
   }, []);
 
   useEffect(() => {
+    // Request interceptor → attach fresh Firebase token
     const reqInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         const user = getAuth().currentUser;
         if (user) {
           try {
-            const token = await user.getIdToken(); // Always fresh token
+            const token = await user.getIdToken(true); // force refresh
             config.headers.Authorization = `Bearer ${token}`;
             console.log("Axios token set:", token);
           } catch (err) {
@@ -34,7 +35,7 @@ const axiosSecure = useMemo(() => {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor → 401/403 handle করা
+    // Response interceptor → handle 401 / 403
     const resInterceptor = axiosSecure.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -53,7 +54,7 @@ const axiosSecure = useMemo(() => {
       }
     );
 
-    // Cleanup interceptors → memory leak এড়ানোর জন্য
+    // Cleanup interceptors → prevent memory leaks
     return () => {
       axiosSecure.interceptors.request.eject(reqInterceptor);
       axiosSecure.interceptors.response.eject(resInterceptor);

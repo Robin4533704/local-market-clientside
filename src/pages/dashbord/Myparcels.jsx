@@ -6,13 +6,13 @@ import UseAuth from "../../hooks/UseAuth";
 import { Link, useNavigate } from "react-router-dom"; 
 import UseAxiosSecure from "../../hooks/UseAxiosSecure";
 
-
 const MyParcels = () => {
   const { user } = UseAuth();
   const axiosSecure = UseAxiosSecure();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  // Fetch parcels
   const { data: parcels = [], isLoading } = useQuery({
     queryKey: ['parcels', user?.email],
     enabled: !!user?.email, 
@@ -22,10 +22,21 @@ const MyParcels = () => {
     }
   });
 
-  const handlePay = (_id) => {
-    if (!_id) return;
-    console.log("Proceed to payment for", _id);
-    navigate(`/dashboard/payment/${_id}`);
+  const handlePay = (parcel) => {
+    if (!parcel) return;
+
+    const paymentData = {
+      product: parcel,
+      quantity: 1,
+      subtotal: parcel.cost,
+      discount: 0,
+      total: parcel.cost,
+      coupon: null,
+      _id: parcel._id
+    };
+
+    // Navigate to payment form
+    navigate(`/dashboard/parcelpayment/${parcel._id}`, { state: paymentData });
   };
 
   const handleDelete = (parcelId) => {
@@ -89,20 +100,22 @@ const MyParcels = () => {
                     parcel.payment_status === "paid" ? "bg-green-500" : "bg-pink-500"
                   }`}
                 >
-                  {parcel.payment_status}
+                  {parcel.payment_status || "unpaid"}
                 </span>
               </td>
               <td className="border border-gray-300 px-4 py-2 space-y-1">
                 <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
                   <Link to="/dashboard/payment-history" className="btn btn-xs btn-info text-white">View</Link>
+                  
                   {parcel.payment_status !== 'paid' && (
                     <button
-                      onClick={() => handlePay(parcel._id)}
+                      onClick={() => handlePay(parcel)}
                       className="btn btn-xs btn-success text-white"
                     >
                       Pay Now
                     </button>
                   )}
+
                   <button
                     onClick={() => handleDelete(parcel._id)}
                     className="btn btn-xs btn-error text-white"
