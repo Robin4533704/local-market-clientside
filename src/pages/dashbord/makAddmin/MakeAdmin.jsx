@@ -27,37 +27,40 @@ const MakeAdmin = () => {
     },
   });
 
-  // Role update (email দিয়ে)
-  const { mutateAsync: updateRole } = useMutation({
-    mutationFn: async ({ email, newRole }) =>
-      await axiosSecure.patch(`/users/${encodeURIComponent(email)}/role`, { newRole }),
-    onSuccess: () => {
-      refetchAll();
-      refetchSearch();
-    },
+// Role update by ID
+const { mutateAsync: updateRole } = useMutation({
+  mutationFn: async ({ id, newRole }) =>
+    await axiosSecure.patch(`/users/${id}/role`, { newRole }),
+  onSuccess: () => {
+    refetchAll();
+    refetchSearch();
+  },
+});
+
+
+
+const handleRoleChange = async (user) => {
+  const action = user.role === "admin" ? "Remove Admin" : "Make Admin";
+  const newRole = user.role === "admin" ? "user" : "admin";
+
+  const confirm = await Swal.fire({
+    title: `${action}?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "Cancel",
   });
+  if (!confirm.isConfirmed) return;
 
-  const handleRoleChange = async (email, currentRole) => {
-    const action = currentRole === "admin" ? "Remove Admin" : "Make Admin";
-    const newRole = currentRole === "admin" ? "user" : "admin";
+  try {
+    await updateRole({ id: user._id, newRole });
+    Swal.fire("Success", `${action} successful`, "success");
+  } catch (err) {
+    console.error("UpdateRole error:", err);
+    Swal.fire("Error", "Failed to update role", "error");
+  }
+};
 
-    const confirm = await Swal.fire({
-      title: `${action}?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "Cancel",
-    });
-    if (!confirm.isConfirmed) return;
-
-    try {
-      await updateRole({ email, newRole });
-      Swal.fire("Success", `${action} successful`, "success");
-    } catch (err) {
-      console.error("UpdateRole error:", err);
-      Swal.fire("Error", "Failed to update role", "error");
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -116,14 +119,15 @@ const MakeAdmin = () => {
                   </td>
                   <td className="px-4 py-2 border">{user.role || "user"}</td>
                   <td className="px-4 py-2 border">
-                    <button
-                      onClick={() => handleRoleChange(user.email, user.role)}
-                      className={`px-3 py-1 rounded-md text-white ${
-                        user.role === "admin" ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
-                      }`}
-                    >
-                      {user.role === "admin" ? "Remove Admin" : "Make Admin"}
-                    </button>
+                  <button
+  onClick={() => handleRoleChange(user)}
+  className={`px-3 py-1 rounded-md text-white ${
+    user.role === "admin" ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+  }`}
+>
+  {user.role === "admin" ? "Remove Admin" : "Make Admin"}
+</button>
+
                   </td>
                 </tr>
               ))}

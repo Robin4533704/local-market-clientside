@@ -17,10 +17,10 @@ const AdminRoute = ({ children }) => {
     );
   }
 
-  // ❌ Not admin → redirect to forbidden
   if (!user || role !== "admin") {
-    return <Navigate to="/forbidden" state={{ from: location }} replace />;
-  }
+  return <Navigate to="/forbidden" state={{ from: location }} replace />;
+}
+
 
   // ✅ Admin access → render children
   return children;

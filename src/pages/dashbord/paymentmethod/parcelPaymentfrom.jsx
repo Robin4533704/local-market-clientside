@@ -115,7 +115,7 @@ const ParcelPaymentForm = ({ paymentData }) => {
           title: 'Payment Successful!',
           html: `<p>Transaction ID: <strong>${result.paymentIntent.id}</strong><br/>Order ID: <strong>${orderId}</strong></p>`,
           confirmButtonText: 'Go to My Orders',
-        }).then((res) => res.isConfirmed && navigate('/dashbord/myparcels'));
+        }).then((res) => res.isConfirmed && navigate('/dashboard/myparcels'));
 
       } catch (err) {
         Swal.fire({ icon: 'warning', title: 'Payment Succeeded', text: err?.message || 'Order save failed.' });

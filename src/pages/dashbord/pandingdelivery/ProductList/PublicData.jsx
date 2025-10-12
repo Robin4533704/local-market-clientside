@@ -4,7 +4,8 @@ import { BsCurrencyDollar } from "react-icons/bs";
 import { FaEye, FaStar } from "react-icons/fa";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
-import UseAuth from "../../../../hooks/UseAuth"; // Login check
+import UseAuth from "../../../../hooks/UseAuth";
+import { motion } from "framer-motion";
 
 const PublicData = ({ showButton = true }) => {
   const [products, setProducts] = useState([]);
@@ -14,11 +15,10 @@ const PublicData = ({ showButton = true }) => {
   const navigate = useNavigate();
   const { user } = UseAuth();
 
-  // Load products
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/publicData.json"); // public ফোল্ডার থেকে JSON
+        const res = await fetch("/publicData.json");
         const data = await res.json();
         setProducts(data);
         setFilteredProducts(data);
@@ -29,11 +29,9 @@ const PublicData = ({ showButton = true }) => {
     fetchData();
   }, []);
 
-  // Filter & Sort Logic
   useEffect(() => {
     let tempProducts = [...products];
 
-    // Date Filter
     if (dateFilter.start || dateFilter.end) {
       const startDate = dateFilter.start ? new Date(dateFilter.start) : new Date("1970-01-01");
       const endDate = dateFilter.end ? new Date(dateFilter.end) : new Date();
@@ -43,7 +41,6 @@ const PublicData = ({ showButton = true }) => {
       });
     }
 
-    // Sorting
     if (sortType === "low") tempProducts.sort((a, b) => a.final_price - b.final_price);
     else if (sortType === "high") tempProducts.sort((a, b) => b.final_price - a.final_price);
 
@@ -51,23 +48,25 @@ const PublicData = ({ showButton = true }) => {
   }, [products, sortType, dateFilter]);
 
   const handleDetails = (product) => {
-    if (!user) {
-      navigate("/login");
-    } else {
-      navigate(`/product-details/${product._id}`, { state: { product } });
-    }
+    if (!user) navigate("/login");
+    else navigate(`/product-details/${product._id}`, { state: { product } });
   };
 
   return (
     <div className="px-4 md:px-20 bg-[#f5deb3] min-h-screen">
-{/* Product Grid */}
+      {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
         {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <div
+          filteredProducts.map((product, idx) => (
+            <motion.div
               key={product._id}
               onClick={() => handleDetails(product)}
-              className="relative bg-white rounded-lg shadow-md p-4 cursor-pointer hover:scale-105 transition-transform flex flex-col"
+              className="relative bg-white rounded-lg shadow-md p-4 cursor-pointer flex flex-col"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              whileHover={{ scale: 1.03, boxShadow: "0px 10px 20px rgba(0,0,0,0.15)" }}
             >
               {product.discount && (
                 <div className="absolute top-2 right-2 bg-yellow-300 text-xs px-2 py-1 rounded shadow z-10">
@@ -111,7 +110,7 @@ const PublicData = ({ showButton = true }) => {
               >
                 <FaEye size={18} /> View Details
               </button>
-            </div>
+            </motion.div>
           ))
         ) : (
           <p className="text-center text-gray-600 text-lg mt-8">No products found</p>

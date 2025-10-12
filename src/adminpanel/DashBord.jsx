@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { 
   FaHome, FaMotorcycle, FaClock, FaBox, FaCreditCard, 
   FaSearchLocation, FaUserEdit, FaChartLine, FaList, 
@@ -7,12 +7,13 @@ import {
 } from "react-icons/fa";
 import Profileslogo from "../pages/home/banner/Profileslogo";
 import useUserRole from "../hooks/useUserRole";
+import Loading from "../pages/loading/Loading";
 
 const Dashboard = () => {
   const { role, roleLoading } = useUserRole();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  if (roleLoading) return <div>Loading...</div>;
+  if (roleLoading) return <div><Loading/></div>;
 
   const linkClass = (isActive) =>
     `px-4 py-2 rounded-md flex items-center gap-2 ${
@@ -51,7 +52,17 @@ const Dashboard = () => {
       <div className="drawer-side">
         <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
         <ul className="menu p-4 w-64 min-h-full bg-lime-500 text-base-content">
-          <Profileslogo />
+         <Link to="/" className="flex items-center lg:gap-1 ">
+    <img
+      src="/zpj/logo600.png"
+      alt="Logo"
+      className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full object-cover"
+    />
+    <p className="text-sky-300 mt-3 lg:mt-3 text-lg sm:text-xl lg:text-2xl font-extrabold leading-tight tracking-wide">
+  Varcell
+  <span className="text-amber-400 font-bold ml-1 italic">Graund</span>
+</p>
+  </Link>
 
           {/* Home */}
           <li>

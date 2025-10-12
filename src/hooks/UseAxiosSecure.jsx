@@ -21,15 +21,23 @@ const useAxiosSecure = () => {
     const reqInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         const user = getAuth().currentUser;
+
         if (user) {
           try {
             const token = await user.getIdToken(true); // force refresh
-            config.headers.Authorization = `Bearer ${token}`;
-            console.log("Axios token set:", token);
+            if (token) {
+              config.headers.Authorization = `Bearer ${token}`;
+              console.log("Axios token set:", token);
+            } else {
+              console.warn("Firebase token not available yet");
+            }
           } catch (err) {
             console.error("Error getting Firebase token:", err);
           }
+        } else {
+          console.warn("Firebase user not loaded yet");
         }
+
         return config;
       },
       (error) => Promise.reject(error)

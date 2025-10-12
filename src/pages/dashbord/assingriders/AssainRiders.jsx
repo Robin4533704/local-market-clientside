@@ -1,9 +1,10 @@
+// --- AssignRider.jsx ---
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/UseAxiosSecure";
 
-ReactModal.setAppElement("#root"); // accessibility
+ReactModal.setAppElement("#root");
 
 const AssignRider = () => {
   const [parcels, setParcels] = useState([]);
@@ -14,7 +15,7 @@ const AssignRider = () => {
 
   const axiosSecure = useAxiosSecure();
 
-  // Load parcels: paid & not_collected
+  // Load parcels
   useEffect(() => {
     axiosSecure
       .get("/parcels?payment_status=paid&delivery_status=not_collected")
@@ -27,13 +28,14 @@ const AssignRider = () => {
 
   // Load riders when a parcel is selected
   useEffect(() => {
-    if (selectedParcel?.senderRegion) {
+    if (selectedParcel?.receiverServiceCenter) {
+ 
       setLoadingRiders(true);
-      axiosSecure
-        .get(`/riders/available?district=${selectedParcel.senderRegion}`)
-        .then((res) => {
-          setRiders(res.data);
-        })
+     const district = selectedParcel.receiverServiceCenter?.trim().split(" ")[0]; 
+     console.log("District used for rider fetch:", district);
+     
+axiosSecure.get(`/riders/available?district=${district}`)
+        .then((res) => setRiders(res.data))
         .catch((err) => {
           console.error("Fetch riders error:", err);
           Swal.fire("Error", "Failed to load riders", "error");
@@ -63,8 +65,6 @@ const AssignRider = () => {
         Swal.fire("Success!", "Rider assigned successfully!", "success");
         setModalOpen(false);
         setSelectedParcel(null);
-
-        // Remove assigned parcel from table
         setParcels((prev) => prev.filter((p) => p._id !== parcelId));
       })
       .catch((err) => {
@@ -84,7 +84,7 @@ const AssignRider = () => {
             <th className="p-2 border">Title</th>
             <th className="p-2 border">Sender</th>
             <th className="p-2 border">Receiver</th>
-            <th className="p-2 border">Region</th>
+            <th className="p-2 border">Service Center</th>
             <th className="p-2 border">Action</th>
           </tr>
         </thead>
@@ -96,7 +96,7 @@ const AssignRider = () => {
                 <td className="p-2 border">{parcel.title}</td>
                 <td className="p-2 border">{parcel.senderName}</td>
                 <td className="p-2 border">{parcel.receiverName}</td>
-                <td className="p-2 border">{parcel.senderRegion}</td>
+                <td className="p-2 border">{parcel.receiverServiceCenter}</td>
                 <td className="p-2 border">
                   <button
                     className="bg-lime-400 hover:bg-green-600 text-white px-3 py-1 rounded"
@@ -117,7 +117,6 @@ const AssignRider = () => {
         </tbody>
       </table>
 
-      {/* Modal */}
       <ReactModal
         isOpen={modalOpen}
         onRequestClose={() => setModalOpen(false)}
@@ -171,7 +170,7 @@ const AssignRider = () => {
                 </tbody>
               </table>
             ) : (
-              <p className="mt-4">No riders available in this region.</p>
+              <p className="mt-4">No riders available in this district.</p>
             )}
           </>
         ) : (

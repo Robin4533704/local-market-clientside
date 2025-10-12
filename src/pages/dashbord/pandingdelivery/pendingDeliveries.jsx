@@ -1,57 +1,48 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import useAxiosSecure from "../../../hooks/UseAxiosSecure";
 import UseAuth from "../../../hooks/UseAuth";
+import useAxios from "../../../hooks/useAxios";
 
 const PendingDeliveries = ({ riderEmail }) => {
   const { user } = UseAuth();
-  const axiosSecure = useAxiosSecure();
+  const axiosInstance = useAxios(); // ✅ use single axios instance
 
   const [parcels, setParcels] = useState([]);
   const [loading, setLoading] = useState(true);
 
- const fetchParcels = async () => {
-  setLoading(true);
-  const emailToUse = riderEmail || user?.email;
-  console.log("Fetching parcels for:", emailToUse);
+  const fetchParcels = async () => {
+    if (!user?.email && !riderEmail) return; // wait for user ready
+    setLoading(true);
 
-  if (!emailToUse) {
-    setParcels([]);
-    setLoading(false);
-    return;
-  }
+    const emailToUse = riderEmail || user?.email;
+    console.log("Fetching parcels for:", emailToUse);
 
-  try {
-    const res = await axiosSecure.get("/riders/parcels", {
-      params: { email: emailToUse },
-    });
-    console.log("Fetched parcels:", res.data);
-    setParcels(Array.isArray(res.data) ? res.data : []);
-  } catch (err) {
-    console.error("Fetch parcels error:", err);
-    Swal.fire("Error", "Failed to fetch parcels", "error");
-    setParcels([]);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  useEffect(() => {
-    fetchParcels();
-  }, [riderEmail, user?.email]);
+    try {
+      const res = await axiosInstance.get("/riders/parcels", {
+        params: { email: emailToUse },
+      });
+      console.log("Fetched parcels:", res.data);
+      setParcels(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Fetch parcels error:", err);
+      Swal.fire("Error", "Failed to fetch parcels", "error");
+      setParcels([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const updateStatus = async (parcelId, newStatus) => {
     if (!parcelId || !newStatus) return;
 
     try {
-      const res = await axiosSecure.patch(`/parcels/${parcelId}/status`, {
+      const res = await axiosInstance.patch(`/parcels/${parcelId}/status`, {
         delivery_status: newStatus,
       });
 
       if (res.status === 200) {
         Swal.fire("Success", `Parcel status updated to ${newStatus}`, "success");
-        fetchParcels();
+        fetchParcels(); // refresh list
       } else {
         Swal.fire("Error", "Failed to update status", "error");
       }
@@ -61,9 +52,13 @@ const PendingDeliveries = ({ riderEmail }) => {
     }
   };
 
+  useEffect(() => {
+    if (user?.email || riderEmail) fetchParcels();
+  }, [riderEmail, user?.email]);
+
   if (loading) return <div className="p-4 text-center">Loading...</div>;
-  if (!parcels.length)
-  
+  if (!parcels.length) return <div className="p-4 text-center">No pending deliveries</div>;
+
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Pending Deliveries</h2>

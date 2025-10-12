@@ -21,10 +21,10 @@ const Home = () => {
            <Works/>
            
            <OrganicFarmSection/>
-<LogoMarquee/>
+
            <FAQSection/>
           
-           
+         <LogoMarquee/>
 
         </div>
     );

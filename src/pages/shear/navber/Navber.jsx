@@ -4,7 +4,6 @@ import Profileslogo from '../../home/banner/Profileslogo';
 import UseAuth from '../../../hooks/UseAuth';
 import defaultImage from '../../../assets/images/download.png';
 
-
 const Navber = () => {
   const { user, logOut } = UseAuth();
   const navigate = useNavigate();
@@ -12,26 +11,29 @@ const Navber = () => {
   const handleLogout = async () => {
     try {
       await logOut();
-      navigate("/login");
+      navigate('/login');
     } catch (error) {
-      console.error("Logout Error:", error.message);
+      console.error('Logout Error:', error.message);
     }
   };
 
   const links = [
-    { to: "/", label: "Home" },
-    { to: "/productlist/:id", label: "All Products" },
-    { to: "/addproduct", label: "Add Products" },
-    { to: "/coverage", label: "Coverage" },
-    { to: "/sentparsel", label: "Sent A Parcel" },
-    { to: "/dashboard", label: "Dashboard" },
-    { to: "/beaider", label: "BeARider" },
-    
+    { to: '/', label: 'Home' },
+    { to: '/productlist/:id', label: 'All Products' },
+    { to: '/coverage', label: 'Coverage' },
+    { to: '/dashboard', label: 'Dashboard' },
   ];
 
+  const categoryLinks = [
+    { to: '/addproduct', label: 'Add Product' },
+    { to: '/sentparsel', label: 'Sent A Parcel' },
+    { to: '/beaider', label: 'BeARider' },
+  ];
+
+  const specialLinks = ['/addproduct', '/sentparsel', '/beaider'];
+
   return (
-    <div className="navbar max-w-7xl mx-auto shadow-sm text-white px-4 fixed rounded-xl w-full z-50 bg-gray-900">
-      
+  <div className="navbar max-w-7xl mx-auto shadow-sm text-white px-4 fixed top-0 w-full z-50 rounded-xl bg-opacity-50 ">
       {/* Left Logo */}
       <div className="navbar-start">
         <Profileslogo />
@@ -39,59 +41,85 @@ const Navber = () => {
 
       {/* Desktop Menu */}
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 font-bold gap-3">
-          {links.map((link, i) => (
-            <li key={i}>
-              <NavLink
-                to={link.to}
-                className={({ isActive }) =>
-                  `px-4 py-2 rounded-md ${
-                    isActive
-                      ? "bg-lime-600 text-white"
-                      : "border text-yellow-300 hover:bg-blue-400"
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
-            </li>
-          ))}
+        <ul className="flex gap-3 font-bold items-center">
+          {links.map((link, i) => {
+            const isSpecial = specialLinks.includes(link.to);
+            return (
+              <li key={i}>
+                <NavLink
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `px-4 py-2 rounded-md font-medium ${
+                      isActive
+                        ? 'bg-lime-600  text-white'
+                        : isSpecial
+                        ? ' text-gray-800  hover:bg-gray-200'
+                        : ' text-sky-300 hover:border-b-2'
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              </li>
+            );
+          })}
+
+          {/* ✅ Category Dropdown (inside <ul>) */}
+          <li className="relative group">
+            <button className="px-4 py-2 rounded-md text-sky-300  font-semibold hover:border-b-2">
+             Service
+            </button>
+            <ul className="absolute hidden group-hover:block top-full mt-1  rounded shadow-lg w-48 z-50">
+              {categoryLinks.map((link, i) => (
+                <li key={i}>
+                  <NavLink
+                    to={link.to}
+                    className={({ isActive }) =>
+                      `block px-4 py-2 text-sm ${
+                        isActive
+                          ? 'bg-lime-600 text-white'
+                          : 'text-yellow-300 hover:border-b-2'
+                      }`
+                    }
+                  >
+                    {link.label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </li>
         </ul>
       </div>
 
       {/* Right side */}
-    <div className="navbar-end flex items-center gap-3 relative">
+      <div className="navbar-end flex items-center gap-3 relative">
+        {user ? (
+          <>
+            <Link to="/updateprofile">
+              <img
+                src={user.photoURL || defaultImage}
+                alt="Profile"
+                className="h-12 w-12 rounded-full hidden lg:block object-cover cursor-pointer"
+              />
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="btn btn-sm hidden lg:block bg-red-500 hover:bg-red-600 text-white"
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <Link
+            to="/login"
+            className="btn btn-sm px-6 font-semibold py-2 bg-lime-500 hover:bg-lime-600 text-white hidden lg:block"
+          >
+            Sign In
+          </Link>
+        )}
+      </div>
 
-
- 
-
-
-  {user ? (
-    <>
-      <Link to="/updateprofile">
-        <img
-          src={user.photoURL || defaultImage}
-          alt="Profile"
-          className="h-12 w-12 rounded-full object-cover cursor-pointer"
-        />
-      </Link>
-      <button
-        onClick={handleLogout}
-        className="btn btn-sm lg:block hidden bg-red-500 hover:bg-red-600 text-white"
-      >
-        Logout
-      </button>
-    </>
-  ) : (
-    <Link
-      to="/login"
-      className="btn btn-sm px-6 font-semibold py-2 bg-lime-500 hover:bg-lime-600 text-white hidden lg:block"
-    > Sign In </Link>
-  )}
-</div>
-
-
-      {/*Mobile Menu*/}
+      {/* Mobile Menu */}
       <div className="dropdown dropdown-end block lg:hidden ml-auto">
         <div tabIndex={0} className="btn btn-ghost">
           <svg
@@ -104,27 +132,62 @@ const Navber = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </div>
+
         <ul
           tabIndex={0}
-          className="menu menu-sm dropdown-content mt-3 p-2 shadow text-white rounded-box w-52"
+          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-gray-800 text-white rounded-box w-56"
         >
-          {links.map((link, i) => (
-            <li key={i}>
-              <NavLink
-                to={link.to}
-                className={({ isActive }) =>
-                  `px-4 py-2 rounded-md ${
-                    isActive
-                      ? "bg-lime-600 text-white"
-                      : "border text-yellow-300 hover:bg-blue-400"
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
-            </li>
-          ))}
-          <div className="flex items-center gap-3 mt-2">
+          {links.map((link, i) => {
+            const isSpecial = specialLinks.includes(link.to);
+            return (
+              <li key={i}>
+                <NavLink
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `px-4 py-2 rounded-md font-medium block ${
+                      isActive
+                        ? 'bg-lime-600 text-white'
+                        : isSpecial
+                        ? 'border border-gray-400 bg-gray-100 text-gray-800 hover:bg-gray-200'
+                        : 'text-yellow-300 hover:border-b-2'
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              </li>
+            );
+          })}
+
+          {/* ✅ Category Dropdown in Mobile */}
+          <li tabIndex={0}>
+            <details>
+              <summary className="px-4 py-2 text-yellow-300 font-semibold cursor-pointer hover:bg-blue-400 rounded-md">
+                Category
+              </summary>
+              <ul className="p-2 bg-gray-900 rounded-lg">
+                {categoryLinks.map((link, i) => (
+                  <li key={i}>
+                    <NavLink
+                      to={link.to}
+                      className={({ isActive }) =>
+                        `block px-4 py-2 rounded-md text-sm ${
+                          isActive
+                            ? 'bg-lime-600 text-white'
+                            : 'text-yellow-300 hover:bg-gray-700 hover:border-b-2'
+                        }`
+                      }
+                    >
+                      {link.label}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </li>
+
+          {/* Auth Buttons */}
+          <div className="flex items-center gap-3 mt-3 justify-center">
             {user ? (
               <button
                 onClick={handleLogout}

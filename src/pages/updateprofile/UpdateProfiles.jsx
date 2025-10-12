@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import UseAuth from '../../hooks/UseAuth';
 import defaultImage from '../../assets/images/download.png';
 import { Link } from 'react-router';
+import axios from 'axios';
 
 const UpdateProfiles = () => {
   const { user, updateUserProfiles } = UseAuth();
@@ -18,6 +18,7 @@ const UpdateProfiles = () => {
   };
 
   const handleUploadClick = async () => {
+   
     if (!selectedFile) {
       setError('দয়া করে একটি ছবি নির্বাচন করুন।');
       return;
@@ -29,12 +30,13 @@ const UpdateProfiles = () => {
     const formData = new FormData();
     formData.append('image', selectedFile);
 
+
     try {
       const res = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`,
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGE_UPLOAD_KEY}`,
         formData
       );
-
+ console.log("ImgBB Key:", import.meta.env.VITE_IMAGE_UPLOAD_KEY);
       const imageUrl = res.data.data.url;
       await updateUserProfiles({ photoURL: imageUrl });
       console.log('Profile picture updated successfully.');

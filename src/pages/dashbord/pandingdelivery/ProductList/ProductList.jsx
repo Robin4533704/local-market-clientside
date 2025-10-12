@@ -54,7 +54,7 @@ const ProductList = () => {
   return (
     <div className="pt-16 px-4 md:px-20 bg-[#f5deb3] min-h-screen">
       {/* Header + Breadcrumb */}
-      <div className="flex justify-between items-center mb-8 bg-rose-200 p-8 rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-8 bg-gray-100 p-8 rounded-lg shadow-md">
         <div>
           <NavLink to="/" className="text-black btn hover:underline mr-2">Home</NavLink>
           <span className="btn">Products</span>

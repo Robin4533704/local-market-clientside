@@ -18,23 +18,26 @@ const Register = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  // Image upload
-  const handleImageUpload = async (e) => {
-    const image = e.target.files[0];
-    if (!image) return;
+const handleImageUpload = async (e) => {
+  const image = e.target.files[0];
+  if (!image) return;
 
-    const formData = new FormData();
-    formData.append("image", image);
+  const formData = new FormData();
+  formData.append("image", image);
 
-    const url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`;
+  const imgbbKey = import.meta.env.VITE_IMAGE_UPLOAD_KEY;
+  console.log("ImgBB Key:", imgbbKey); // ✅ check undefined নয়
 
-    try {
-      const res = await axiosInstance.post(url, formData);
-      if (res.data.success) setProfilePic(res.data.data.display_url);
-    } catch (err) {
-      console.error("Image upload error:", err);
-    }
-  };
+  const url = `https://api.imgbb.com/1/upload?key=${imgbbKey}`;
+
+  try {
+    const res = await axiosInstance.post(url, formData);
+    if (res.data.success) setProfilePic(res.data.data.display_url);
+  } catch (err) {
+    console.error("Image upload error:", err);
+  }
+};
+
 
   // Form submit
   const onSubmit = async (data) => {

@@ -9,3 +9,10 @@
   font-weight: 400;
   font-style: normal;
 }
+@layer utilities {
+  @variants responsive {
+    .my-class {
+      color: red;
+    }
+  }
+}
