@@ -32,67 +32,69 @@ const CheckoutForm = ({ paymentData }) => {
     setTotal(newTotal > 0 ? newTotal : 0);
   }, [quantity, discount, product]);
 
-  const handlePayment = async (e) => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
+const handlePayment = async (e) => {
+  e.preventDefault();
+  if (!stripe || !elements) return;
 
-    setProcessing(true);
+  setProcessing(true);
 
-    try {
-      const res = await fetch("https://daily-local-market-server.vercel.app/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amountInCents: Math.round(total * 100),
-          parcelId: product._id,
-          quantity,
-          discount,
-          coupon: coupon || null,
-        }),
-      });
+  try {
+    // ✅ এখানে VITE env variable ব্যবহার করা হচ্ছে
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/create-payment-intent`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amountInCents: Math.round(total * 100),
+        parcelId: product._id,
+        quantity,
+        discount,
+        coupon: coupon || null,
+      }),
+    });
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`Server error: ${text}`);
-      }
-
-      const { clientSecret } = await res.json();
-      const card = elements.getElement(CardElement);
-      const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: { card },
-      });
-    console.log( paymentIntent)
-      if (error) throw error;
-
-      // Save order locally
-     // Save order locally
-const order = {
-  _id: new Date().getTime(),
-  product_name: product.product_name,
-  marketName: product.marketName || "Local Market",
-  final_price: total,
-  quantity,
-  date: new Date().toLocaleDateString(),
-  paid: true, // ✅ Add this
-};
-const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
-storedOrders.push(order);
-localStorage.setItem("orders", JSON.stringify(storedOrders));
-
-      Swal.fire(
-        "Payment Successful",
-        `Your payment of $${total.toFixed(2)} for "${product.product_name}" was successful.`,
-        "success"
-      );
-
-      navigate("/dashboard/orderlist"); // Redirect to order list
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Payment Error", err.message || "Payment failed", "error");
-    } finally {
-      setProcessing(false);
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Server error: ${text}`);
     }
-  };
+
+    const { clientSecret } = await res.json();
+    const card = elements.getElement(CardElement);
+    const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: { card },
+    });
+
+    console.log(paymentIntent);
+    if (error) throw error;
+
+    // Save order locally
+    const order = {
+      _id: new Date().getTime(),
+      product_name: product.product_name,
+      marketName: product.marketName || "Local Market",
+      final_price: total,
+      quantity,
+      date: new Date().toLocaleDateString(),
+      paid: true,
+    };
+    const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    storedOrders.push(order);
+    localStorage.setItem("orders", JSON.stringify(storedOrders));
+
+    Swal.fire(
+      "Payment Successful",
+      `Your payment of $${total.toFixed(2)} for "${product.product_name}" was successful.`,
+      "success"
+    );
+
+    navigate("/dashboard/orderlist"); // Redirect to order list
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Payment Error", err.message || "Payment failed", "error");
+  } finally {
+    setProcessing(false);
+  }
+};
+
 
   return (
     <form onSubmit={handlePayment} className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">

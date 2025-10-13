@@ -11,7 +11,7 @@ const usePriceHistory = (productId) => {
     if (!productId) return;
 
     axiosSecure
-      .get(`/api/products/${productId}/price-trends`)
+      .get(`/products/${productId}/price-trends`)
       .then(res => setData(res.data))
       .catch(err => console.error("Fetch price history error:", err))
       .finally(() => setLoading(false));

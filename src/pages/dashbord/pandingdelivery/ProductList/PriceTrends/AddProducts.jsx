@@ -56,7 +56,7 @@ const handleSubmit = async (e) => {
 
     console.log("Sending data:", productData);
 
-    const { data } = await axiosInstance.post("/api/products", productData);
+    const { data } = await axiosInstance.post("/products", productData);
     console.log("POST response:", data);
 
     if (data.success || data.insertedId) {

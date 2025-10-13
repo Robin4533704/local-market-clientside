@@ -4,7 +4,8 @@ import axios from "axios";
 const AdminOrderRow = ({ order, fetchOrders }) => {
   const handleAccept = async () => {
     try {
-      await axios.post(`https://daily-local-market-server.vercel.app/orders/${order._id}/admin-accept`);
+      await axios.post(`VITE_API_URL
+/orders/${order._id}/admin-accept`);
       alert("Order accepted, notification sent to rider");
       fetchOrders(); // refresh orders list
     } catch (err) {

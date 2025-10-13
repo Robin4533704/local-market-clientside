@@ -24,7 +24,7 @@ const AdminAllProducts = () => {
 
 const handleApprove = async (id) => {
   try {
-    const res = await axiosSecure.put(`/api/products/${id}/approve`);
+    const res = await axiosSecure.put(`/products/${id}/approve`);
     console.log("Product approved:", res.data);
   } catch (err) {
     console.error("Approve error:", err);
@@ -43,7 +43,7 @@ const handleApprove = async (id) => {
 
     if (reason) {
       try {
-        await axiosSecure.put(`/api/products/${id}/reject`, { reason });
+        await axiosSecure.put(`/products/${id}/reject`, { reason });
         Swal.fire("Rejected", "Product rejected successfully", "success");
         fetchProducts();
       } catch {
@@ -64,7 +64,7 @@ const handleApprove = async (id) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axiosSecure.delete(`/api/products/${id}`);
+          await axiosSecure.delete(`/products/${id}`);
           Swal.fire("Deleted!", "Product has been removed.", "success");
           fetchProducts();
         } catch {

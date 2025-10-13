@@ -45,7 +45,7 @@ const Footer = () => {
                 <NavLink
                   to={page.to}
                   className={({ isActive }) =>
-                    `px-4 py-2 rounded-md ${isActive ? "bg-lime-600 text-white" : "text-yellow-300 hover:bg-blue-400"}`
+                    `px-4 py-2 rounded-md ${isActive ? "bg-lime-600 text-white" : "text-yellow-300 "}`
                   }
                 >
                   {page.label}
@@ -55,9 +55,9 @@ const Footer = () => {
           </ul>
 
           {/* Actions Dropdown */}
-          <li className="relative mt-4">
+          <ul className="relative">
             <motion.button
-              className="px-4 py-2 rounded-md hover:text-white text-green-500 font-semibold"
+              className="px-4 list-none py-2 rounded-md hover:text-white text-amber-300 font-semibold"
               whileHover={{ scale: 1.05 }}
               onClick={() => setActionsOpen(prev => !prev)}
             >
@@ -78,7 +78,7 @@ const Footer = () => {
                       <NavLink
                         to={link.to}
                         className={({ isActive }) =>
-                          `block px-4 py-2 text-sm ${isActive ? "bg-lime-600 text-white" : "text-amber-300 hover:bg-sky-700"}`
+                          `block px-4 py-2 text-sm ${isActive ? " text-white" : "text-amber-300 hover:bg-sky-700"}`
                         }
                         onClick={() => setActionsOpen(false)} // close dropdown on click
                       >
@@ -89,7 +89,7 @@ const Footer = () => {
                 </motion.ul>
               )}
             </AnimatePresence>
-          </li>
+          </ul>
         </div>
 
         {/* CONTACTS */}

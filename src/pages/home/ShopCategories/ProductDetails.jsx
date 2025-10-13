@@ -38,7 +38,7 @@ const ProductDetails = () => {
         return;
       }
       try {
-        const res = await axiosInstance.get(`/api/products/${id}`);
+        const res = await axiosInstance.get(`/products/${id}`);
         setProduct(res.data);
         setWatchlistDisabled(user?.role === "admin" || user?.role === "vendor");
       } catch (err) {
@@ -56,7 +56,7 @@ const ProductDetails = () => {
     const fetchReviews = async () => {
       if (!product?._id) return;
       try {
-        const res = await axiosInstance.get(`/api/products/${product._id}/reviews`);
+        const res = await axiosInstance.get(`/products/${product._id}/reviews`);
         setReviews(res.data || []);
       } catch (err) {
         console.error("Fetch reviews error:", err);
@@ -71,7 +71,7 @@ useEffect(() => {
 
     try {
       // সার্ভারের ঠিক URL ব্যবহার করা হলো
-      const res = await axiosInstance.get(`/api/products/${product._id}/price-trends`);
+      const res = await axiosInstance.get(`/products/${product._id}/price-trends`);
       const trends = res.data || [];
 
       // Chart ডাটা ট্রান্সফর্ম করা
@@ -106,7 +106,7 @@ useEffect(() => {
     if (!newReview.trim()) return toast.error("⚠️ Please write a comment first.");
 
     try {
-      const res = await axiosInstance.post(`/api/products/${product._id}/reviews`, {
+      const res = await axiosInstance.post(`/products/${product._id}/reviews`, {
         userName: user.displayName,
         email: user.email,
         comment: newReview,

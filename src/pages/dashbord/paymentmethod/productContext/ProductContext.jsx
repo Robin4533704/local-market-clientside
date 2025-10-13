@@ -26,7 +26,7 @@ export const ProductProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await axiosInstance.get(
-        `/api/products?page=${pageNumber}&limit=${limit}`
+        `/products?page=${pageNumber}&limit=${limit}`
       );
 
       // Ensure response format

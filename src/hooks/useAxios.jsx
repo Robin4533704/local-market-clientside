@@ -6,7 +6,8 @@ const useAxios = () => {
 
   const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
-    timeout: 20000, // 20s
+     timeout: 20000,
+  withCredentials: true, 
   });
 
   axiosInstance.interceptors.request.use(

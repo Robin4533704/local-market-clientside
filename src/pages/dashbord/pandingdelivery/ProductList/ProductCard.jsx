@@ -89,7 +89,8 @@ const ProductCard = () => {
 
   const imageUrl =
     product.image && !product.image.startsWith("http")
-      ? `https://daily-local-market-server.vercel.app${product.image}`
+      ? `VITE_API_URL
+${product.image}`
       : product.image || "/placeholder.png";
 
   return (

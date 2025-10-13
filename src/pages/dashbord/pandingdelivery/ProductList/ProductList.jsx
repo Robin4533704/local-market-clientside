@@ -35,7 +35,7 @@ const ProductList = () => {
 
     if (confirm.isConfirmed) {
       try {
-        await axiosInstance.delete(`/api/products/${id}`);
+        await axiosInstance.delete(`/products/${id}`);
         Swal.fire("Deleted!", "Product has been deleted.", "success");
         setProducts((prev) => prev.filter((p) => p._id !== id));
       } catch (err) {

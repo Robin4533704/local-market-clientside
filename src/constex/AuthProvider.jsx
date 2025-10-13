@@ -69,16 +69,16 @@ const sendPassword = (email) =>{
     return sendPasswordResetEmail(auth, email);
   };
 
-  // track user state
+  // ✅ Track user state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      console.log("user in the auth state change", currentUser);
+      console.log("👤 User state changed:", currentUser);
 
       if (currentUser) {
         const token = await currentUser.getIdToken(true);
         localStorage.setItem("fbToken", token);
-        console.log("FB Token saved:", token);
+        console.log("🔐 FB Token saved:", token);
       } else {
         localStorage.removeItem("fbToken");
       }
