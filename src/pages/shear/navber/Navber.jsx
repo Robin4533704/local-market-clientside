@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Profileslogo from '../../home/banner/Profileslogo';
 import UseAuth from '../../../hooks/UseAuth';
@@ -7,6 +7,9 @@ import defaultImage from '../../../assets/images/download.png';
 const Navber = () => {
   const { user, logOut } = UseAuth();
   const navigate = useNavigate();
+const [showService, setShowService] = useState(false);
+
+const toggleService = () => setShowService(!showService);
 
   const handleLogout = async () => {
     try {
@@ -65,29 +68,35 @@ const Navber = () => {
           })}
 
           {/* ✅ Category Dropdown (inside <ul>) */}
-          <li className="relative group">
-            <button className="px-4 py-2 rounded-md text-sky-300  font-semibold hover:border-b-2">
-             Service
-            </button>
-            <ul className="absolute hidden group-hover:block top-full mt-1  rounded shadow-lg w-48 z-50">
-              {categoryLinks.map((link, i) => (
-                <li key={i}>
-                  <NavLink
-                    to={link.to}
-                    className={({ isActive }) =>
-                      `block px-4 py-2 text-sm ${
-                        isActive
-                          ? 'bg-lime-600 text-white'
-                          : 'text-yellow-300 hover:border-b-2'
-                      }`
-                    }
-                  >
-                    {link.label}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </li>
+         <li className="relative">
+  <button
+    onClick={toggleService}
+    className="px-4 py-2 rounded-md text-sky-300 font-semibold hover:border-b-2"
+  >
+    Service
+  </button>
+
+  {/* Toggleable dropdown */}
+  {showService && (
+    <ul className="absolute top-full mt-1 rounded shadow-lg w-48 z-50 bg-gray-800">
+      {categoryLinks.map((link, i) => (
+        <li key={i}>
+          <NavLink
+            to={link.to}
+            className={({ isActive }) =>
+              `block px-4 py-2 text-sm ${
+                isActive ? 'bg-lime-600 text-white' : 'text-yellow-300 hover:bg-gray-700'
+              }`
+            }
+          >
+            {link.label}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  )}
+</li>
+
         </ul>
       </div>
 
@@ -163,7 +172,7 @@ const Navber = () => {
           <li tabIndex={0}>
             <details>
               <summary className="px-4 py-2 text-yellow-300 font-semibold cursor-pointer hover:bg-blue-400 rounded-md">
-                Category
+                Services
               </summary>
               <ul className="p-2 bg-gray-900 rounded-lg">
                 {categoryLinks.map((link, i) => (
