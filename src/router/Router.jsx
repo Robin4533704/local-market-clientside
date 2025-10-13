@@ -10,7 +10,6 @@ import PrivetRoute from "../route/PrivetRoute";
 import Myparcels from "../pages/dashbord/Myparcels";
 // Stripe Elements
 import Payment from "../pages/dashbord/paymentmethod/Payment";
-import PaymentHistry from "../pages/dashbord/paymentmethod/PaymentHistry";
 import TackParcel from "../pages/dashbord/tackparcel/TackParcel";
 import UpdateTracking from "../pages/dashbord/tackparcel/UpdateTracking";
 import BeARider from "../pages/dashbord/barider/BeARider";
@@ -147,7 +146,7 @@ export const router = createBrowserRouter([
       { path: "assign-riders", element: <AdminRoute><AssainRiders /></AdminRoute> },
       { path: "payment/:parcelId", element: <Payment /> },
       { path: "parcelpayment/:parcelId", element: <ParcelPayment/>},
-      { path: "payment-history", element: <PaymentHistry /> },
+     
       { path: "tracking", element: <TackParcel /> },
       { path: "tracking/:trackingId", element: <PrivetRoute><UpdateTracking /></PrivetRoute> },
       { path: "updateprofile", element: <UpdateProfiles />

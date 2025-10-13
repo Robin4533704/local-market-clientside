@@ -45,7 +45,7 @@ Swal.fire({
   title: "🚚 Delivery Cost Breakdown",
   html: `
     <div style="
-      background-image: url('/public/zpj/medium-shot-women-holding-shopping-bags.jpg');
+      background-image: url('/zpj/medium-shot-women-holding-shopping-bags.jpg');
       background-size: cover;
       background-position: center;
       padding: 20px;

@@ -95,11 +95,7 @@ const Dashboard = () => {
               <FaBox /> My Parcels
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/dashboard/payment-history" className={({ isActive }) => linkClass(isActive)}>
-              <FaCreditCard /> Payment History
-            </NavLink>
-          </li>
+         
             </>
           )}
          
