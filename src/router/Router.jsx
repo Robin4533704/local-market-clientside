@@ -80,10 +80,8 @@ export const router = createBrowserRouter([
       { path: "about", element: <About /> },
       { path: "contactus", element: <ContactUs /> },
       { path: "OrganicEssentials", element: <OrganicEssentials /> },
-      { path: "productlist/:id", element: <PrivetRoute><ProductList /></PrivetRoute> },
+      { path: "productlist", element: <PrivetRoute><ProductList /></PrivetRoute> },
       { path: "productcard/:id", element: <PrivetRoute><ProductCard /></PrivetRoute> },
-    
-   
       {
         path: "/product-details/:id",
         element: <ProductDetails/>

@@ -22,7 +22,7 @@ const toggleService = () => setShowService(!showService);
 
   const links = [
     { to: '/', label: 'Home' },
-    { to: '/productlist/:id', label: 'All Products' },
+    { to: '/productlist', label: 'All Products' },
     { to: '/coverage', label: 'Coverage' },
     { to: '/dashboard', label: 'Dashboard' },
   ];
@@ -36,9 +36,9 @@ const toggleService = () => setShowService(!showService);
   const specialLinks = ['/addproduct', '/sentparsel', '/beaider'];
 
   return (
-  <div className="navbar max-w-7xl mx-auto shadow-sm text-white px-4 fixed top-0 w-full z-50 rounded-xl bg-opacity-50 ">
+  <div className="navbar max-w-7xl mx-auto shadow-sm text-white lg:px-4 px-8 fixed top-0 w-full z-50 rounded-xl bg-opacity-50 ">
       {/* Left Logo */}
-      <div className="navbar-start">
+      <div className="navbar-start duration-300">
         <Profileslogo />
       </div>
 
@@ -130,91 +130,102 @@ const toggleService = () => setShowService(!showService);
 
       {/* Mobile Menu */}
       <div className="dropdown dropdown-end block lg:hidden ml-auto">
-        <div tabIndex={0} className="btn btn-ghost">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+  <div
+  tabIndex={0}
+  role="button"
+  className="btn btn-ghost font-bold bg-lime-500 bg-opacity-60 hover:bg-opacity-80 text-white" // text-white makes it visible
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 6h16M4 12h16M4 18h16"
+    />
+  </svg>
+</div>
+
+
+  <ul
+    tabIndex={0}
+    className="menu menu-sm dropdown-content mt-3 p-3 shadow-lg  text-white rounded-2xl w-60"
+  >
+    {links.map((link, i) => {
+      const isSpecial = specialLinks.includes(link.to);
+      return (
+        <li key={i}>
+          <NavLink
+            to={link.to}
+            className={({ isActive }) =>
+              `block px-4 py-2 rounded-md font-medium transition-all duration-200 ${
+                isActive
+                  ? 'bg-lime-600 text-white'
+                  : isSpecial
+                  ? 'border border-gray-500 bg-gray-100 text-gray-900 hover:bg-gray-200'
+                  : 'text-yellow-300 hover:text-white hover:bg-gray-700'
+              }`
+            }
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </div>
+            {link.label}
+          </NavLink>
+        </li>
+      );
+    })}
 
-        <ul
-          tabIndex={0}
-          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-gray-800 text-white rounded-box w-56"
-        >
-          {links.map((link, i) => {
-            const isSpecial = specialLinks.includes(link.to);
-            return (
-              <li key={i}>
-                <NavLink
-                  to={link.to}
-                  className={({ isActive }) =>
-                    `px-4 py-2 rounded-md font-medium block ${
-                      isActive
-                        ? 'bg-lime-600 text-white'
-                        : isSpecial
-                        ? 'border border-gray-400 bg-gray-100 text-gray-800 hover:bg-gray-200'
-                        : 'text-yellow-300 hover:border-b-2'
-                    }`
-                  }
-                >
-                  {link.label}
-                </NavLink>
-              </li>
-            );
-          })}
-
-          {/* ✅ Category Dropdown in Mobile */}
-          <li tabIndex={0}>
-            <details>
-              <summary className="px-4 py-2 text-yellow-300 font-semibold cursor-pointer hover:bg-blue-400 rounded-md">
-                Services
-              </summary>
-              <ul className="p-2 bg-gray-900 rounded-lg">
-                {categoryLinks.map((link, i) => (
-                  <li key={i}>
-                    <NavLink
-                      to={link.to}
-                      className={({ isActive }) =>
-                        `block px-4 py-2 rounded-md text-sm ${
-                          isActive
-                            ? 'bg-lime-600 text-white'
-                            : 'text-yellow-300 hover:bg-gray-700 hover:border-b-2'
-                        }`
-                      }
-                    >
-                      {link.label}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          </li>
-
-          {/* Auth Buttons */}
-          <div className="flex items-center gap-3 mt-3 justify-center">
-            {user ? (
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300"
+    {/* ✅ Services Dropdown */}
+    <li tabIndex={0}>
+      <details>
+        <summary className="px-4 py-2 text-yellow-300 font-semibold cursor-pointer hover:bg-gray-800 rounded-md">
+          Services
+        </summary>
+        <ul className="p-2 bg-gray-800 rounded-lg space-y-1">
+          {categoryLinks.map((link, i) => (
+            <li key={i}>
+              <NavLink
+                to={link.to}
+                className={({ isActive }) =>
+                  `block px-4 py-2 rounded-md text-sm transition ${
+                    isActive
+                      ? 'bg-lime-600 text-white'
+                      : 'text-yellow-300 hover:bg-gray-700'
+                  }`
+                }
               >
-                Logout
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                className="px-4 py-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold rounded-lg shadow-md transition duration-300"
-              >
-                Sign In
-              </Link>
-            )}
-          </div>
+                {link.label}
+              </NavLink>
+            </li>
+          ))}
         </ul>
-      </div>
+      </details>
+    </li>
+
+    {/* ✅ Auth Buttons */}
+    <div className="flex items-center gap-3 mt-4 justify-center">
+      {user ? (
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300"
+        >
+          Logout
+        </button>
+      ) : (
+        <Link
+          to="/login"
+          className="px-4 py-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold rounded-lg shadow-md transition duration-300"
+        >
+          Sign In
+        </Link>
+      )}
+    </div>
+  </ul>
+</div>
+
     </div>
   );
 };

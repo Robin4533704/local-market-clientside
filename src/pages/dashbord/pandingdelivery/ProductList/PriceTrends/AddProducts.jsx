@@ -91,114 +91,135 @@ const handleSubmit = async (e) => {
 };
 
   return (
-    <div className="pt-24 px-4 md:px-20 min-h-screen bg-[#f5f0e1]">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold">Add New Product</h2>
-      </div>
+ <div className="pt-24 px-4 sm:px-6 md:px-10 lg:px-20 min-h-screen bg-[#f5f0e1]">
+  <div className="text-center mb-8">
+    <h2 className="text-3xl font-bold text-gray-800">Add New Product</h2>
+    <p className="text-gray-600 text-sm md:text-base mt-1">
+      Fill in all required fields to add a new product
+    </p>
+  </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-xl mx-auto bg-white p-6 rounded shadow mb-6"
-      >
-        <input
-          type="text"
-          name="product_name"
-          value={formData.product_name}
-          onChange={handleChange}
-          placeholder="Product Name"
-          className="border p-2 w-full rounded mb-2"
-          required
-        />
-        <input
-          type="text"
-          name="vendorName"
-          value={formData.vendorName}
-          onChange={handleChange}
-          placeholder="User Name"
-          className="border p-2 w-full rounded mb-2"
-          required
-        />
-        <input
-          type="text"
-          name="marketName"
-          value={formData.marketName}
-          onChange={handleChange}
-          placeholder="Market Name"
-          className="border p-2 w-full rounded mb-2"
-          required
-        />
-        <input
-          type="text"
-          name="image"
-          value={formData.image}
-          onChange={handleChange}
-          placeholder="Image URL"
-          className="border p-2 w-full rounded mb-2"
-        />
-        <input
-          type="number"
-          name="final_price"
-          value={formData.final_price}
-          onChange={handleChange}
-          placeholder="Final Price"
-          className="border p-2 w-full rounded mb-2"
-        />
+  <form
+    onSubmit={handleSubmit}
+    className="max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-4"
+  >
+    {/* Product Info */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <input
+        type="text"
+        name="product_name"
+        value={formData.product_name}
+        onChange={handleChange}
+        placeholder="Product Name"
+        className="border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+        required
+      />
+      <input
+        type="text"
+        name="vendorName"
+        value={formData.vendorName}
+        onChange={handleChange}
+        placeholder="User Name"
+        className="border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+        required
+      />
+    </div>
 
-        <h3 className="font-semibold mt-2 mb-2">Items</h3>
-        {formData.items.map((item, index) => (
-          <div key={index} className="flex gap-2 mb-2">
-            <input
-              type="text"
-              name="item_name"
-              value={item.item_name}
-              onChange={(e) => handleItemChange(e, index)}
-              placeholder="Item Name"
-              className="border p-2 rounded flex-1"
-            />
-            <input
-              type="number"
-              name="price"
-              value={item.price}
-              onChange={(e) => handleItemChange(e, index)}
-              placeholder="Price"
-              className="border p-2 rounded w-24"
-            />
-            <input
-              type="text"
-              name="unit"
-              value={item.unit}
-              onChange={(e) => handleItemChange(e, index)}
-              placeholder="Unit"
-              className="border p-2 rounded w-24"
-            />
-            <button
-              type="button"
-              onClick={() => removeItemRow(index)}
-              className="bg-red-500 text-white px-2 rounded"
-            >
-              ❌
-            </button>
-          </div>
-        ))}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <input
+        type="text"
+        name="marketName"
+        value={formData.marketName}
+        onChange={handleChange}
+        placeholder="Market Name"
+        className="border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+        required
+      />
+      <input
+        type="text"
+        name="image"
+        value={formData.image}
+        onChange={handleChange}
+        placeholder="Image URL"
+        className="border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+      />
+    </div>
 
-        <div className="flex gap-4 mt-4">
+    <input
+      type="number"
+      name="final_price"
+      value={formData.final_price}
+      onChange={handleChange}
+      placeholder="Final Price"
+      className="border border-gray-300 p-2.5 w-full rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+    />
+
+    {/* Items Section */}
+    <h3 className="font-semibold text-lg mt-6 mb-2 text-gray-800">
+      Product Items
+    </h3>
+
+    <div className="space-y-3">
+      {formData.items.map((item, index) => (
+        <div
+          key={index}
+          className="flex flex-col sm:flex-row gap-2 sm:items-center"
+        >
+          <input
+            type="text"
+            name="item_name"
+            value={item.item_name}
+            onChange={(e) => handleItemChange(e, index)}
+            placeholder="Item Name"
+            className="border border-gray-300 p-2.5 rounded-lg flex-1 focus:ring-2 focus:ring-blue-400 outline-none"
+          />
+          <input
+            type="number"
+            name="price"
+            value={item.price}
+            onChange={(e) => handleItemChange(e, index)}
+            placeholder="Price"
+            className="border border-gray-300 p-2.5 rounded-lg w-full sm:w-24 focus:ring-2 focus:ring-blue-400 outline-none"
+          />
+          <input
+            type="text"
+            name="unit"
+            value={item.unit}
+            onChange={(e) => handleItemChange(e, index)}
+            placeholder="Unit"
+            className="border border-gray-300 p-2.5 rounded-lg w-full sm:w-24 focus:ring-2 focus:ring-blue-400 outline-none"
+          />
           <button
             type="button"
-            onClick={addItemRow}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition-colors"
+            onClick={() => removeItemRow(index)}
+            className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors text-sm"
           >
-            ➕ Add Item
-          </button>
-
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
-          >
-            Add Product
+            ❌
           </button>
         </div>
-      </form>
+      ))}
     </div>
+
+    {/* Buttons */}
+    <div className="flex flex-col sm:flex-row justify-between gap-4 mt-6">
+      <button
+        type="button"
+        onClick={addItemRow}
+        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-colors"
+      >
+        ➕ Add Item
+      </button>
+
+      <button
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-colors"
+      >
+        Add Product
+      </button>
+    </div>
+  </form>
+</div>
+
   );
 };
 
