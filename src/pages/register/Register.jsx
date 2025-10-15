@@ -64,7 +64,9 @@ const handleImageUpload = async (e) => {
         last_log_in: new Date().toISOString(),
       };
 
-      await axiosInstance.post("/users", userInfo);
+   await axiosInstance.post('/users', userInfo, {
+  headers: { 'Content-Type': 'application/json' }
+});
 
       Swal.fire({
         icon: "success",

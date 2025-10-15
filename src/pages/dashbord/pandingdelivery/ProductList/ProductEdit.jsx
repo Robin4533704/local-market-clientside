@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import Loading from "../../../loading/Loading";
 import Swal from "sweetalert2";
+import Loading from "../../../loading/Loading";
 import useUserRole from "../../../../hooks/useUserRole";
-import UseAxiosSecure from "../../../../hooks/UseAxiosSecure";
+import useAxiosSecure from "../../../../hooks/useAxiosSecure";
+import { auth } from "../../../../Firebase.config";
 
 const ProductEdit = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const axiosInstance = UseAxiosSecure();
+  const axiosSecure = useAxiosSecure(); // ✅ secure axios instance
   const { role, loading: roleLoading } = useUserRole();
   const isMounted = useRef(true);
 
@@ -30,67 +31,71 @@ const ProductEdit = () => {
     };
   }, []);
 
-useEffect(() => {
-  if (roleLoading) return; // wait until role loaded
-  if (role !== "admin") {
-    Swal.fire("Access Denied", "You are not authorized to edit products", "error");
-    navigate("/");
-  }
-}, [role, roleLoading, navigate]);
+  // Role-based redirect
+  useEffect(() => {
+    if (roleLoading) return;
+    if (role !== "admin") {
+      Swal.fire("Access Denied", "You are not authorized to edit products", "error");
+      navigate("/");
+    }
+  }, [role, roleLoading, navigate]);
 
-useEffect(() => {
-  if (!id) return;
+  // Fetch product data
+  useEffect(() => {
+    if (!id) return;
 
-const fetchProduct = async () => {
-  setLoading(true);
-  try {
-    const res = await axiosInstance.get(`/products/${id}`); // PUT নয়, GET হবে
-    const data = res.data;
+    const fetchProduct = async () => {
+      setLoading(true);
+      try {
+        const res = await axiosSecure.get(`/products/${id}`);
+        const data = res.data;
+        setFormData({
+          product_name: data.product_name || "",
+          image: data.image || "",
+          final_price: data.final_price || "",
+          marketName: data.marketName || "",
+          vendorName: data.vendorName || "",
+          count: data.count || 0,
+        });
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Failed to load product data", "error");
+        navigate("/productlist");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setFormData({
-      product_name: data.product_name || "",
-      image: data.image || "",
-      final_price: data.final_price || "",
-      marketName: data.marketName || "",
-      vendorName: data.vendorName || "",
-      count: data.count || 0,
-    });
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error", "Failed to load product data", "error");
-    navigate("/");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-
-  // Only fetch if no initial state passed
-  if (!initialProduct || Object.keys(initialProduct).length === 0) {
-    fetchProduct();
-  } else {
-    setFormData(initialProduct);
-  }
-}, [id, initialProduct, axiosInstance, navigate]);
-
+    if (!initialProduct || Object.keys(initialProduct).length === 0) {
+      fetchProduct();
+    } else {
+      setFormData(initialProduct);
+    }
+  }, [id, initialProduct, axiosSecure, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
   try {
-    const { _id, ...updateData } = formData; // remove _id
-    await axiosInstance.put(`/products/${id}`, updateData);
+    const { _id, ...updateData } = formData;
+
+    // Firebase থেকে fresh token নাও
+    const token = await auth.currentUser.getIdToken(true);
+    console.log("Token being sent:", token); // ✅ এখানে debug করো
+
+    await axiosSecure.put(`/products/${id}`, updateData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
     Swal.fire("Success", "Product updated successfully!", "success");
     navigate("/productlist");
   } catch (err) {
-    console.error(err);
+    console.error("Update error:", err);
     Swal.fire("Error", "Failed to update product", "error");
   } finally {
     setLoading(false);
@@ -161,7 +166,7 @@ const fetchProduct = async () => {
 
         <button
           type="submit"
-          className="bg-lime-500 hover:bg-lime-600-600 text-white py-3 rounded-lg font-semibold mt-4 transition-all"
+          className="bg-lime-500 hover:bg-lime-600 text-white py-3 rounded-lg font-semibold mt-4 transition-all"
         >
           Update Product
         </button>

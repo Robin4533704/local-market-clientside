@@ -9,7 +9,8 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   updateProfile,
- sendPasswordResetEmail
+ sendPasswordResetEmail,
+ signInWithRedirect
 } from "firebase/auth";
 import { auth } from "../Firebase.config";
 
@@ -52,12 +53,14 @@ const sendPassword = (email) =>{
     return signOut(auth);
   };
 
-  // sign in with Google
-  const signInGoogleUser = () => {
-    setLoading(true);
-    const provider = new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
-  };
+const signInGoogleUser = () => {
+  const provider = new GoogleAuthProvider();
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobile) return signInWithRedirect(auth, provider); // mobile
+  return signInWithPopup(auth, provider); // desktop
+};
+
 
   // update user profiles
   const updateUserProfiles = (profileInfo) => {

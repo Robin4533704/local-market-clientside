@@ -22,7 +22,7 @@ const Footer = () => {
 
   return (
     <motion.footer
-      className="bg-gray-700 text-gray-400 py-16 md:py-24"
+      className="bg-gray-700 text-gray-400  py-6 lg:py-20 md:py-10"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -32,7 +32,17 @@ const Footer = () => {
         
         {/* LOGO */}
         <div className="text-center md:text-left">
-          <Profileslogo />
+         <div className="flex  items-center lg:gap-1 ">
+    <img
+      src="/zpj/logo600.png"
+      alt="Logo"
+      className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full object-cover"
+    />
+    <p className="text-lime-400 mt-3 lg:mt-3 text-lg sm:text-xl lg:text-3xl font-extrabold leading-tight tracking-wide">
+  Varcell
+  <span className="text-amber-400 font-bold ml-1 italic">Graund</span>
+</p>
+  </div>
           <p className="text-sm italic text-yellow-400 mt-2">Farming since 1996</p>
         </div>
 
@@ -45,7 +55,7 @@ const Footer = () => {
                 <NavLink
                   to={page.to}
                   className={({ isActive }) =>
-                    `px-4 py-2 rounded-md ${isActive ? "bg-lime-600 text-white" : "text-yellow-300 "}`
+                    `px-4 py-2 rounded-md ${isActive ? " hover:text-white " : "text-sky-300 "}`
                   }
                 >
                   {page.label}
@@ -55,41 +65,46 @@ const Footer = () => {
           </ul>
 
           {/* Actions Dropdown */}
-          <ul className="relative">
-            <motion.button
-              className="px-4 list-none py-2 rounded-md hover:text-white text-amber-300 font-semibold"
-              whileHover={{ scale: 1.05 }}
-              onClick={() => setActionsOpen(prev => !prev)}
-            >
-              Actions
-            </motion.button>
+         <ul className="relative">
+  <motion.button
+    className="px-4 list-none py-2 rounded-md  hover:text-white text-sky-300 font-semibold"
+    whileHover={{ scale: 1.05 }}
+    onClick={() => setActionsOpen(prev => !prev)}
+  >
+    Servics
+  </motion.button>
 
-            <AnimatePresence>
-              {actionsOpen && (
-                <motion.ul
-                  className="absolute right-0 bottom-full mb-2 rounded shadow-lg w-48 z-50 bg-gray-800"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.3, staggerChildren: 0.1 }}
-                >
-                  {categoryLinks.map((link, i) => (
-                    <motion.li key={i} whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
-                      <NavLink
-                        to={link.to}
-                        className={({ isActive }) =>
-                          `block px-4 py-2 text-sm ${isActive ? " text-white" : "text-amber-300 hover:bg-sky-700"}`
-                        }
-                        onClick={() => setActionsOpen(false)} // close dropdown on click
-                      >
-                        {link.label}
-                      </NavLink>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              )}
-            </AnimatePresence>
-          </ul>
+  <AnimatePresence>
+    {actionsOpen && (
+      <motion.ul
+        className="absolute right-0 top-0 -translate-y-full mb-2 rounded shadow-lg w-48 z-50 lg:bg-gray-800"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 10 }}
+        transition={{ duration: 0.3, staggerChildren: 0.1 }}
+      >
+        {categoryLinks.map((link, i) => (
+          <motion.li
+            key={i}
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <NavLink
+              to={link.to}
+              className={({ isActive }) =>
+                `block px-4 py-2 text-sm ${isActive ? "text-white" : "text-amber-300 hover:bg-sky-700"}`
+              }
+              onClick={() => setActionsOpen(false)} // close dropdown on click
+            >
+              {link.label}
+            </NavLink>
+          </motion.li>
+        ))}
+      </motion.ul>
+    )}
+  </AnimatePresence>
+</ul>
+
         </div>
 
         {/* CONTACTS */}

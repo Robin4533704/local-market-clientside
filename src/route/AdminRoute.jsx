@@ -8,7 +8,7 @@ const AdminRoute = ({ children }) => {
   const { role, loading: roleLoading } = useUserRole();
   const location = useLocation();
 
-  // 🔄 Loading spinner while auth or role is loading
+  // 🔄 Show spinner while auth or role is loading
   if (authLoading || roleLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -17,12 +17,12 @@ const AdminRoute = ({ children }) => {
     );
   }
 
+  // ❌ If no user or user is not admin → redirect to forbidden
   if (!user || role !== "admin") {
-  return <Navigate to="/forbidden" state={{ from: location }} replace />;
-}
+    return <Navigate to="/forbidden" state={{ from: location }} replace />;
+  }
 
-
-  // ✅ Admin access → render children
+  // ✅ User is admin → render children
   return children;
 };
 

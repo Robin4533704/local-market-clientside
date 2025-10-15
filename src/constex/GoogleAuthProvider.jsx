@@ -1,3 +1,3 @@
-import { GoogleAuthProvider } from "firebase/auth/web-extension";
+import { GoogleAuthProvider } from "firebase/auth"; // ✅ সঠিক import
 
-export const provider = new GoogleAuthProvider
+export const provider = new GoogleAuthProvider();

@@ -62,7 +62,7 @@ const ProductList = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid px-8 pb-2 lg:px-20 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
+      <div className="grid pb-2 lg:px-20 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-5 mt-8">
         {!products || products.length === 0 ? (
           <p className="text-center text-gray-600 col-span-full">
             {loading ? "Loading products..." : "No products found."}

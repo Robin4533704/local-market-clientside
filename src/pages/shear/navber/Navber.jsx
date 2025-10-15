@@ -36,7 +36,7 @@ const toggleService = () => setShowService(!showService);
   const specialLinks = ['/addproduct', '/sentparsel', '/beaider'];
 
   return (
-  <div className="navbar max-w-7xl mx-auto shadow-sm text-white lg:px-4 px-8 fixed top-0 w-full z-50 rounded-xl bg-opacity-50 ">
+  <div className="navbar max-w-7xl mx-auto shadow-sm text-white lg:px-4 px-6 fixed top-0 w-full z-50 rounded-xl bg-opacity-50 ">
       {/* Left Logo */}
       <div className="navbar-start duration-300">
         <Profileslogo />
@@ -133,7 +133,7 @@ const toggleService = () => setShowService(!showService);
   <div
   tabIndex={0}
   role="button"
-  className="btn btn-ghost font-bold bg-lime-500 bg-opacity-60 hover:bg-opacity-80 text-white" // text-white makes it visible
+  className="btn btn-ghost font-bold text-sky-500 bg-opacity-60 hover:bg-opacity-80 " // text-white makes it visible
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +154,7 @@ const toggleService = () => setShowService(!showService);
 
   <ul
     tabIndex={0}
-    className="menu menu-sm dropdown-content mt-3 p-3 shadow-lg  text-white rounded-2xl w-60"
+    className="menu menu-sm dropdown-content mt-3 p-3 shadow-lg bg-gray-800 text-white rounded-2xl w-60"
   >
     {links.map((link, i) => {
       const isSpecial = specialLinks.includes(link.to);
