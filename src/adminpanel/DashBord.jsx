@@ -5,9 +5,7 @@ import {
   FaSearchLocation, FaUserEdit, FaChartLine, FaList, 
   FaUsers, FaProductHunt, FaBullhorn, FaShoppingCart
 } from "react-icons/fa";
-import Profileslogo from "../pages/home/banner/Profileslogo";
 import useUserRole from "../hooks/useUserRole";
-import Loading from "../pages/loading/Loading";
 
 const Dashboard = () => {
   const { role, roleLoading } = useUserRole();

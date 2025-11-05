@@ -16,7 +16,7 @@ const useUserRole = () => {
     enabled: !authLoading && !!user?.email,
     queryFn: async () => {
       try {
-        if (!user?.email) return "user"; // fallback if no email
+        if (!user?.email) return "user"; // fallbdashack if no email
 
         // ✅ Check localStorage cache first
         const cachedRole = localStorage.getItem(`role_${user.email}`);
