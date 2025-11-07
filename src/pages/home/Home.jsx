@@ -14,7 +14,7 @@ const Home = () => {
         <div>
            <Banner/>
            <Services/>
-         <div className='pb-2 pt-10 bg-[#f5deb3]'>
+         <div className='pb-2 pt-10 '>
               <PublicData/>
          </div>
            <OrganicEssentials/>

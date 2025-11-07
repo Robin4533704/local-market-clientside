@@ -10,7 +10,8 @@ import {
   GoogleAuthProvider,
   updateProfile,
  sendPasswordResetEmail,
- signInWithRedirect
+ signInWithRedirect,
+ GithubAuthProvider
 } from "firebase/auth";
 import { auth } from "../Firebase.config";
 
@@ -62,6 +63,21 @@ const signInGoogleUser = () => {
 };
 
 
+  // ✅ GitHub login
+  const githubSignIn = async () => {
+    console.log("🐙 GitHub Login...");
+    try {
+      const provider = new GithubAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log("✅ GitHub Login:", result.user.email);
+      setUser(result.user);
+      return result;
+    } catch (err) {
+      console.error("❌ GitHub sign-in error:", err);
+      throw err;
+    }
+  };
+
   // update user profiles
   const updateUserProfiles = (profileInfo) => {
     return updateProfile(auth.currentUser, profileInfo);
@@ -99,7 +115,7 @@ const signInGoogleUser = () => {
     logOut,
     signInGoogleUser,
     updateUserProfiles,
-    user,
+    user,githubSignIn,
     loading,sendVerificationEmail,sendPassword 
   };
 

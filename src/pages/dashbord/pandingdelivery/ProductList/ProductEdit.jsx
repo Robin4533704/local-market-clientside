@@ -106,7 +106,7 @@ const handleSubmit = async (e) => {
   if (loading || roleLoading) return <Loading />;
 
   return (
-    <div className="pt-16 px-4 md:px-20 min-h-screen bg-[#f5deb3]">
+    <div className="pt-16 px-4 md:px-20 min-h-screen ">
       <h2 className="text-3xl font-bold mb-6 text-center">Edit Product</h2>
 
       <form

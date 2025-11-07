@@ -49,16 +49,16 @@ const ProductsTable = () => {
                 <td className="px-6 py-4 whitespace-nowrap">{p.marketName}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{p.vendorName}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {p.price ? `${p.price}৳` : "-"}
+                  {p.price ? `${p.price}$` : "-"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">{p.final_price}৳</td>
+                <td className="px-6 py-4 whitespace-nowrap">{p.final_price}$</td>
                 <td className="px-6 py-4 whitespace-nowrap">{p.status || "approved"}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {p.items && p.items.length > 0 ? (
                     <ul className="list-disc ml-5">
                       {p.items.map((item, index) => (
                         <li key={index}>
-                          {item.item_name} - {item.price}৳ / {item.unit}
+                          {item.item_name} - {item.price}$ / {item.unit}
                         </li>
                       ))}
                     </ul>

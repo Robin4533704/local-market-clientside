@@ -3,79 +3,166 @@ import { motion } from "framer-motion";
 
 const OrganicEssentials = () => {
   return (
-    <motion.div
-      className="flex flex-col md:flex-row items-center md:items-start lg:p-8 bg-red-100"
-      initial={{ opacity: 0, y: 30 }}
+    <motion.section
+      className="relative flex flex-col lg:flex-row items-center justify-between gap-8 p-6 md:p-12 lg:p-16 bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl mx-4 my-8 shadow-lg"
+      initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      {/* ছবি section */}
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-32 h-32 bg-green-200 rounded-full blur-3xl opacity-30 -translate-x-10 -translate-y-10"></div>
+      <div className="absolute bottom-0 right-0 w-40 h-40 bg-emerald-200 rounded-full blur-3xl opacity-40 translate-x-10 translate-y-10"></div>
+      
+      {/* Image Section */}
       <motion.div
-        className="md:w-1/2 p-4"
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 120 }}
+        className="lg:w-1/2 relative"
+        whileHover={{ scale: 1.02 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
-        <img
-          src="https://i.ibb.co/NdTtZLY3/fruits-1761031-640.jpg"
-          alt="Fresh Vegetables"
-          className="w-full h-auto rounded-lg shadow-lg"
-        />
+        <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+          <img
+            src="https://i.ibb.co/NdTtZLY3/fruits-1761031-640.jpg"
+            alt="Fresh Organic Vegetables and Fruits"
+            className="w-full h-auto object-cover transform hover:scale-110 transition-transform duration-700"
+          />
+          {/* Overlay badge */}
+          <div className="absolute top-4 left-4 bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+            🍃 100% Organic
+          </div>
+        </div>
+        
+        {/* Floating stats */}
+        <motion.div 
+          className="absolute -bottom-4 -right-4 bg-white p-4 rounded-2xl shadow-xl border border-green-200"
+          initial={{ scale: 0, rotate: -10 }}
+          whileInView={{ scale: 1, rotate: 0 }}
+          transition={{ delay: 0.5, type: "spring" }}
+        >
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-700">500+</div>
+            <div className="text-xs text-gray-600">Happy Families</div>
+          </div>
+        </motion.div>
       </motion.div>
 
-      {/* টেক্সট ও বাটন section */}
+      {/* Content Section */}
       <motion.div
-        className="md:w-1/2 p-4 space-y-4"
+        className="lg:w-1/2 space-y-6 relative z-10"
         initial={{ opacity: 0, x: 30 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
       >
-        <h2 className="text-3xl font-semibold text-gray-800 mb-4">
-          Your Organic Essentials, Delivered
+        {/* Badge */}
+        <motion.div
+          className="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          🌱 Fresh From Farm to Table
+        </motion.div>
+
+        <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+          Your{" "}
+          <span className="text-green-700 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+            Organic Essentials
+          </span>
+          , Delivered Fresh
         </h2>
-        <p className="text-gray-700 mb-6">
-          Get a box of fresh–picked organic produce and pantry goods delivered
-          to your door each week.
+        
+        <p className="text-lg text-gray-700 leading-relaxed">
+          Get a box of fresh–picked organic produce and pantry goods delivered 
+          to your door each week. Experience the taste of nature's finest harvest.
         </p>
-        <ul className="space-y-2">
+
+        {/* Features List */}
+        <ul className="space-y-4">
           {[
-            "Always seasonal, always from our farm;",
-            "Includes recipe cards and family farm stories;",
-            "Eco-friendly packaging;",
-            "Cancel or skip anytime.",
+            { 
+              text: "Always seasonal, always from our farm", 
+              icon: "🌿" 
+            },
+            { 
+              text: "Includes recipe cards and family farm stories", 
+              icon: "📖" 
+            },
+            { 
+              text: "Eco-friendly packaging", 
+              icon: "♻️" 
+            },
+            { 
+              text: "Cancel or skip anytime", 
+              icon: "⏰" 
+            },
           ].map((item, idx) => (
             <motion.li
               key={idx}
-              className="flex items-center"
+              className="flex items-start space-x-3 p-3 rounded-lg hover:bg-white hover:shadow-md transition-all duration-300"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: 0.3 + idx * 0.1 }}
+              transition={{ duration: 0.5, delay: 0.5 + idx * 0.1 }}
+              whileHover={{ x: 5 }}
             >
-              <div className="w-4 h-4 mr-2 bg-green-500 rounded-full"></div>
-              <span>{item}</span>
+              <span className="text-2xl flex-shrink-0">{item.icon}</span>
+              <span className="text-gray-700 text-lg">{item.text}</span>
             </motion.li>
           ))}
         </ul>
 
-        {/* বাটনগুলি */}
-        <div className="flex space-x-4 mt-6">
+        {/* Action Buttons */}
+        <motion.div 
+          className="flex flex-col sm:flex-row gap-4 pt-4"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            className="border border-gray-300 rounded px-4 py-2 hover:bg-gray-100 transition"
+            whileHover={{ 
+              scale: 1.05, 
+              boxShadow: "0 10px 25px -5px rgba(34, 197, 94, 0.4)" 
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold py-4 px-8 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg flex items-center justify-center gap-2"
           >
-            See This Week's Box
+            <span>Subscribe Now</span>
+            <span>🚀</span>
           </motion.button>
+          
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            className="bg-green-600 text-white rounded px-4 py-2 hover:bg-green-700 transition"
+            whileHover={{ 
+              scale: 1.05,
+              backgroundColor: "#f9fafb",
+              borderColor: "#10b981"
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="flex-1 border-2 border-green-500 text-green-700 font-semibold py-4 px-8 rounded-xl hover:bg-green-50 transition-all duration-300 flex items-center justify-center gap-2"
           >
-            Subscribe Now
+            <span>See This Week's Box</span>
+            <span>👀</span>
           </motion.button>
-        </div>
+        </motion.div>
+
+        {/* Trust badge */}
+        <motion.div
+          className="flex items-center justify-center gap-2 pt-6 text-sm text-gray-600"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          <div className="flex items-center gap-1">
+            <span>⭐</span>
+            <span>⭐</span>
+            <span>⭐</span>
+            <span>⭐</span>
+            <span>⭐</span>
+          </div>
+          <span>Rated 4.9/5 by 2000+ customers</span>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </motion.section>
   );
 };
 

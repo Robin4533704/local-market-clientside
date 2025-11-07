@@ -14,7 +14,7 @@ const OrderRow = ({ order, onRemove }) => {
     <tr className="hover:bg-gray-50 border-b text-center">
       <td>{order.product_name}</td>
       <td>{order.marketName}</td>
-      <td>৳{order.final_price}</td>
+      <td>${order.final_price}</td>
       <td>{order.items?.length || 0}</td>
       <td>{new Date(order.date).toLocaleDateString()}</td>
       <td>

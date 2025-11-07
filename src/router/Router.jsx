@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../layout/RootLayout";
 import Home from "../pages/home/Home";
 import Login from "../pages/Authntication.jsx/Login";
-import AuthLayout from "../layout/AuthLayout";
+
 import ForgotPassword from "../pages/Authntication.jsx/ForgetPassword";
 import Register from "../pages/register/Register";
 import Coverage from "../pages/coverage/Coverage";
@@ -111,17 +111,9 @@ export const router = createBrowserRouter([
   element:<PrivetRoute><AddProducts></AddProducts></PrivetRoute>
 },
 { path: "/sentparsel", element: <PrivetRoute><SentParcel /></PrivetRoute>, loader: () => fetch("/serviceData.json").then(res => res.json()) },
-
-      // Auth routes
-      {
-        path: "/",
-        element: <AuthLayout />,
-        children: [
-          { path: "login", element: <Login /> },
+ { path: "login", element: <Login /> },
           { path: "register", element: <Register /> },
           { path: "forgetpassword", element: <ForgotPassword /> },
-        ]
-      }
     ]
   },
 

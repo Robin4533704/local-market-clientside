@@ -88,7 +88,7 @@ const MyWatchlist = () => {
               <tr key={item._id} className="text-center">
                 <td className="py-2 px-4 border">{item.productName}</td>
                 <td className="py-2 px-4 border">{item.marketName}</td>
-                <td className="py-2 px-4 border">৳{item.price}</td>
+                <td className="py-2 px-4 border">${item.price}</td>
                 <td className="py-2 px-4 border">
                   {new Date(item.date || Date.now()).toLocaleDateString()}
                 </td>

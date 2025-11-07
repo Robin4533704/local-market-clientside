@@ -59,7 +59,7 @@ const OrderDetails = () => {
       <div className="mb-6">
         <p><strong>Product Name:</strong> {order.product_name}</p>
         <p><strong>Market:</strong> {order.marketName}</p>
-        <p><strong>Price:</strong> ৳{order.final_price}</p>
+        <p><strong>Price:</strong> ${order.final_price}</p>
         <p>
           <strong>Items:</strong> {order.items?.map(i => `${i.item_name} (${i.unit})`).join(", ") || "No items"}
         </p>

@@ -47,7 +47,7 @@ const MyOrders = () => {
           {orders.map((order) => (
             <tr key={order._id}>
               <td>{order.products?.map(p => p.name).join(", ") || "No products"}</td>
-              <td>৳{order.total || 0}</td>
+              <td>${order.total || 0}</td>
               <td>{order.paymentStatus || "Pending"}</td>
               <td>
                 <button
